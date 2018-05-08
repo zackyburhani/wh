@@ -71,6 +71,7 @@
    }
  }
 ?>
+
 <?php include_once('layouts/header.php'); ?>
 
   <div class="row">
@@ -160,10 +161,10 @@
                   <td><?php echo remove_junk(ucfirst($menu['name'])); ?></td>
                   <td class="text-center">
                     <div class="btn-group">
-                      <a href="edit_categorie.php?id=<?php echo (int)$menu['id'];?>"  class="btn btn-xs btn-warning" data-toggle="tooltip" title="Edit">
+                      <a href="edit_menu.php?id=<?php echo (int)$menu['id'];?>"  class="btn btn-xs btn-warning" data-toggle="tooltip" title="Edit">
                         <span class="glyphicon glyphicon-edit"></span>
                       </a>
-                      <a href="delete_categorie.php?id=<?php echo (int)$menu['id'];?>"  class="btn btn-xs btn-danger" data-toggle="tooltip" title="Remove">
+                      <a href="delete_menu.php?id=<?php echo (int)$menu['id'];?>"  class="btn btn-xs btn-danger" data-toggle="tooltip" title="Remove">
                           <span class="glyphicon glyphicon-trash"></span>
                       </a>
                     </div>

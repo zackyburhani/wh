@@ -1,8 +1,5 @@
 <?php
-
 $all_menu = find_all1('sidebar');
-// $all_submenu = find_all1('sub_sidebar');
-
 ?> 
 
 <ul>
@@ -20,7 +17,7 @@ $all_menu = find_all1('sidebar');
   <?php $submenu = $db->query($sql2); ?>
   <li>
     <a href="#" class="submenu-toggle">
-      <i class="glyphicon glyphicon-user"></i>
+      <i class="glyphicon glyphicon-th-large"></i>
         <span><?php echo $dataMenu['name'] ?></span>
     </a>       
     <ul class="nav submenu">
