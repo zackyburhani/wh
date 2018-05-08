@@ -19,12 +19,15 @@
 <script type="text/javascript">
 	$(document).ready( function () {
     	$('#datatableProduct').DataTable();
+      $('#CategoriesTable').DataTable();
   	});
  </script>
 
  <script> 
  	window.setTimeout(function() {
- 		$(".alert-success").fadeTo(500, 0).slideUp(500, function(){ $(this).remove(); });
- 		$(".alert-danger").fadeTo(500, 0).slideUp(500, function(){ $(this).remove(); }); 
+ 		$(".alert-success").fadeTo(900, 0).slideUp(900, function(){ $(this).remove(); });
+ 		$(".alert-danger").fadeTo(900, 0).slideUp(900, function(){ $(this).remove(); }); 
  	}, 3000); 
  </script>
+
+

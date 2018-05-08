@@ -14,12 +14,21 @@
    if(empty($errors)){
       $sql  = "INSERT INTO warehouse (name_warehouse)";
       $sql .= " VALUES ('{$cat_name}')";
-      if($db->query($sql)){
-        $session->msg("s", "Successfully Added Warehouse");
+
+      $getAllWarehouseName = "SELECT name_warehouse FROM warehouse where name_warehouse = '$cat_name'";
+      $ada=$db->query($getAllWarehouseName) or die(mysql_error());
+      if(mysqli_num_rows($ada)>0)
+      { 
+        $session->msg("d", "Warehouse Is Exist");
         redirect('add_warehouse.php',false);
       } else {
-        $session->msg("d", "Sorry Failed to insert.");
-        redirect('add_warehouse.php',false);
+          if($db->query($sql)){
+          $session->msg("s", "Successfully Added Warehouse");
+          redirect('add_warehouse.php',false);
+        } else {
+          $session->msg("d", "Sorry Failed to insert.");
+          redirect('add_warehouse.php',false);
+        }
       }
    } else {
      $session->msg("d", $errors);

@@ -14,13 +14,22 @@
    if(empty($errors)){
       $sql  = "INSERT INTO categories (name)";
       $sql .= " VALUES ('{$cat_name}')";
-      if($db->query($sql)){
-        $session->msg("s", "Successfully Added Categorie");
+
+      $getAllCategoriesName = "SELECT name FROM categories where name = '$cat_name'";
+      $ada=$db->query($getAllCategoriesName) or die(mysql_error());
+      if(mysqli_num_rows($ada)>0)
+      { 
+        $session->msg("d", "Category Is Exist");
         redirect('categorie.php',false);
       } else {
-        $session->msg("d", "Sorry Failed to insert.");
-        redirect('categorie.php',false);
-      }
+          if($db->query($sql)){
+          $session->msg("s", "Successfully Added Categorie");
+          redirect('categorie.php',false);
+        } else {
+          $session->msg("d", "Sorry Failed to insert.");
+          redirect('categorie.php',false);
+        }
+      }      
    } else {
      $session->msg("d", $errors);
      redirect('categorie.php',false);
@@ -62,7 +71,7 @@
        </strong>
       </div>
         <div class="panel-body">
-          <table class="table table-bordered table-striped table-hover">
+          <table id="CategoriesTable" class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
                     <th class="text-center" style="width: 50px;">#</th>
