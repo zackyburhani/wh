@@ -42,4 +42,11 @@
         <li><a href="move_product.php">Move Quantity Warehouse</a></li>
       </ul>
   </li>
+
+  <li>
+    <a href="add_menu.php" >
+      <i class="glyphicon glyphicon-list-alt"></i>
+      <span>Add New Menu</span>
+    </a>
+  </li>
 </ul>
