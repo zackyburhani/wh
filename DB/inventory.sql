@@ -1,5 +1,5 @@
 ﻿# Host: localhost  (Version 5.5.5-10.1.30-MariaDB)
-# Date: 2018-05-17 11:58:01
+# Date: 2018-05-17 14:05:06
 # Generator: MySQL-Front 6.0  (Build 2.20)
 
 
@@ -209,6 +209,51 @@ CREATE TABLE `sub_categories` (
 # Data for table "sub_categories"
 #
 
+
+#
+# Structure for table "user_groups"
+#
+
+DROP TABLE IF EXISTS `user_groups`;
+CREATE TABLE `user_groups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_name` varchar(150) NOT NULL,
+  `group_level` int(11) NOT NULL,
+  `group_status` int(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `group_level` (`group_level`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+#
+# Data for table "user_groups"
+#
+
+INSERT INTO `user_groups` VALUES (1,'Admin',1,1),(2,'special',2,1),(3,'User',3,1),(4,'gudang',4,1),(5,'manager',5,1);
+
+#
+# Structure for table "users"
+#
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(60) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `user_level` int(11) NOT NULL,
+  `image` varchar(255) DEFAULT 'no_image.jpg',
+  `status` int(1) NOT NULL,
+  `last_login` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_level` (`user_level`),
+  CONSTRAINT `FK_user` FOREIGN KEY (`user_level`) REFERENCES `user_groups` (`group_level`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+#
+# Data for table "users"
+#
+
+INSERT INTO `users` VALUES (1,' Admin User','admin','d033e22ae348aeb5660fc2140aec35850c4da997',1,'no_image.jpg',1,'2018-05-17 09:03:08'),(2,'Special User','special','ba36b97a41e7faf742ab09bf88405ac04f99599a',2,'no_image.jpg',1,'2018-05-07 12:03:06'),(3,'Default User','user','12dea96fec20593566ab75692c9949596833adc9',3,'no_image.jpg',1,'2018-05-07 12:04:47');
 
 #
 # Structure for table "warehouse"
