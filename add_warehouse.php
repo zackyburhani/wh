@@ -57,7 +57,7 @@
             <div class="form-group">
                 <input type="text" class="form-control" name="warehouse-name" placeholder="Warehouse Name">
             </div>
-            <button type="submit" name="add_warehouse" class="btn btn-primary">Add Warehouse</button>
+            <button type="submit" name="add_warehouse" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;&nbsp;Add Warehouse</button>
         </form>
         </div>
       </div>

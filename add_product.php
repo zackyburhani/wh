@@ -123,7 +123,7 @@
                   </div>
                </div>
               </div>
-              <button type="submit" name="add_product" class="btn btn-danger">Add product</button>
+              <button type="submit" name="add_product" class="btn btn-danger"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;&nbsp;Add product</button>
           </form>
          </div>
         </div>

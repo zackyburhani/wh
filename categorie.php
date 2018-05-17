@@ -57,7 +57,7 @@
             <div class="form-group">
                 <input type="text" class="form-control" name="categorie-name" placeholder="Categorie Name">
             </div>
-            <button type="submit" name="add_cat" class="btn btn-primary">Add categorie</button>
+            <button type="submit" name="add_cat" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;&nbsp;Add categorie</button>
         </form>
         </div>
       </div>

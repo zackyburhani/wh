@@ -28,6 +28,14 @@ function find_all1($table) {
    }
 }
 
+function find_warehouse($table) {
+   global $db;
+   if(tableExists($table))
+   {
+     return find_by_sql("SELECT * FROM ".$db->escape($table)." whare name_warehouse='$_GET[name_warehouse]'");
+   }
+}
+
 function find_all2($table) {
   global $db;
   if(tableExists($table))

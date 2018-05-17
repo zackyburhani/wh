@@ -21,7 +21,7 @@ error_reporting(0);
       <div class="panel panel-default">
         <div class="panel-heading clearfix">
          <div class="pull-right">
-           <a href="add_product.php" class="btn btn-primary">Add New</a>
+           <a href="add_product.php" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;&nbsp;Add New</a>
          </div>
         </div>
 		 <div class="panel-heading clearfix">
@@ -37,7 +37,7 @@ error_reporting(0);
             </select>
             </div>
             <div class="col-md-6">
-                 <button type="submit" class="btn btn-danger">Sort</button>
+                 <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;&nbsp;Sort</button>
             </div>
          </div>
          </form>

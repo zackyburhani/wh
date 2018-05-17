@@ -22,7 +22,7 @@
           <span class="glyphicon glyphicon-th"></span>
           <span>Users</span>
        </strong>
-         <a href="add_user.php" class="btn btn-info pull-right">Add New User</a>
+         <a href="add_user.php" class="btn btn-info pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;&nbsp;Add New User</a>
       </div>
      <div class="panel-body">
       <table class="table table-bordered table-striped">
