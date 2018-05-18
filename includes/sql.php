@@ -12,6 +12,27 @@ function find_all($table) {
    }
 }
 
+function find_all_Position($table) {
+   global $db;
+   if(tableExists($table))
+   {
+     return find_by_sql("SELECT * FROM ".$db->escape($table)."");
+   }
+}
+
+function find_by_id_position($table,$id)
+{
+  global $db;
+  $id = (int)$id;
+    if(tableExists($table)){
+          $sql = $db->query("SELECT * FROM {$db->escape($table)} WHERE id_position='{$db->escape($id)}' LIMIT 1");
+          if($result = $db->fetch_assoc($sql))
+            return $result;
+          else
+            return null;
+     }
+}
+
 function find_prod_warehouse($table) {
   global $db;
   if(tableExists($table))
@@ -171,11 +192,11 @@ function tableExists($table){
   function find_all_user(){
       global $db;
       $results = array();
-      $sql = "SELECT u.id,u.name,u.username,u.user_level,u.status,u.last_login,";
-      $sql .="g.group_name ";
-      $sql .="FROM users u ";
-      $sql .="LEFT JOIN user_groups g ";
-      $sql .="ON g.group_level=u.user_level ORDER BY u.name ASC";
+      $sql = "SELECT u.id_employer,u.username,u.nm_employer,u.id_position,u.last_login,u.status";
+      $sql .="g.nm_position ";
+      $sql .="FROM employer u ";
+      $sql .="LEFT JOIN position g ";
+      $sql .="ON g.id_position=u.id_position ORDER BY u.nm_employer ASC";
       $result = find_by_sql($sql);
       return $result;
   }
@@ -193,12 +214,12 @@ function tableExists($table){
 	}
 
   /*--------------------------------------------------------------*/
-  /* Find all Group name
+  /* Find all position name
   /*--------------------------------------------------------------*/
-  function find_by_groupName($val)
+  function find_by_positionName($val)
   {
     global $db;
-    $sql = "SELECT group_name FROM user_groups WHERE group_name = '{$db->escape($val)}' LIMIT 1 ";
+    $sql = "SELECT nm_position FROM position WHERE nm_position = '{$db->escape($val)}' LIMIT 1 ";
     $result = $db->query($sql);
     return($db->num_rows($result) === 0 ? true : false);
   }

@@ -11,6 +11,7 @@
   <script src="libs/datatables/dataTables.bootstrap.js"></script>
   <!-- END DATATABLES -->
 
+
   </body>
 </html>
 
@@ -20,6 +21,7 @@
 	$(document).ready( function () {
     	$('#datatableProduct').DataTable();
       $('#CategoriesTable').DataTable();
+      $('#tablePosition').DataTable();
   	});
  </script>
 
