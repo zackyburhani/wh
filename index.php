@@ -4,6 +4,13 @@
   if($session->isUserLoggedIn(true)) { redirect('home.php', false);}
 ?>
 <?php include_once('layouts/header.php'); ?>
+
+<style type="text/css">
+  body{
+    background-color: #003380;
+  }
+</style>
+
 <div class="login-page">
     <div class="text-center">
        <h1>Welcome</h1>
@@ -20,7 +27,7 @@
             <input type="password" name= "password" class="form-control" placeholder="password">
         </div>
         <div class="form-group">
-                <button type="submit" class="btn btn-info  pull-right">Login</button>
+                <button type="submit" class="btn btn-info  btn-block  ">Login</button>
         </div>
     </form>
 </div>

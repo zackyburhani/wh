@@ -66,6 +66,7 @@
                 <label for="warehouse-name">Warehouse Name</label>
                 <input type="text" class="form-control" name="warehouse-name" placeholder="Warehouse Name">
             </div>
+<<<<<<< HEAD
             <div class="form-group">
                 <label for="country">Country</label>
                 <input type="text" class="form-control" name="country" placeholder="Country of Origin">
@@ -89,8 +90,8 @@
                 <label for="consumed">Consumed</label>
                 <input type="number" class="form-control" name="consumed" placeholder="Consumed">
             </div>
-            <button type="submit" name="add_warehouse" class="btn btn-primary">Add Warehouse</button>
-          </form>
+            <button type="submit" name="add_warehouse" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;&nbsp;Add Warehouse</button>
+        </form>
         </div>
       </div>
     </div>

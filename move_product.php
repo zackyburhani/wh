@@ -77,7 +77,7 @@ if (isset($_POST['submit'])) {
                    <?php endforeach; ?>
                  </select>
            </div>
-           <button type="submit" name="show_product" class="btn btn-primary" value="Tampil">Tampil Product</button>
+           <button type="submit" name="show_product" class="btn btn-primary" value="Tampil"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;&nbsp;&nbsp;Tampil Product</button>
        </form>
        </div>
      </div>
@@ -135,7 +135,7 @@ if (isset($_POST['submit'])) {
                 </tr>
               <?php endforeach; ?>
               <tr>
-                      <td colspan="5"><button type="submit" name="submit" class="btn btn-danger">Move</button></td>
+                      <td colspan="5"><button type="submit" name="submit" class="btn btn-danger"><span class="glyphicon glyphicon-transfer"></span>&nbsp;&nbsp;&nbsp;Move</button></td>
                 </tr>
             </tbody>
           </table>
