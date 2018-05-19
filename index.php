@@ -3,7 +3,7 @@
   require_once('includes/load.php');
   if($session->isUserLoggedIn(true)) { redirect('home.php', false);}
 ?>
- 
+  
 <div class="login-page">
     <div class="text-center">
        <h1>Welcome</h1>

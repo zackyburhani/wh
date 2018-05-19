@@ -60,20 +60,27 @@
       $nm_employer = remove_junk($db->escape($_POST['nm_employer']));
       $username    = remove_junk($db->escape($_POST['username']));
       $password    = remove_junk($db->escape($_POST['password']));
-      $id_position = (int)$db->escape($_POST['id_position']);
+      $id_position = remove_junk($db->escape($_POST['id_position']));
       $status      = remove_junk($db->escape($_POST['status']));
 
-      $password = sha1($password);
-
-      $query  = "UPDATE employer SET id_employer='{$id_employer}',nm_employer='{$nm_employer}',username='{$username}',id_position='{$id_position}',status='{$status}' WHERE id_employer='{$id_employer}'";
-
-      $queryPass  = "UPDATE employer SET id_employer='{$id_employer}',nm_employer='{$nm_employer}',username='{$username}',password='{$password}',id_position='{$id_position}',status='{$status}' WHERE id_employer='{$id_employer}'";
-
-      if($password == null){
-        $result = $db->query($query);
-      } else {
+      if(!isset($password)){
+        $password = sha1($password);
+        $queryPass  = "UPDATE employer SET id_employer='{$id_employer}',nm_employer='{$nm_employer}',username='{$username}',password='{$password}',id_position='{$id_position}',status='{$status}' WHERE id_employer='{$id_employer}'";
         $result = $db->query($queryPass);
+        
+        
+      } else {
+        $query  = "UPDATE employer SET id_employer='{$id_employer}',nm_employer='{$nm_employer}',username='{$username}',id_position='{$id_position}',status='{$status}' WHERE id_employer='{$id_employer}'";
+        $result = $db->query($query);
       }
+
+      
+
+      
+
+
+
+
       if($result && $db->affected_rows() === 1){
           //sucess
           $session->msg('s',"User Has Been Updated! ");
