@@ -127,19 +127,19 @@
       <table class="table table-bordered table-striped" id="tableUser">
         <thead>
           <tr>
-            <th class="text-center" style="width: 50px;">No.</th>
-            <th>Name </th>
-            <th>Username</th>
+            <th class="text-center" style="width: 10px;">No.</th>
+            <th class="text-center">Name </th>
+            <th class="text-center">Username</th>
             <th class="text-center" style="width: 15%;">User Role</th>
             <th class="text-center" style="width: 10%;">Status</th>
-            <th style="width: 20%;">Last Login</th>
+            <th class="text-center" style="width: 20%;">Last Login</th>
             <th class="text-center" style="width: 13  0px;">Actions</th>
           </tr>
         </thead>
         <tbody>
         <?php foreach($all_users as $a_user): ?>
           <tr>
-           <td class="text-center"><?php echo count_id();?></td>
+           <td class="text-center"><?php echo count_id();?>.</td>
            <td><?php echo remove_junk(ucwords($a_user['nm_employer']))?></td>
            <td><?php echo remove_junk($a_user['username'])?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_user['nm_position']))?></td>
@@ -177,26 +177,26 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel">Add New User</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-user"></span>  Add New User</h4>
         
       </div>
       <div class="modal-body">
         <form method="post" action="users.php">
             <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" class="form-control" name="nm_employer" placeholder="Full Name" required>
+              <label for="name">Name</label>
+              <input type="text" class="form-control" name="nm_employer" placeholder="Full Name" required>
             </div>
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" class="form-control" name="username" placeholder="Username" required>
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" name ="password"  placeholder="Password" required>
+              <label for="password">Password</label>
+              <input type="password" class="form-control" name ="password"  placeholder="Password" required>
             </div>
             <div class="form-group">
-                <label for="password">Confirm Password</label>
-                <input type="password" class="form-control" name ="password2"  placeholder="Confirm Password" required>
+              <label for="password">Confirm Password</label>
+              <input type="password" class="form-control" name ="password2"  placeholder="Confirm Password" required>
             </div>
             <div class="form-group">
               <label for="level">User Role</label>
@@ -208,8 +208,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" name="add_user" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+            <button type="submit" name="add_user" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span>  Save</button>
           </div>
         </form>
     </div>
@@ -226,7 +226,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel">Update Data User</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-user"></span> Update Data User</h4>
         
       </div>
       <div class="modal-body">
@@ -248,14 +248,16 @@
                 <label for="password">Confirm Password</label>
                 <input type="password" class="form-control" name ="password2"  placeholder="Let It Empty If Do Not Want To Update The Password">
             </div>
+            
             <div class="form-group">
               <label for="level">User Role</label>
                 <select class="form-control" name="id_position">
                   <?php foreach ($all_position as $group ):?>
-                   <option value="<?php echo ucwords($group['id_position']);?>"><?php echo ucwords($group['nm_position']);?></option>
+                   <option <?php if( $group['id_position']==$a_user['id_position']){echo "selected"; } ?> value="<?php echo ucwords($group['id_position']);?>"><?php echo ucwords($group['nm_position']);?></option>
                 <?php endforeach;?>
                 </select>
             </div>
+            
             <div class="form-group">
               <label for="level">Status</label>
                 <select class="form-control" name="status">
@@ -265,8 +267,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" name="update_user" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+            <button type="submit" name="update_user" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span>  Update</button>
           </div>
         </form>
     </div>

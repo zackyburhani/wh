@@ -76,6 +76,18 @@
 <?php
   if(isset($_POST['delete_position'])){
     $id_position = remove_junk($db->escape($_POST['id_position']));
+    
+    //validation connected foreign key
+    $employer = find_all_idPosition($id_position);
+    foreach ($employer as $data) {
+      $id_position2 = $data['id_position'];  
+    }
+    if($id_position == $id_position2){
+      $session->msg("d","The Field Connected To Other Key.");
+      redirect('position.php');
+    }
+
+    //delete function
     $delete_id   = delete('id_position','position',$id_position);
     if($delete_id){
       $session->msg("s","Position has been deleted.");
@@ -85,7 +97,6 @@
       redirect('position.php');
     }  
   }
-  
 ?>
 <!-- END DELETE POSITION -->
 
@@ -111,7 +122,7 @@
         <thead>
           <tr>
             <th class="text-center" style="width: 50px;">No. </th>
-            <th>Position Name</th>
+            <th class="text-center">Position Name</th>
             <th class="text-center" style="width: 100px;">Actions</th>
           </tr>
         </thead>

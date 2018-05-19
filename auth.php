@@ -7,10 +7,7 @@ $password = remove_junk($_POST['password']);
 
 if(empty($errors)){
   $user_id = authenticate($username, $password);
-
-
   
-
   if($user_id){
     $userStatus = $user_id['status'];
     if($userStatus == 1){

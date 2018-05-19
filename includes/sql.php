@@ -2,7 +2,7 @@
   require_once('includes/load.php');
 
 
-//autonumber
+//autonumber (zacky)
 function autonumber($id, $table){
   global $db;
   $query = 'SELECT MAX(RIGHT('.$id.', 4)) as max_id FROM '.$table.' ORDER BY '.$id;
@@ -27,6 +27,7 @@ function find_all($table) {
    }
 }
 
+//find all position (zacky)
 function find_all_Position($table) {
    global $db;
    if(tableExists($table))
@@ -35,6 +36,7 @@ function find_all_Position($table) {
    }
 }
 
+//find id position (zacky)
 function find_by_id_position($table,$id)
 {
   global $db;
@@ -80,6 +82,7 @@ function find_all2($table) {
   }
 }
 
+//find all employee (zacky)
 function find_all_employee(){
       global $db;
       $results = array();
@@ -88,6 +91,15 @@ function find_all_employee(){
       $sql .="FROM employer u ";
       $sql .="LEFT JOIN position g ";
       $sql .="ON g.id_position=u.id_position ORDER BY u.nm_employer ASC";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  //validation connected foreign key (zacky)
+  function find_all_idPosition($field){
+      global $db;
+      $results = array();
+      $sql = "SELECT id_position FROM employer WHERE id_position = '{$db->escape($field)}'";
       $result = find_by_sql($sql);
       return $result;
   }
@@ -133,6 +145,7 @@ function delete_by_id($table,$id)
    }
 }
 
+//delete function for all method (zacky)
 function delete($field,$table,$id)
 {
   global $db;
@@ -147,9 +160,8 @@ function delete($field,$table,$id)
 }
 
 /*--------------------------------------------------------------*/
-/* Function for Count id  By table name
+/* Function for Count id  By table name (zacky)
 /*--------------------------------------------------------------*/
-
 function count_by_id($table){
   global $db;
   if(tableExists($table))
@@ -176,6 +188,7 @@ function tableExists($table){
  /* Login with the data provided in $_POST,
  /* coming from the login form.
 /*--------------------------------------------------------------*/
+  //authenticate for login (zacky)
   function authenticate($username='', $password='') {
     global $db;
       $username = $db->escape($username);
@@ -233,6 +246,7 @@ function tableExists($table){
   /* Find all user by
   /* Joining users table and user gropus table
   /*--------------------------------------------------------------*/
+  //find all employees (zacky)
   function find_all_user(){
       global $db;
       $results = array();
@@ -247,8 +261,8 @@ function tableExists($table){
   /*--------------------------------------------------------------*/
   /* Function to update the last log in of a user
   /*--------------------------------------------------------------*/
-
- function updateLastLogIn($user_id)
+  //update last login (zacky)
+  function updateLastLogIn($user_id)
 	{
 		global $db;
     $date = make_date();
@@ -258,7 +272,7 @@ function tableExists($table){
 	}
 
   /*--------------------------------------------------------------*/
-  /* Find all position name
+  /* Find all position name (zacky)
   /*--------------------------------------------------------------*/
   function find_by_positionName($val)
   {
