@@ -1,6 +1,21 @@
 <?php
   require_once('includes/load.php');
 
+
+//autonumber
+function autonumber($id, $table){
+  global $db;
+  $query = 'SELECT MAX(RIGHT('.$id.', 4)) as max_id FROM '.$table.' ORDER BY '.$id;
+  $result = $db->query($query);
+  $data = $db->fetch_assoc($result);
+  $id_max = $data['max_id'];
+  $sort_num = (int) substr($id_max, 1, 4);
+  $sort_num++;
+  $new_code = sprintf("%04s", $sort_num);
+  return $new_code;
+}
+
+
 /*--------------------------------------------------------------*/
 /* Function for find all database table rows by table name
 /*--------------------------------------------------------------*/
@@ -64,6 +79,19 @@ function find_all2($table) {
     return find_by_sql("SELECT * FROM ".$db->escape($table)." where warehouse_id='$_GET[id]'");
   }
 }
+
+function find_all_employee(){
+      global $db;
+      $results = array();
+      $sql = "SELECT u.id_employer,u.username,u.nm_employer,u.id_position,u.last_login,u.status,";
+      $sql .="g.nm_position ";
+      $sql .="FROM employer u ";
+      $sql .="LEFT JOIN position g ";
+      $sql .="ON g.id_position=u.id_position ORDER BY u.nm_employer ASC";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
 /*--------------------------------------------------------------*/
 /* Function for Perform queries
 /*--------------------------------------------------------------*/
@@ -104,6 +132,20 @@ function delete_by_id($table,$id)
     return ($db->affected_rows() === 1) ? true : false;
    }
 }
+
+function delete($field,$table,$id)
+{
+  global $db;
+  if(tableExists($table))
+   {
+    $sql = "DELETE FROM ".$db->escape($table);
+    $sql .= " WHERE ".$db->escape($field)."=". $db->escape($id);
+    $sql .= " LIMIT 1";
+    $db->query($sql);
+    return ($db->affected_rows() === 1) ? true : false;
+   }
+}
+
 /*--------------------------------------------------------------*/
 /* Function for Count id  By table name
 /*--------------------------------------------------------------*/
@@ -138,13 +180,13 @@ function tableExists($table){
     global $db;
     $username = $db->escape($username);
     $password = $db->escape($password);
-    $sql  = sprintf("SELECT id,username,password,user_level FROM users WHERE username ='%s' LIMIT 1", $username);
+    $sql  = sprintf("SELECT id_employer,username,password,id_position FROM employer WHERE username ='%s' LIMIT 1", $username);
     $result = $db->query($sql);
     if($db->num_rows($result)){
       $user = $db->fetch_assoc($result);
       $password_request = sha1($password);
       if($password_request === $user['password'] ){
-        return $user['id'];
+        return $user['id_employer'];
       }
     }
    return false;

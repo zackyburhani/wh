@@ -22,6 +22,7 @@
     	$('#datatableProduct').DataTable();
       $('#CategoriesTable').DataTable();
       $('#tablePosition').DataTable();
+      $('#tableUser').DataTable();
   	});
  </script>
 

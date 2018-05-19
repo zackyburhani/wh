@@ -18,7 +18,7 @@
    }
    if(empty($errors)){
         $nm_position = remove_junk($db->escape($_POST['nm_position']));
-        $id_position = 2;
+        $id_position = autonumber('id_position','position');
         $query  = "INSERT INTO position (";
         $query .="id_position,nm_position";
         $query .=") VALUES (";
@@ -72,6 +72,23 @@
 ?>
 <!-- END UPDATE POSITION -->
 
+<!-- DELETE POSITION -->
+<?php
+  if(isset($_POST['delete_position'])){
+    $id_position = remove_junk($db->escape($_POST['id_position']));
+    $delete_id   = delete('id_position','position',$id_position);
+    if($delete_id){
+      $session->msg("s","Position has been deleted.");
+      redirect('position.php');
+    } else {
+      $session->msg("d","Position deletion failed");
+      redirect('position.php');
+    }  
+  }
+  
+?>
+<!-- END DELETE POSITION -->
+
 <?php include_once('layouts/header.php'); ?>
 <div class="row">
    <div class="col-md-12">
@@ -107,9 +124,9 @@
                 <button data-target="#updatePosition<?php echo (int)$a_position['id_position'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
                 </button>
-                <a href="delete_group.php<?php echo (int)$a_position['id_position'];?>" class="btn btn-md btn-danger" data-toggle="tooltip" title="Remove">
-                  <i class="glyphicon glyphicon-remove"></i>
-                </a>
+                <button data-target="#deletePosition<?php echo (int)$a_position['id_position'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Remove">
+                  <i class="glyphicon glyphicon-trash"></i>
+                </button>
            </td>
           </tr>
         <?php endforeach;?>
@@ -129,18 +146,18 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel">Entry New Position</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-user"></span> Add New Position</h4>
       </div>
       <div class="modal-body">
       <form method="post" action="position.php" class="clearfix">
         <div class="form-group">
           <label for="name" class="control-label">Name Position</label>
-          <input type="name" class="form-control" name="nm_position">
+          <input type="name" class="form-control" placeholder="New Position" name="nm_position" required>
         </div>    
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" name="add_position" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+        <button type="submit" name="add_position" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
       </div>
     </form>
   </div>
@@ -152,30 +169,58 @@
 
 <!-- Update Modal -->
 <?php foreach($all_position as $a_position): ?> 
-<div class="modal fade" id="updatePosition<?php echo (int)$a_position['id_position'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title" id="exampleModalLabel">Update New Position</h4>
-      </div>
-      <div class="modal-body">
-      <form method="post" action="position.php" class="clearfix">
-        <div class="form-group">
-          <label for="name" class="control-label">Name Position</label>
-          <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_position['id_position'])); ?>" name="id_position">
-          <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_position['nm_position'])); ?>" name="nm_position">
-        </div>    
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" name="update_position" class="btn btn-primary">Update</button>
-      </div>
-    </form>
+  <div class="modal fade" id="updatePosition<?php echo (int)$a_position['id_position'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-user"></span> Update New Position</h4>
+        </div>
+        <div class="modal-body">
+        <form method="post" action="position.php" class="clearfix">
+          <div class="form-group">
+            <label for="name" class="control-label">Name Position</label>
+            <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_position['id_position'])); ?>" name="id_position">
+            <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_position['nm_position'])); ?>" name="nm_position" required>
+          </div>    
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+          <button type="submit" name="update_position" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Update</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
+<?php endforeach;?>
+
+<!-- Delete Modal -->
+<?php foreach($all_position as $a_position): ?> 
+  <div class="modal fade" id="deletePosition<?php echo (int)$a_position['id_position'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-trash"></span> Confirm Delete</h4>
+        </div>
+        <div class="modal-body">
+          Are You Sure Want To Delete <b><u><?php echo remove_junk(ucwords($a_position['nm_position'])); ?></u></b> ?
+        <form method="post" action="position.php" class="clearfix">
+          <div class="form-group">
+            <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_position['id_position'])); ?>" name="id_position">
+          </div>    
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+          <button type="submit" name="delete_position" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 <?php endforeach;?>
  
