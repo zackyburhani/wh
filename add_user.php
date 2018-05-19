@@ -65,7 +65,8 @@
             <div class="form-group">
               <label for="level">User Role</label>
                 <select class="form-control" name="level">
-                  <?php foreach ($groups as $group ):?>
+                  <?php $query="SELECT * FROM user_groups"; $result = $db->query($query) ?>
+                  <?php foreach ($result as $group ):?>
                    <option value="<?php echo $group['group_level'];?>"><?php echo ucwords($group['group_name']);?></option>
                 <?php endforeach;?>
                 </select>
