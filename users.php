@@ -63,23 +63,15 @@
       $id_position = remove_junk($db->escape($_POST['id_position']));
       $status      = remove_junk($db->escape($_POST['status']));
 
-      if(!isset($password)){
-        $password = sha1($password);
-        $queryPass  = "UPDATE employer SET id_employer='{$id_employer}',nm_employer='{$nm_employer}',username='{$username}',password='{$password}',id_position='{$id_position}',status='{$status}' WHERE id_employer='{$id_employer}'";
-        $result = $db->query($queryPass);
-        
-        
-      } else {
+      if($password == null){      
         $query  = "UPDATE employer SET id_employer='{$id_employer}',nm_employer='{$nm_employer}',username='{$username}',id_position='{$id_position}',status='{$status}' WHERE id_employer='{$id_employer}'";
         $result = $db->query($query);
+      } else {
+        $password = sha1($password);
+        $queryPass  = "UPDATE employer SET id_employer='{$id_employer}',nm_employer='{$nm_employer}',username='{$username}',password='{$password}',id_position='{$id_position}',status='{$status}' WHERE id_employer='{$id_employer}'";
+
+        $result = $db->query($queryPass);
       }
-
-      
-
-      
-
-
-
 
       if($result && $db->affected_rows() === 1){
           //sucess
