@@ -6,8 +6,9 @@
   
 <div class="login-page">
     <div class="text-center">
-       <h1>Welcome</h1>
-       <p>Sign in to start your session</p>
+      <img src="img/logo-ikea.png" width="70%" style="padding-top: 40px; padding-bottom: 30px">
+<!--        <h1>Welcome</h1>
+       <p>Sign in to start your session</p> -->
      </div>
      <?php echo display_msg($msg); ?>
       <form method="post" action="auth.php" class="clearfix">
