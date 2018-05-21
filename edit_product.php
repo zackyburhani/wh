@@ -5,43 +5,48 @@
    page_require_level(2);
 ?>
 <?php
-$product = find_by_id('products',(int)$_GET['id']);
+$item = find_by_id_pro('item',(int)$_GET['id']);
 $all_categories = find_all1('categories');
-$all_warehouse = find_all1('warehouse');
-if(!$product){
+//$all_warehouse = find_all1('warehouse');
+if(!$item){
   $session->msg("d","Missing product id.");
   redirect('product.php');
 }
 ?>
 <?php
  if(isset($_POST['product'])){
-    $req_fields = array('product-title','product-categorie','product-warehouse','product-quantity','buying-price', 'saleing-price' );
+    $req_fields = array('id_item','name_item','color','widht','height', 'lenght','weight','stock','id_package','id_subcategories','id_location' );
     validate_fields($req_fields);
 
    if(empty($errors)){
-       $p_name  = remove_junk($db->escape($_POST['product-title']));
-       $p_cat   = (int)$_POST['product-categorie'];
-	   $p_ware   = (int)$_POST['product-warehouse'];
-       $p_qty   = remove_junk($db->escape($_POST['product-quantity']));
-       $p_buy   = remove_junk($db->escape($_POST['buying-price']));
-       $p_sale  = remove_junk($db->escape($_POST['saleing-price']));
+	   $p_id  = remove_junk($db->escape($_POST['id_item']));
+       $p_name  = remove_junk($db->escape($_POST['name_item']));
+	   $p_color  = remove_junk($db->escape($_POST['color']));
+       $p_widht  = remove_junk($db->escape($_POST['widht']));
+	   $p_height  = remove_junk($db->escape($_POST['height']));
+       $p_lenght  = remove_junk($db->escape($_POST['lenght']));
+	   $p_weight  = remove_junk($db->escape($_POST['weight']));
+	   $p_stock  = remove_junk($db->escape($_POST['stock']));	   
+       $p_package   = (int)$_POST['id_package'];
+	   $p_cat   = (int)$_POST['id_subcategories'];
+	   $p_loc   = (int)$_POST['id_location'];
       
-       $query   = "UPDATE products SET";
-       $query  .=" name ='{$p_name}', quantity ='{$p_qty}',";
-       $query  .=" buy_price ='{$p_buy}', sale_price ='{$p_sale}', categorie_id ='{$p_cat}', warehouse_id='{$p_ware}'";
-       $query  .=" WHERE id ='{$product['id']}'";
+       $query   = "UPDATE item SET";
+       $query  .="nm_item ='{$p_name}', colour ='{$p_qcolor}', widht='{$p_widht}', height='{$p_height}', lenght='{$p_lenght}', weight='{$p_weight}, stock='{$p_stock}',";
+       $query  .=" id_package ='{$p_package}', id_subcategories ='{$p_cat}', id_location ='{$p_loc}'";
+       $query  .=" WHERE id_item ='{$item['id_item']}'";
        $result = $db->query($query);
                if($result && $db->affected_rows() === 1){
                  $session->msg('s',"Product updated ");
                  redirect('product.php', false);
                } else {
                  $session->msg('d',' Sorry failed to updated!');
-                 redirect('edit_product.php?id='.$product['id'], false);
+                 redirect('edit_product.php?id='.$item['id_item'], false);
                }
 
    } else{
        $session->msg("d", $errors);
-       redirect('edit_product.php?id='.$product['id'], false);
+       redirect('edit_product.php?id='.$item['id_item'], false);
    }
 
  }
@@ -49,7 +54,7 @@ if(!$product){
 ?>
 <?php include_once('layouts/header.php'); ?>
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-17">
     <?php echo display_msg($msg); ?>
   </div>
 </div>
@@ -62,84 +67,134 @@ if(!$product){
          </strong>
         </div>
         <div class="panel-body">
-         <div class="col-md-7">
-           <form method="post" action="edit_product.php?id=<?php echo (int)$product['id'] ?>">
-              <div class="form-group">
-                <div class="input-group">
-                  <span class="input-group-addon">
-                   <i class="glyphicon glyphicon-th-large"></i>
-                  </span>
-                  <input type="text" class="form-control" name="product-title" value="<?php echo remove_junk($product['name']);?>">
-               </div>
-              </div>
-              <div class="form-group">
-                <div class="row">
-                  <div class="col-md-6">
-                    <select class="form-control" name="product-categorie">
-                    <option value=""> Select a categorie</option>
-                   <?php  foreach ($all_categories as $cat): ?>
-                     <option value="<?php echo (int)$cat['id']; ?>" <?php if($product['categorie_id'] === $cat['id']): echo "selected"; endif; ?> >
-                       <?php echo remove_junk($cat['name']); ?></option>
-                   <?php endforeach; ?>
-                 </select>
-                  </div>
-				  <div class="col-md-6">
-                    <select class="form-control" name="product-warehouse">
-                    <option value=""> Select a Warehouse</option>
-                   <?php  foreach ($all_warehouse as $ware): ?>
-                     <option value="<?php echo (int)$ware['id']; ?>" <?php if($product['warehouse_id'] === $ware['id']): echo "selected"; endif; ?> >
-                       <?php echo remove_junk($ware['name_warehouse']); ?></option>
-                   <?php endforeach; ?>
-                 </select>
-                  </div>
-                </div>
-              </div>               
-            
-
+         <div class="col-md-14">
+           <form method="post" action="edit_product.php?id=<?php echo (int)$item['id_item'] ?>">
               <div class="form-group">
                <div class="row">
                  <div class="col-md-4">
-                  <div class="form-group">
-                    <label for="qty">Quantity</label>
-                    <div class="input-group">
-                      <span class="input-group-addon">
-                       <i class="glyphicon glyphicon-shopping-cart"></i>
-                      </span>
-                      <input type="number" class="form-control" name="product-quantity" value="<?php echo remove_junk($product['quantity']); ?>">
-                   </div>
+                   <div class="input-group">
+                     <span class="input-group-addon">
+                      <i class="glyphicon glyphicon-th-large"></i>
+                     </span>
+                     <input type="text" class="form-control" name="id_item" value="<?php echo remove_junk($item['id_item']);?>">
                   </div>
                  </div>
                  <div class="col-md-4">
-                  <div class="form-group">
-                    <label for="qty">Buying price</label>
-                    <div class="input-group">
-                      <span class="input-group-addon">
-                        <i class="glyphicon glyphicon-usd"></i>
-                      </span>
-                      <input type="number" class="form-control" name="buying-price" value="<?php echo remove_junk($product['buy_price']);?>">
-                      <span class="input-group-addon">.00</span>
-                   </div>
+                   <div class="input-group">
+                     <span class="input-group-addon">
+                        <i class="glyphicon glyphicon-paperclip"></i>
+                  </span>
+                  <input type="text" class="form-control" name="name_item" onkeypress="return hanyaHuruf(event)" value="<?php echo remove_junk($item['nm_item']);?>">
                   </div>
                  </div>
                   <div class="col-md-4">
-                   <div class="form-group">
-                     <label for="qty">Selling price</label>
-                     <div class="input-group">
-                       <span class="input-group-addon">
-                         <i class="glyphicon glyphicon-usd"></i>
-                       </span>
-                       <input type="number" class="form-control" name="saleing-price" value="<?php echo remove_junk($product['sale_price']);?>">
-                       <span class="input-group-addon">.00</span>
-                    </div>
+                    <div class="input-group">
+                      <span class="input-group-addon">
+                         <i class="glyphicon glyphicon-equalizer"></i>
+                  </span>
+                  <input type="text" class="form-control" name="color_item" onkeypress="return hanyaHuruf(event)" value="<?php echo remove_junk($item['colour']);?>"><br>
                    </div>
                   </div>
                </div>
               </div>
-              <button type="submit" name="product" class="btn btn-danger">Update</button>
+			  <div class="form-group">
+               <div class="row">
+                 <div class="col-md-3">
+                   <div class="input-group">
+                     <span class="input-group-addon">
+                      <i class="glyphicon glyphicon-tasks"></i>
+                     </span>
+                     <input type="text" class="form-control" name="widht_item"  onkeypress="return hanyaAngka(event)" value="<?php echo remove_junk($item['width']);?>">
+                  </div>
+                 </div>
+                 <div class="col-md-3">
+                   <div class="input-group">
+                     <span class="input-group-addon">
+						<i class="glyphicon glyphicon-tasks"></i>
+                     </span>
+                     <input type="text" class="form-control" name="height_item"  onkeypress="return hanyaAngka(event)" value="<?php echo remove_junk($item['height']);?>">
+                  </div>
+                 </div>
+                  <div class="col-md-3">
+                    <div class="input-group">
+                      <span class="input-group-addon">
+                         <i class="glyphicon glyphicon-tasks"></i>
+                     </span>
+                     <input type="text" class="form-control" name="lenght_item"  onkeypress="return hanyaAngka(event)" value="<?php echo remove_junk($item['lenght']);?>">
+                   </div>
+                  </div>
+				  <div class="col-md-3">
+                    <div class="input-group">
+                      <span class="input-group-addon">
+                         <i class="glyphicon glyphicon-tasks"></i>
+                     </span>
+                     <input type="text" class="form-control" name="weight_item"  onkeypress="return hanyaAngka(event)" value="<?php echo remove_junk($item['weight']);?>">
+                   </div>
+                  </div>
+               </div>
+              </div>
+			   <div class="input-group">
+                  <span class="input-group-addon">
+                   <i class="glyphicon glyphicon-equalizer"></i>
+                  </span>
+                  <input type="text" class="form-control" name="stock_item"  onkeypress="return hanyaAngka(event)" value="<?php echo remove_junk($item['stock']);?>"><br>
+               </div>
+			   <br>
+              </div>
+			 <div class="form-group">
+			  <div class="row">
+                  <div class="col-md-3">
+                    <select class="form-control" name="id_package">
+                      <option value="">Select Package Product</option>
+						
+                    </select>
+                  </div>
+                <div class="row">
+                  <div class="col-md-3">
+                    <select class="form-control" name="id_subcategories">
+                      <option value="">Select Category Product</option>
+						<?php  foreach ($all_categories as $cat): ?>
+                     <option value="<?php echo (int)$cat['id_categories']; ?>" <?php if($item['id_subcategories'] === $cat['id_categories']): echo "selected"; endif; ?> >
+                       <?php echo remove_junk($cat['nm_categories']); ?></option>
+                <?php endforeach; ?>
+                    </select>
+                  </div>
+                  <div class="col-md-3">
+                    <select class="form-control" name="id_location">
+                      <option value="">Select Location Warehouse</option>
+					  
+                \
+                    </select>
+                  </div>
+                </div>
+              </div><br>
+              <button type="submit" name="product" class="btn btn-danger"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;&nbsp;Update</button>
           </form>
          </div>
         </div>
       </div>
   </div>
+  <script>
+		function hanyaAngka(evt) {
+		  var charCode = (evt.which) ? evt.which : event.keyCode
+		   if (charCode > 31 && (charCode < 48 || charCode > 57))
+ 
+		    return false;
+		  return true;
+		}
+		
+		function hanyaHuruf(evt) {
+		  var charCode = (evt.which) ? evt.which : event.keyCode
+		   if (charCode > 31 && (charCode < 48 || charCode > 57))
+ 
+		    return true;
+		  return false;
+		}
+	</script>
+	<script language="JavaScript">
+	function showDetails(input){
+		window.open(input,"RataRata","width=800,height=200");
+	}
+</script>
 
 <?php include_once('layouts/footer.php'); ?>

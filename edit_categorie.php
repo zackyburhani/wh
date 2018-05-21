@@ -6,7 +6,7 @@
 ?>
 <?php
   //Display all catgories.
-  $categorie = find_by_id('categories',(int)$_GET['id']);
+  $categorie = find_by_id_cat('categories',(int)$_GET['id']);
   if(!$categorie){
     $session->msg("d","Missing categorie id.");
     redirect('categorie.php');
@@ -15,12 +15,33 @@
 
 <?php
 if(isset($_POST['edit_cat'])){
+	$id_cat = $_POST['id-categorie'];
+	$nm_cat = $_POST['categorie-name'];
   $req_field = array('categorie-name');
   validate_fields($req_field);
   $cat_name = remove_junk($db->escape($_POST['categorie-name']));
   if(empty($errors)){
-        $sql = "UPDATE categories SET name='{$cat_name}'";
-       $sql .= " WHERE id='{$categorie['id']}'";
+     $sql = "UPDATE categories SET nm_categories= '$nm_cat'";
+     $sql .= " WHERE id_categories= $id_cat";
+     $result = $db->query($sql);
+     if($result && $db->affected_rows() === 1) {
+       $session->msg("s", "Successfully updated Categorie");
+       redirect('categorie.php',false);
+     } else {
+       $session->msg("d", "Sorry! Failed to Update");
+       redirect('categorie.php',false);
+     }
+  } else {
+    $session->msg("d", $errors);
+    redirect('categorie.php',false);
+  }
+}if(isset($_POST['edit_cat'])){
+  $req_field = array('categorie-name');
+  validate_fields($req_field);
+  $cat_name = remove_junk($db->escape($_POST['categorie-name']));
+  if(empty($errors)){
+        $sql = "UPDATE categories SET nm_categories='{$cat_name}'";
+       $sql .= " WHERE id_categories='{$categorie['id']}'";
      $result = $db->query($sql);
      if($result && $db->affected_rows() === 1) {
        $session->msg("s", "Successfully updated Categorie");
@@ -46,15 +67,18 @@ if(isset($_POST['edit_cat'])){
        <div class="panel-heading">
          <strong>
            <span class="glyphicon glyphicon-th"></span>
-           <span>Editing <?php echo remove_junk(ucfirst($categorie['name']));?></span>
+           <span>Editing <?php echo remove_junk(ucfirst($categorie['nm_categories']));?></span>
         </strong>
        </div>
        <div class="panel-body">
-         <form method="post" action="edit_categorie.php?id=<?php echo (int)$categorie['id'];?>">
+         <form method="post" action="edit_categorie.php?id=<?php echo (int)$categorie['id_categories'];?>">
+
            <div class="form-group">
-               <input type="text" class="form-control" name="categorie-name" value="<?php echo remove_junk(ucfirst($categorie['name']));?>">
+				 <input type="hidden" class="form-control" name="id-categorie" value="<?php  echo remove_junk(ucfirst($categorie['id_categories']));?>">
+			<br>
+				 <input type="text" class="form-control" name="categorie-name" value="<?php echo remove_junk(ucfirst($categorie['nm_categories']));?>">
            </div>
-           <button type="submit" name="edit_cat" class="btn btn-primary">Update categorie</button>
+           <button type="submit" name="edit_cat" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;&nbsp;Update categorie</button>
        </form>
        </div>
      </div>

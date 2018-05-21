@@ -4,13 +4,8 @@ error_reporting(0);
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
    page_require_level(2);
-   if (isset($_GET['id'])) {
-    $products = join_product_table1();
-   } else {
-    $products = join_product_table();
-   }
+	$all_item = find_all_item('item')
   
-  $all_warehouse = find_all1('warehouse');
 ?>
 <?php include_once('layouts/header.php'); ?>
   <div class="row">
@@ -27,13 +22,13 @@ error_reporting(0);
 		 <div class="panel-heading clearfix">
      <form method="get" action="product.php">
          <div class="row">
-            <div class="col-md-6">
+           <div class="col-md-6">
               <select class="form-control" name="id">
               <option value=""> Select Location Warehouse</option>
-                <?php  foreach ($all_warehouse as $ware): ?>
-                  <option value="<?php echo (int)$ware['id']; ?>" <?php if($_GET['id'] === $ware['id']): echo "selected"; endif; ?> >
-                    <?php echo remove_junk($ware['name_warehouse']); ?></option>
-                <?php endforeach; ?>
+                <?php  //foreach ($all_warehouse as $ware): ?>
+                  <option value="<?php //echo (int)$ware['id']; ?>" <?php //if($_GET['id'] === $ware['id']): echo "selected"; endif; ?> >
+                    <?php //echo remove_junk($ware['name_warehouse']); ?></option>
+                <?php //endforeach; ?>
             </select>
             </div>
             <div class="col-md-6">
@@ -47,33 +42,33 @@ error_reporting(0);
             <thead>
               <tr>
                 <th class="text-center" style="width: 30px;">#</th>
-                <th class="text-center" style="width: 10%;"> Location Warehouse</th>
-                <th class="text-center" style="width: 10%;"> Product Title </th>
-                <th class="text-center" style="width: 10%;"> Categorie </th>
-                <th class="text-center" style="width: 10%;"> Instock </th>
-                <th class="text-center" style="width: 10%;"> Buying Price </th>
-                <th class="text-center" style="width: 10%;"> Saleing Price </th>
-                <th class="text-center" style="width: 10%;"> Product Added </th>
+                <th class="text-center" style="width: 10%;"> ID Product</th>
+                <th class="text-center" style="width: 10%;"> Name Product</th>
+                <th class="text-center" style="width: 10%;"> Color Product </th>
+                <th class="text-center" style="width: 10%;"> Stock </th>
+				<th class="text-center" style="width: 10%;"> Package </th>
+                <th class="text-center" style="width: 10%;"> Categori </th>
+                <th class="text-center" style="width: 10%;"> Warehouse </th>
                 <th class="text-center" style="width: 30px;"> Actions </th>
               </tr>
             </thead>
             <tbody>
-              <?php foreach ($products as $product):?>
+              <?php foreach ($all_item as $items):?>
               <tr>
                 <td class="text-center"><?php echo count_id();?></td>
-				        <td class="text-center"> <?php echo remove_junk($product['name_warehouse']); ?></td>
-                <td> <?php echo remove_junk($product['name']); ?></td>
-                <td class="text-center"> <?php echo remove_junk($product['nama_kategori']); ?></td>
-                <td class="text-center"> <?php echo remove_junk($product['quantity']); ?></td>
-                <td class="text-center"> <?php echo remove_junk($product['buy_price']); ?></td>
-                <td class="text-center"> <?php echo remove_junk($product['sale_price']); ?></td>
-                <td class="text-center"> <?php echo read_date($product['date']); ?></td>
+                <td class="text-center"> <?php echo remove_junk($items['id_item']); ?></td>
+                <td class="text-center"> <?php echo remove_junk($items['nm_item']); ?></td>
+                <td class="text-center"> <?php echo remove_junk($items['colour']); ?></td>
+                <td class="text-center"> <?php echo remove_junk($items['stock']); ?></td>
+				<td class="text-center"> <?php echo remove_junk($items['id_package']); ?></td>
+				<td class="text-center"> <?php echo remove_junk($items['id_subcategories']); ?></td>
+				<td class="text-center"> <?php echo remove_junk($items['id_location']); ?></td>
                 <td class="text-center">
                   <div class="btn-group">
-                    <a href="edit_product.php?id=<?php echo (int)$product['id'];?>" class="btn btn-info btn-xs"  title="Edit" data-toggle="tooltip">
-                      <span class="glyphicon glyphicon-plus"></span>
+                    <a href="edit_product.php?id=<?php echo (int)$items['id_item'];?>" class="btn btn-info btn-xs"  title="Edit" data-toggle="tooltip">
+                      <span class="glyphicon glyphicon-edit"></span>
                     </a>
-                    <a href="delete_product.php?id=<?php echo (int)$product['id'];?>" class="btn btn-danger btn-xs"  title="Delete" data-toggle="tooltip" onclick="javascript: return confirm('Anda yakin hapus ?')">
+                    <a href="delete_product.php?id=<?php echo (int)$items['id_item'];?>" class="btn btn-danger btn-xs"  title="Delete" data-toggle="tooltip" onclick="javascript: return confirm('Anda yakin hapus ?')">
                       <span class="glyphicon glyphicon-trash"></span>
                     </a>
                   </div>
