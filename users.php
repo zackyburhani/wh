@@ -9,7 +9,6 @@
  $all_users = find_all_employee();
 ?>
 
-
 <!-- ADD NEW USER -->
 <?php
   if(isset($_POST['add_user'])){

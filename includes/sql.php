@@ -104,6 +104,15 @@ function find_all_employee(){
       return $result;
   }
 
+  //validation connected foreign key (zacky)
+  function find_all_id($table,$field,$row){
+      global $db;
+      $results = array();
+      $sql = "SELECT {$db->escape($row)} FROM {$db->escape($table)} WHERE {$db->escape($row)} = '{$db->escape($field)}'";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
 /*--------------------------------------------------------------*/
 /* Function for Perform queries
 /*--------------------------------------------------------------*/
@@ -356,6 +365,15 @@ function tableExists($table){
   {
     global $db;
     $sql = "SELECT nm_position FROM position WHERE nm_position = '{$db->escape($val)}' LIMIT 1 ";
+    $result = $db->query($sql);
+    return($db->num_rows($result) === 0 ? true : false);
+  }
+
+  //find categoryName (zacky)
+  function find_by_categoryName($val)
+  {
+    global $db;
+    $sql = "SELECT nm_categories FROM categories WHERE nm_categories = '{$db->escape($val)}' LIMIT 1 ";
     $result = $db->query($sql);
     return($db->num_rows($result) === 0 ? true : false);
   }

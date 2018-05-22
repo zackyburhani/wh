@@ -16,7 +16,7 @@
    </ul>
   </li>
   <li>
-    <a href="categorie.php" >
+    <a href="categories.php" >
       <i class="glyphicon glyphicon-indent-left"></i>
       <span>Categories</span>
     </a>

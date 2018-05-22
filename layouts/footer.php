@@ -23,6 +23,7 @@
       $('#CategoriesTable').DataTable();
       $('#tablePosition').DataTable();
       $('#tableUser').DataTable();
+      $('#SubcategoriesTable').DataTable();
   	});
  </script>
 
