@@ -66,6 +66,16 @@ function find_all1($table) {
    }
 }
 
+// function find_allSubcategories() {
+//    global $db;
+//    if(tableExists($table))
+//    {
+//      return find_by_sql("SELECT * FROM categories Inner join sub_categories on categories.id_categories = sub_categories.id_categories");
+//    }
+// }
+
+
+
 function find_warehouse($table) {
    global $db;
    if(tableExists($table))

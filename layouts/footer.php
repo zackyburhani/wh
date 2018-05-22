@@ -11,6 +11,9 @@
   <script src="libs/datatables/dataTables.bootstrap.js"></script>
   <!-- END DATATABLES -->
 
+  <!-- CHAINED DROPDOWN -->
+  <script src="libs/js/jquery.chained.min.js"></script>
+  <!-- END CHAINED DROPDOWS -->
 
   </body>
 </html>
@@ -33,5 +36,4 @@
  		$(".alert-danger").fadeTo(900, 0).slideUp(900, function(){ $(this).remove(); }); 
  	}, 3000); 
  </script>
-
 

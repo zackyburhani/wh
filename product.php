@@ -4,7 +4,7 @@ error_reporting(0);
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
    page_require_level(2);
-	$all_item = find_all_item('item')
+	$all_item = find_all_item();
   
 ?>
 <?php include_once('layouts/header.php'); ?>
@@ -47,7 +47,7 @@ error_reporting(0);
                 <th class="text-center" style="width: 10%;"> Color Product </th>
                 <th class="text-center" style="width: 10%;"> Stock </th>
 				        <th class="text-center" style="width: 10%;"> Package </th>
-                <th class="text-center" style="width: 10%;"> Categori </th>
+                <th class="text-center" style="width: 10%;"> Category </th>
                 <th class="text-center" style="width: 10%;"> Warehouse </th>
                 <th class="text-center" style="width: 30px;"> Actions </th>
               </tr>
@@ -61,7 +61,7 @@ error_reporting(0);
                 <td class="text-center"> <?php echo remove_junk($items['colour']); ?></td>
                 <td class="text-center"> <?php echo remove_junk($items['stock']); ?></td>
         				<td class="text-center"> <?php echo remove_junk($items['id_package']); ?></td>
-        				<td class="text-center"> <?php echo remove_junk($items['id_subcategories']); ?></td>
+        				<td class="text-center"> <?php echo remove_junk($items['nm_subcategories']); ?></td>
         				<td class="text-center"> <?php echo remove_junk($items['id_location']); ?></td>
                 <td class="text-center">
                   <div class="btn-group">
