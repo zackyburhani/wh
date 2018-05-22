@@ -66,13 +66,19 @@ function find_all1($table) {
    }
 }
 
-// function find_allSubcategories() {
-//    global $db;
-//    if(tableExists($table))
-//    {
-//      return find_by_sql("SELECT * FROM categories Inner join sub_categories on categories.id_categories = sub_categories.id_categories");
-//    }
-// }
+//find field with order (zacky)
+function find_all_order($table,$order) {
+   global $db;
+   if(tableExists($table))
+   {
+     return find_by_sql("SELECT * FROM ".$db->escape($table)." ORDER BY ".$db->escape($order));
+   }
+}
+
+function find_allSubcategories() {
+   global $db;
+   return find_by_sql("SELECT * FROM categories INNER JOIN sub_categories ON sub_categories.id_categories = categories.id_categories ORDER BY nm_categories");
+}
 
 
 

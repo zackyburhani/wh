@@ -3,9 +3,9 @@
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
   page_require_level(2);
-   $all_subcategories  = find_all1('sub_categories');
-   $all_categories  = find_all1('categories');
-   // $join_subcategories  = find_allSubcategories();
+   $all_subcategories  = find_all_order('sub_categories','nm_subcategories');
+   $all_categories  = find_all_order('categories','nm_categories');
+   $join_subcategories  = find_allSubcategories();
  
 ?>
 <?php
@@ -59,7 +59,7 @@
           <strong>
             <span class="glyphicon glyphicon-th"></span>
             <span>Add New Product</span>
-         </strong>
+         </strong> 
         </div>
         <div class="panel-body">
           <div class="col-md-14">
@@ -77,25 +77,27 @@
                       </select>
                     </div>
                     <div class="col-md-3">
-                     <form method="post" action="add_product.php" class="clearfix">
-                      <select class="form-control" id="sub_category" name="id_subcategories">
-                        <?php if($all_subcategories == null) { ?>
+                      <form method="post" action="add_product.php" class="clearfix">
+                        <select class="form-control" id="sub_category" name="id_subcategories">
                           <option value="">-</option>
+                            <?php if($join_subcategories== null) { ?>
+                              <option value="">-</option>
                             <?php } else { ?>
-                              <?php foreach($all_subcategories as $row2){ ?>
-                                <option value="<?php echo remove_junk($row2['id_subcategories']); ?>"><?php echo remove_junk(ucwords($row2['nm_subcategories'])); ?></option>
-                              <?php } ?>  
-                            <?php } ?>
+                              <?php foreach($join_subcategories as $row2){ ?>
+                                <option class="<?php echo $row2['id_categories']; ?>" value="<?php echo remove_junk($row2['id_subcategories']); ?>"><?php echo remove_junk(ucwords($row2['nm_subcategories'])); ?>
+                                </option>
+                              <?php } ?>
+                            <?php } ?>  
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                      <select class="form-control" name="package-categorie">
+                        <option value="">Select Package Product</option>
+                        <option value="1">A</option>
+                        <option value="2">B</option>
+                        <option value="3">C</option>
                       </select>
                     </div>
-                  <div class="col-md-3">
-                    <select class="form-control" name="package-categorie">
-                      <option value="">Select Package Product</option>
-                      <option value="1">A</option>
-                      <option value="2">B</option>
-                      <option value="3">C</option>
-                    </select>
-                  </div>
                     <div class="col-md-3">
                       <select class="form-control" name="product-warehouse">
                         <option value="">Select Location Warehouse</option>
@@ -181,7 +183,7 @@
     </div>
   </div>
 
-
+<!-- SEMENTARA DIKOMEN KARENA DILAPTOP ZACKY KODINGAN INI GA BISA -->
 <!-- <script>
   function hanyaAngka(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode
@@ -202,5 +204,11 @@
 		window.open(input,"RataRata","width=800,height=200");
 	}
 </script> -->
+
+<script src="jquery-1.10.2.min.js"></script>
+<script src="jquery.chained.min.js"></script>
+<script>
+  $("#sub_category").chained("#category");
+</script>
 
 <?php include_once('layouts/footer.php'); ?>

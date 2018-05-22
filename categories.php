@@ -167,6 +167,16 @@
   if(isset($_POST['delete_Subcategories'])){
     $id_subcategories = remove_junk($db->escape($_POST['id_subcategories']));
     
+    //validation connected foreign key
+    $item = find_all_id('item',$id_subcategories,'id_subcategories');
+    foreach ($item as $data) {
+      $id_subcategories2 = $data['id_subcategories'];  
+    }
+    if($id_subcategories == $id_subcategories2){
+      $session->msg("d","The Subcategory Connected To Other Item.");
+      redirect('categories.php');
+    }
+
     //delete function
     $delete_id   = delete('id_subcategories','sub_categories',$id_subcategories);
     if($delete_id){
