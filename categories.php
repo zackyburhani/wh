@@ -6,6 +6,7 @@
   //get all categories
   $all_categories    = find_all1('categories');
   $all_subcategories = find_all1('sub_categories');
+  $join_categories   = find_allSubcategories();
 ?>
 
 <!-- ADD NEW CATEGORY -->
@@ -330,9 +331,9 @@
                       <?php foreach ($all_subcategories as $subcat):?>
                         <tr>
                           <td class="text-center"><?php echo $no++; ?></td>
-                          <td><?php echo remove_junk(ucfirst($subcat['nm_subcategories'])); ?></td>
+                          <td><a href="#detailSubcategory<?php echo $subcat['id_subcategories'];?>" data-toggle="modal" title="Detail"><?php echo remove_junk(ucfirst($subcat['nm_subcategories'])); ?></a></td>
                           <td class="text-center">
-                            <button data-target="#updateSubategory<?php echo $subcat['id_subcategories'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit"><i class="glyphicon glyphicon-edit"></i>
+                            <button data-target="#updateSubcategory<?php echo $subcat['id_subcategories'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit"><i class="glyphicon glyphicon-edit"></i>
                             </button>
                             <button data-target="#deleteCategory<?php echo $subcat['id_subcategories'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Edit"><i class="glyphicon glyphicon-trash"></i>
                             </button>
@@ -412,7 +413,7 @@
 
 <!-- Update Entry Data SubCategories -->
 <?php foreach($all_subcategories as $a_subcategory): ?>
-<div class="modal fade" id="updateSubategory<?php echo $a_subcategory['id_subcategories'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="updateSubcategory<?php echo $a_subcategory['id_subcategories'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -484,6 +485,36 @@
 <?php endforeach;?>
 <!-- DELETE MODAL SUBCATEGORY -->
 
+<!-- DETAIL MODAL SUBCATEGORR -->
+<?php foreach($join_categories as $a_subcategory): ?>
+  <div class="modal fade" id="detailSubcategory<?php echo $a_subcategory['id_subcategories'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-th"></span> Detail Category</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-hover" border="0">
+              <tbody>
+                <tr>
+                  <td width="90px">Category</td>
+                  <td width="20px">:</td>
+                  <td><b><?php echo $a_subcategory['nm_categories'];?></b></td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<?php endforeach;?>
+<!-- DETAIL MODAL SUBCATEGORY -->
 
 <!-- <script>
 	function hanyaAngka(evt) {
