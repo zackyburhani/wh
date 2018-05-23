@@ -154,10 +154,10 @@ function find_by_id($table,$id)
             return null;
      }
 }
+
 function find_by_id_pro($table,$id)
 {
   global $db;
-  $id = (int)$id;
     if(tableExists($table)){
           $sql = $db->query("SELECT * FROM {$db->escape($table)} WHERE id_item='{$db->escape($id)}' LIMIT 1");
           if($result = $db->fetch_assoc($sql))
@@ -166,6 +166,7 @@ function find_by_id_pro($table,$id)
             return null;
      }
 }
+
 function find_by_id_cat($table,$id_categories)
 {
   global $db;
@@ -356,7 +357,7 @@ function tableExists($table){
   function find_all_item(){
       global $db;
       $results = array();
-      $sql = "SELECT * FROM item,sub_categories where item.id_subcategories = sub_categories.id_subcategories";
+      $sql = "SELECT * FROM item,sub_categories";
       $result = find_by_sql($sql);
       return $result;
   }

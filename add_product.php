@@ -19,7 +19,7 @@
       $p_color    = remove_junk($db->escape($_POST['color_item']));
       $p_widht    = remove_junk($db->escape($_POST['widht_item']));
       $p_height   = remove_junk($db->escape($_POST['height_item']));
-      $p_lenght   = remove_junk($db->escape($_POST['lenght_item']));
+      $p_length   = remove_junk($db->escape($_POST['length_item']));
       $p_weight   = remove_junk($db->escape($_POST['weight_item']));
       $p_stock    = remove_junk($db->escape($_POST['stock_item']));
       $p_package  = remove_junk($db->escape($_POST['package-categorie']));
@@ -27,9 +27,9 @@
       $p_location = remove_junk($db->escape($_POST['product-warehouse']));
   	
       $query  = "INSERT INTO item (";
-      $query .=" id_item,nm_item,colour,width,height,lenght,weight,stock,id_package,id_subcategories,id_location";
+      $query .=" id_item,nm_item,colour,width,height,length,weight,stock,id_package,id_subcategories,id_location";
       $query .=") VALUES (";
-      $query .=" '{$p_id}', '{$p_name}', '{$p_color}', '{$p_widht}', '{$p_height}', '{$p_lenght}', '{$p_weight}', '{$p_stock}', '{$p_package}', '{$p_categori}', '{$p_location}'";
+      $query .=" '{$p_id}', '{$p_name}', '{$p_color}', '{$p_widht}', '{$p_height}', '{$p_length}', '{$p_weight}', '{$p_stock}', '{$p_package}', '{$p_categori}', '{$p_location}'";
       $query .=")";
       if($db->query($query)){
         $session->msg('s',"Product added ");
@@ -66,7 +66,7 @@
               <div class="form-group">
                 <div class="row">
                   <div class="col-md-3">
-                      <select class="form-control" id="category" name="id_categories">
+                    <select class="form-control" id="category" name="id_categories">
                       <?php if($all_categories == null) { ?>
                         <option value="">-</option>
                           <?php } else { ?>
@@ -153,7 +153,7 @@
                       <span class="input-group-addon">
                          <i class="glyphicon glyphicon-tasks"></i>
                      </span>
-                     <input type="text" class="form-control" name="lenght_item" onkeypress="return hanyaAngka(event)" placeholder="Lenght Product">
+                     <input type="text" class="form-control" name="length_item" onkeypress="return hanyaAngka(event)" placeholder="Length Product">
                    </div>
                   </div>
 				          <div class="col-md-3">
