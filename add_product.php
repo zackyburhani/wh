@@ -25,7 +25,7 @@
       $p_package  = remove_junk($db->escape($_POST['package-categorie']));
       $p_categori = remove_junk($db->escape($_POST['id_subcategories']));
       $p_location = remove_junk($db->escape($_POST['product-warehouse']));
-  	
+    
       $query  = "INSERT INTO item (";
       $query .=" id_item,nm_item,colour,width,height,length,weight,stock,id_package,id_subcategories,id_location";
       $query .=") VALUES (";
@@ -109,7 +109,7 @@
                 </div>
               </div>
 
-			         <div class="form-group">
+               <div class="form-group">
                  <div class="row">
                    <div class="col-md-6">
                      <div class="input-group">
@@ -129,7 +129,7 @@
                     </div>
                  </div>
                 </div>
-			  
+        
               <div class="form-group">
                 <div class="row">
                   <div class="col-md-3">
@@ -143,7 +143,7 @@
                   <div class="col-md-3">
                     <div class="input-group">
                       <span class="input-group-addon">
-						            <i class="glyphicon glyphicon-tasks"></i>
+                        <i class="glyphicon glyphicon-tasks"></i>
                       </span>
                      <input type="text" class="form-control" name="height_item" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
                     </div>
@@ -156,7 +156,7 @@
                      <input type="text" class="form-control" name="length_item" onkeypress="return hanyaAngka(event)" placeholder="Length Product">
                    </div>
                   </div>
-				          <div class="col-md-3">
+                  <div class="col-md-3">
                     <div class="input-group">
                       <span class="input-group-addon">
                          <i class="glyphicon glyphicon-tasks"></i>
@@ -166,7 +166,7 @@
                   </div>
                 </div>
               </div>
-			       
+             
               <div class="input-group">
                 <span class="input-group-addon">
                   <i class="glyphicon glyphicon-equalizer"></i>
@@ -189,20 +189,20 @@
     var charCode = (evt.which) ? evt.which : event.keyCode
     if (charCode > 31 && (charCode < 48 || charCode > 57))
       return false;
-		  return true;
-	}
-		
-	function hanyaHuruf(evt) {
-		var charCode = (evt.which) ? evt.which : event.keyCode
-		if (charCode > 31 && (charCode < 48 || charCode > 57))
-		  return true;
-		  return false;
-	}
+      return true;
+  }
+    
+  function hanyaHuruf(evt) {
+    var charCode = (evt.which) ? evt.which : event.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+      return true;
+      return false;
+  }
 </script>
 <script language="JavaScript">
-	function showDetails(input){
-		window.open(input,"RataRata","width=800,height=200");
-	}
+  function showDetails(input){
+    window.open(input,"RataRata","width=800,height=200");
+  }
 </script> -->
 
 <script src="jquery-1.10.2.min.js"></script>
