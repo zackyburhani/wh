@@ -357,7 +357,7 @@ function tableExists($table){
   function find_all_item(){
       global $db;
       $results = array();
-      $sql = "SELECT * FROM item,sub_categories";
+      $sql = "SELECT * FROM item,sub_categories WHERE item.id_subcategories = sub_categories.id_subcategories";
       $result = find_by_sql($sql);
       return $result;
   }

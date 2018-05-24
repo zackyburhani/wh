@@ -5,9 +5,54 @@ error_reporting(0);
   // Checkin What level user has permission to view this page
    page_require_level(2);
 	$all_item = find_all_item();
-  $all_categories = find_all1('categories');
+  // $all_categories = find_all1('categories');
   $join_subcategories  = find_allSubcategories();
+  $all_subcategories  = find_all_order('sub_categories','nm_subcategories');
+  $all_categories  = find_all_order('categories','nm_categories');
 ?> 
+
+
+<!-- ADD PRODUCT -->
+<?php
+  if(isset($_POST['add_Product'])){
+
+    $req_fields = array('nm_item','colour','stock','id_package','id_subcategories', 'id_location' );
+    validate_fields($req_fields);
+    if(empty($errors)){
+      $id_item          = autonumber('id_item','item');
+      $nm_item          = remove_junk($db->escape($_POST['nm_item']));
+      $colour           = remove_junk($db->escape($_POST['colour']));
+      $width            = remove_junk($db->escape($_POST['width']));
+      $height           = remove_junk($db->escape($_POST['height']));
+      $length           = remove_junk($db->escape($_POST['length']));
+      $weight           = remove_junk($db->escape($_POST['weight']));
+      $stock            = remove_junk($db->escape($_POST['stock']));     
+      $id_package       = remove_junk($db->escape($_POST['id_package']));
+      $id_subcategories = remove_junk($db->escape($_POST['id_subcategories']));
+      $id_location      = remove_junk($db->escape($_POST['id_location']));
+    
+      $query  = "INSERT INTO item (";
+      $query .=" id_item,nm_item,colour,width,height,length,weight,stock,id_package,id_subcategories,id_location";
+      $query .=") VALUES (";
+      $query .=" '{$id_item}', '{$nm_item}', '{$colour}', '{$width}', '{$height}', '{$length}', '{$weight}', '{$stock}', '{$id_package}', '{$id_subcategories}', '{$id_location}'";
+      $query .=")";
+
+      if($db->query($query)){
+        $session->msg('s',"Product added ");
+        redirect('product.php', false);
+      } else {
+        $session->msg('d',' Sorry failed to added!');
+        redirect('product.php', false);
+      }
+
+    } else{
+       $session->msg("d", $errors);
+       redirect('product.php',false);
+     }
+
+  }
+?>
+<!-- END ADD PRODUCT -->
 
 <!-- UPDATE PRODUCT -->
 <?php
@@ -96,7 +141,8 @@ error_reporting(0);
           </div>
         </form>
          <div class="pull-right">
-           <a href="add_product.php" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;&nbsp;Add New</a>
+           <button data-target="#add_product" class="btn btn-md btn-info" data-toggle="modal" title="Remove"><i class="glyphicon glyphicon-plus"></i> Add New
+            </button>
          </div>
         </div>
         
@@ -141,6 +187,156 @@ error_reporting(0);
     </div>
   </div>
 </table>
+
+
+<!-- ADD NEW PRODUCT -->
+<div class="modal fade" id="add_product" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-th"></span>  Add New Product</h4>
+        
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <div class="row">
+            <div class="col-md-3">
+              <label for="name" class="control-label">Category</label>
+                 <select class="form-control" id="category" name="id_categories">
+                    <?php if($all_categories == null) { ?>
+                      <option value="">-</option>
+                        <?php } else { ?>
+                          <?php foreach($all_categories as $row){ ?>
+                            <option value="<?php echo remove_junk($row['id_categories']); ?>"><?php echo remove_junk(ucwords($row['nm_categories'])); ?></option>
+                          <?php } ?>  
+                        <?php } ?>
+                   </select>
+                </div>
+                <div class="col-md-3">
+                  <label for="name" class="control-label">Subcategory</label>
+                  <form method="post" action="product.php" class="clearfix">
+                    <input type="hidden" name="id_item" value="<?php echo remove_junk($item['id_item']);?>">
+                    <select class="form-control" id="sub_category" name="id_subcategories">
+                        <?php if($join_subcategories== null) { ?>
+                          <option value="">-</option>
+                            <?php } else { ?>
+                              <?php foreach($join_subcategories as $row2){ ?>
+                                <option class="<?php echo $row2['id_categories']; ?>" value="<?php echo remove_junk($row2['id_subcategories']); ?>"><?php echo remove_junk(ucwords($row2['nm_subcategories'])); ?>
+                                </option>
+                              <?php } ?>
+                            <?php } ?>  
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                      <label for="name" class="control-label">Package</label>
+                      <select class="form-control" name="id_package">
+                        <option value="">Select Package Product</option>
+                        <option value="1">A</option>
+                        <option value="2">B</option>
+                        <option value="3">C</option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <label for="name" class="control-label">Location Warehouse</label>
+                      <select class="form-control" name="id_location">
+                        <option value="">Select Location Warehouse</option>
+                        <option value="2">A</option>
+                        <option value="3">B</option>
+                        <option value="4">C</option>
+                      </select>
+                    </div>
+                </div>
+              </div>
+
+              <hr>
+
+              <div class="form-group">
+                 <div class="row">
+                   <div class="col-md-6">
+                    <label for="name" class="control-label">Name Product</label>
+                     <div class="input-group">
+                       <span class="input-group-addon">
+                          <i class="glyphicon glyphicon-paperclip"></i>
+                        </span>
+                        <input type="text" class="form-control" name="nm_item" onkeypress="return hanyaHuruf(event)" placeholder="Name Product">
+                    </div>
+                   </div>
+                    <div class="col-md-6">
+                      <label for="name" class="control-label">Colour</label>
+                      <div class="input-group">
+                        <span class="input-group-addon">
+                           <i class="glyphicon glyphicon-equalizer"></i>
+                        </span>
+                        <input type="text" class="form-control" name="colour"  onkeypress="return hanyaHuruf(event)" placeholder="Color Product"><br>
+                     </div>
+                    </div>
+                 </div>
+                </div>
+        
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-md-3">
+                    <label for="name" class="control-label">Width</label>
+                    <div class="input-group">
+                      <span class="input-group-addon">
+                        <i class="glyphicon glyphicon-tasks"></i>
+                      </span>
+                      <input type="text" class="form-control" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <label for="name" class="control-label">Height</label>
+                    <div class="input-group">
+                      <span class="input-group-addon">
+                        <i class="glyphicon glyphicon-tasks"></i>
+                      </span>
+                     <input type="text" class="form-control" name="height" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <label for="name" class="control-label">Length</label>
+                    <div class="input-group">
+                      <span class="input-group-addon">
+                         <i class="glyphicon glyphicon-tasks"></i>
+                     </span>
+                     <input type="text" class="form-control" name="length" onkeypress="return hanyaAngka(event)" placeholder="Length Product">
+                   </div>
+                  </div>
+                  <div class="col-md-3">
+                    <label for="name" class="control-label">Weight</label>
+                    <div class="input-group">
+                      <span class="input-group-addon">
+                         <i class="glyphicon glyphicon-tasks"></i>
+                     </span>
+                     <input type="text" class="form-control" name="weight" onkeypress="return hanyaAngka(event)" placeholder="Weight Product">
+                   </div>
+                  </div>
+                </div>
+              </div>
+
+              <hr>
+
+             <label for="name" class="control-label">Stock</label>
+              <div class="input-group">
+                <span class="input-group-addon">
+                  <i class="glyphicon glyphicon-equalizer"></i>
+                </span>
+                <input type="text" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
+              </div>
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+            <button type="submit" name="add_Product" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span>  Save</button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+<!-- END ADD NEW PRODUCT -->
 
 <!-- Update Data Product -->
 <?php foreach($all_item as $item) { ?>
