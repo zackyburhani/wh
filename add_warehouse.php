@@ -6,11 +6,13 @@
   
   $all_categories = find_all1('warehouse')
 ?>
+
+<!-- INSERT WAREHOUSE -->
 <?php
  if(isset($_POST['add_warehouse'])){
-   $req_field = array('warehouse-name');
+   $req_field = array('warehousename');
    validate_fields($req_field);
-   $cat_name = remove_junk($db->escape($_POST['warehouse-name']));
+   $cat_name = remove_junk($db->escape($_POST['warehousename']));
    $country = remove_junk($db->escape($_POST['country']));
    $address = remove_junk($db->escape($_POST['address']));
    $status = remove_junk($db->escape($_POST['status']));
@@ -41,152 +43,259 @@
    }
  }
 ?>
+<!-- END INSERT WAREHOUSE -->
+
+<!-- UPDATE WAREHOUSE -->
+<?php
+if(isset($_POST['update_warehouse'])){
+  $req_field = array('warehousename','country','address','status','heavymax','consumed','idwarehouse');
+  validate_fields($req_field);
+  $cat_name = remove_junk($db->escape($_POST['warehousename']));
+  $country = remove_junk($db->escape($_POST['country']));
+  $address = remove_junk($db->escape($_POST['address']));
+  $status = remove_junk($db->escape($_POST['status']));
+  $heavymax = remove_junk($db->escape($_POST['heavymax']));
+  $consumed = remove_junk($db->escape($_POST['consumed']));
+  $idwarehouse = remove_junk($db->escape($_POST['idwarehouse']));
+  if(empty($errors)){
+        $sql = "UPDATE warehouse SET nm_warehouse='{$cat_name}',country='{$country}',address='{$address}',status='{$status}',heavy_max='{$heavymax}',heavy_consumed='{$consumed}'";
+       $sql .= " WHERE id_warehouse='{$idwarehouse}'";
+     $result = $db->query($sql);
+     if($result && $db->affected_rows() === 1) {
+       $session->msg("s", "Successfully updated Warehouse");
+       redirect('add_warehouse.php',false);
+     } else {
+       $session->msg("d", "Sorry! Failed to Update");
+       redirect('add_warehouse.php',false);
+     }
+  } else {
+    $session->msg("d", $errors);
+    redirect('add_warehouse.php',false);
+  }
+}
+?>
+<!-- END UPDATE WAREHOUSE -->
+
+<!-- DELETE WAREHOUSE -->
+<?php
+  if(isset($_POST['delete_warehouse'])){
+  $req_field = array('idwarehouse');
+  validate_fields($req_field);
+  $idwarehouse = remove_junk($db->escape($_POST['idwarehouse']));
+  if(empty($errors)){
+        $sql = "DELETE FROM warehouse WHERE id_warehouse='{$idwarehouse}'";
+     $result = $db->query($sql);
+     if($result && $db->affected_rows() === 1) {
+       $session->msg("s", "Successfully delete Warehouse");
+       redirect('add_warehouse.php',false);
+     } else {
+       $session->msg("d", "Sorry! Failed to Delete");
+       redirect('add_warehouse.php',false);
+     }
+  } else {
+    $session->msg("d", $errors);
+    redirect('add_warehouse.php',false);
+  }
+}
+?>
+<!-- END DELETE WAREHOUSE -->
+
 <?php include_once('layouts/header.php'); ?>
-<!-- MESSAGE -->
+<div class="row">
+   <div class="col-md-12">
+     <?php echo display_msg($msg); ?>
+   </div>
+</div>
 <div class="row">
   <div class="col-md-12">
-    <?php echo display_msg($msg); ?>
+    <div class="panel panel-default">
+    <div class="panel-heading clearfix">
+      <strong>
+        <span class="glyphicon glyphicon-th"></span>
+        <span>WAREHOUSE</span>
+     </strong>
+       <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#addWarehouse"><span class="glyphicon glyphicon-plus"></span> Add New Warehouse
+        </button>
+    </div>
+     <div class="panel-body">
+      <table class="table table-bordered" id="">
+        <thead>
+          <tr>
+            <th class="text-center" style="width: 50px;">No</th>
+            <th class="text-center" style="width: 50px;">Warehouse</th>
+            <th class="text-center" style="width: 50px;">Country</th>
+            <th class="text-center" style="width: 50px;">Address</th>
+            <th class="text-center" style="width: 50px;">Status</th>
+            <th class="text-center" style="width: 50px;">Heavy Max</th>
+            <th class="text-center" style="width: 50px;">Area Consumed</th>
+            <th class="text-center" style="width: 100px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        <?php foreach($all_categories as $a_warehouse): ?>
+          <tr>
+           <td class="text-center"><?php echo count_id();?></td>
+           <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['nm_warehouse']))?></td>
+           <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['country']))?></td>
+           <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['address']))?></td>
+           <td class="text-center">
+            <?php if($a_warehouse['status'] === '1'): ?>
+            <span class="label label-success"><?php echo "Produce"; ?></span>
+            <?php else: ?>
+            <span class="label label-danger"><?php echo "Not Produce"; ?></span>
+            <?php endif;?>
+           </td>
+           <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['heavy_max']))?></td>
+           <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['heavy_consumed']))?></td>
+           <td class="text-center">
+                <button data-target="#updateWarehouse<?php echo (int)$a_warehouse['id_warehouse'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
+                  <i class="glyphicon glyphicon-pencil"></i>
+                </button>
+                <button type="button" class="btn btn-danger btn-md" data-toggle="modal" data-target="#deleteWarehouse<?php echo (int)$a_warehouse['id_warehouse'];?>" title="Delete"><i class="glyphicon glyphicon-trash"></i>
+                </button>
+
+           </td>
+          </tr>
+        <?php endforeach;?>
+       </tbody>
+     </table>
+     </div>
+    </div>
   </div>
 </div>
-<!-- END MESSAGE -->
 
-<div class="row">
-    <!-- NEW DATA WAREHOUSE -->
-    <div class="col-md-6">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <strong>
-            <span class="glyphicon glyphicon-th"></span>
-            <span>Add New Warehouse</span>
-         </strong>
-        </div>
-        <div class="panel-body">
-          <form method="post" action="add_warehouse.php">
-            <div class="form-group">
-                <label for="warehouse-name">Warehouse Name</label>
-                <input type="text" class="form-control" name="warehouse-name" placeholder="Warehouse Name">
-            </div>
-<<<<<<< HEAD
-            <div class="form-group">
-                <label for="country">Country</label>
-                <input type="text" class="form-control" name="country" placeholder="Country of Origin">
-            </div>
-            <div class="form-group">
-                <label for="email">Address</label>
-                <textarea type="text" class="form-control" name="address" placeholder="Address"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="status">Status</label>
-                <select class="form-control" name="status">
-                  <option>Production</option>
-                  <option>Not Production</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="heavymax">Heavy Max</label>
-                <input type="number" class="form-control" name="heavymax" placeholder="Heavy Max">
-            </div>
-            <div class="form-group">
-                <label for="consumed">Consumed</label>
-                <input type="number" class="form-control" name="consumed" placeholder="Consumed">
-            </div>
-            <button type="submit" name="add_warehouse" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;&nbsp;Add Warehouse</button>
-        </form>
-        </div>
-      </div>
-    </div>
-    <!-- END NEW DATA WAREHOUSE -->
-
-    <!-- ALL DATA WAREHOUSE -->
-    <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <strong>
-            <span class="glyphicon glyphicon-th"></span>
-            <span>All Warehouse</span>
-          </strong>
-        </div><!-- PANEL HEADING -->
-        <div class="panel-body">
-          <table class="table table-bordered table-striped table-hover">
-            <thead>
-                <tr>
-                    <th class="text-center" style="width: 50px;">No</th>
-                    <th class="text-center" style="width: 100px;">Warehouse</th>
-                    <th class="text-center" style="width: 100px;">Country</th>
-                    <th class="text-center" style="width: 100px;">Address</th>
-                    <th class="text-center" style="width: 50px;">Status</th>
-                    <th class="text-center" style="width: 50px;">Heavy Max</th>
-                    <th class="text-center" style="width: 50px;">Consumed</th>
-                    <th class="text-center" style="width: 100px;">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-              <?php foreach ($all_categories as $cat):?>
-                <tr>
-                    <td class="text-center"><?php echo count_id();?></td>
-                    <td class="text-center"><a href="warehouse.php?id=<?php echo (int)$cat['id'];?>"><?php echo remove_junk(ucfirst($cat['nm_warehouse'])); ?></a></td>
-                    <td class="text-center"><a href="warehouse.php?id=<?php echo (int)$cat['id'];?>"><?php echo remove_junk(ucfirst($cat['country'])); ?></a></td>
-                    <td class="text-center"><a href="warehouse.php?id=<?php echo (int)$cat['id'];?>"><?php echo remove_junk(ucfirst($cat['address'])); ?></a></td>
-                    <td class="text-center"><a href="warehouse.php?id=<?php echo (int)$cat['id'];?>"><?php echo remove_junk(ucfirst($cat['status'])); ?></a></td>
-                    <td class="text-center"><a href="warehouse.php?id=<?php echo (int)$cat['id'];?>"><?php echo remove_junk(ucfirst($cat['heavy_max'])); ?></a></td>
-                    <td class="text-center"><a href="warehouse.php?id=<?php echo (int)$cat['id'];?>"><?php echo remove_junk(ucfirst($cat['heavy_consumed'])); ?></a></td>
-                    <td class="text-center">
-                      
-                    <button class="btn btn-md btn-warning" data-toggle="modal" href="#" data-target="#myModal"><span class="glyphicon glyphicon-wrench"></span></button>
-                        
-                    <button class="btn btn-md btn-danger" data-toggle="modal" href="#" data-target="#myModal"><span class="glyphicon glyphicon-trash"></span></button> 
-                    </td>
-                </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
-       </div><!-- PANEL BODY -->
-    </div><!-- PANEL DEFAULT -->
-  </div><!-- END ALL DATA WAREHOUSE -->
-</div><!-- END ROW -->
-
-<!-- MODAL BEGINNING -->   
-<div id="myModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-    <!-- MODAL CONTENT-->
+<!-- MODAL ADD NEW WAREHOUSE -->
+<div class="modal fade" id="addWarehouse" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Edit Warehouse</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="exampleModalLabel">Entry New Warehouse</h4>
       </div>
       <div class="modal-body">
-        <form method="post" action="edit_warehouse.php?id=<?php echo (int)$categorie['id'];?>">
-           <div class="form-group">
-               <label for="warehouse-name">Warehouse Name</label>
-               <input type="text" class="form-control" name="warehouse-name" value="<?php echo remove_junk(ucfirst($cat['nm_warehouse']));?>">
-           </div>
-           <div class="form-group">
-               <label for="country">Country</label>
-               <input type="text" class="form-control" name="country" value="<?php echo remove_junk(ucfirst($cat['country']));?>">
-           </div>
-           <div class="form-group">
-                <label for="address">Address</label>
-                <textarea type="text" class="form-control" name="address" ><?php echo remove_junk(ucfirst($cat['address']));?></textarea>
-            </div>
-            <div class="form-group">
-                <label for="status">Status</label>
-                <input type="text" class="form-control" name="status" value="<?php echo remove_junk(ucfirst($cat['status']));?>">
-            </div>
-            <div class="form-group">
-                <label for="heavymax">Heavy Max</label>
-                <input type="number" class="form-control" name="heavymax" value="<?php echo remove_junk(ucfirst($cat['heavy_max']));?>">
-            </div>
-            <div class="form-group">
-                <label for="consumed">Consumed</label>
-                <input type="number" class="form-control" name="consumed" value="<?php echo remove_junk(ucfirst($cat['heavy_consumed']));?>">
-            </div>
-           <button type="submit" name="edit_warehouse" class="btn btn-primary">Update Warehouse</button>
-       </form>
-      </div><!-- MODAL BODY -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <form method="post" action="add_warehouse.php" class="clearfix">
+        <div class="form-group">
+          <label class="control-label">Warehouse</label>
+          <input type="name" class="form-control" name="warehousename">
+        </div>
+        <div class="form-group">
+          <label class="control-label">Country</label>
+          <input type="name" class="form-control" name="country">
+        </div>  
+        <div class="form-group">
+          <label class="control-label">Address</label>
+          <textarea type="name" class="form-control" name="address"></textarea>
+        </div>  
+        <div class="form-group">
+          <label for="status">Status</label>
+            <select class="form-control" name="status">
+              <option value="1">Produce</option>
+              <option value="0">Not Produce</option>
+            </select>
+        </div>
+        <div class="form-group">
+          <label class="control-label">Heavy Max</label>
+          <input type="name" class="form-control" name="heavymax">
+        </div>  
+        <div class="form-group">
+          <label class="control-label">Area Consumed</label>
+          <input type="name" class="form-control" name="consumed">
+        </div>      
       </div>
-    </div><!-- MODAL CONTENT -->
-  </div><!-- MODAL DIALOG -->
-</div><!-- END MODAL BEGINNING -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" name="add_warehouse" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+<!-- END MODAL ADD NEW WAREHOUSE -->
+
+<!-- MODAL UPDATE WAREHOUSE -->
+<?php foreach($all_categories as $a_warehouse): ?> 
+<div class="modal fade" id="updateWarehouse<?php echo (int)$a_warehouse['id_warehouse'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="exampleModalLabel">Update Data Warehouse</h4>
+      </div>
+      <div class="modal-body">
+      <form method="post" action="add_warehouse.php" class="clearfix">
+        <div class="form-group">
+          <label class="control-label">Warehouse</label>
+          <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_warehouse['id_warehouse'])); ?>" name="idwarehouse">
+          <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_warehouse['nm_warehouse'])); ?>" name="warehousename">
+        </div>
+        <div class="form-group">
+          <label class="control-label">Country</label>
+          <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_warehouse['country'])); ?>" name="country">
+        </div>  
+        <div class="form-group">
+          <label class="control-label">Address</label>
+          <textarea type="name" class="form-control" name="address"><?php echo remove_junk(ucwords($a_warehouse['address'])); ?>"</textarea>
+        </div>  
+        <div class="form-group">
+          <label for="status">Status</label>
+            <select class="form-control" name="status">
+                <option <?php if($a_warehouse['status'] === '1') echo 'selected="selected"';?> value="1"> Produce </option>
+                <option <?php if($a_warehouse['status'] === '0') echo 'selected="selected"';?> value="0"> Not Produce</option>
+              </select>
+        </div>
+        <div class="form-group">
+          <label class="control-label">Heavy Max</label>
+          <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_warehouse['heavy_max'])); ?>" name="heavymax">
+        </div>  
+        <div class="form-group">
+          <label class="control-label">Area Consumed</label>
+          <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_warehouse['heavy_consumed'])); ?>" name="consumed">
+        </div>    
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" name="update_warehouse" class="btn btn-primary">Update</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+</div>
+<?php endforeach;?>
+<!-- END MODAL UPDATE WAREHOUSE -->
+
+<!-- MODAL DELETE WAREHOUSE -->
+<?php foreach($all_categories as $a_warehouse): ?>
+<div class="modal fade" id="deleteWarehouse<?php echo (int)$a_warehouse['id_warehouse'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="exampleModalLabel">Delete Warehouse</h4>
+      </div>
+      <div class="modal-body">
+      <form method="post" action="add_warehouse.php" class="clearfix">
+        <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_warehouse['id_warehouse'])); ?>" name="idwarehouse">
+        <p>Are You Sure to Delete Warehouse <b><?php echo remove_junk(ucwords($a_warehouse['nm_warehouse'])); ?></b> From <b><?php echo remove_junk(ucwords($a_warehouse['country'])); ?></b>?</p>  
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" name="delete_warehouse" class="btn btn-danger">Delete</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+</div>
+<?php endforeach;?>
+<!-- END MODAL DELETE WAREHOUSE -->
+
 <?php include_once('layouts/footer.php'); ?>
