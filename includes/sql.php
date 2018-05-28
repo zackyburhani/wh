@@ -155,6 +155,18 @@ function find_by_id($table,$id)
      }
 }
 
+function find_by_employer($table,$id)
+{
+  global $db;
+    if(tableExists($table)){
+          $sql = $db->query("SELECT * FROM {$db->escape($table)} WHERE id_employer='{$db->escape($id)}' LIMIT 1");
+          if($result = $db->fetch_assoc($sql))
+            return $result;
+          else
+            return null;
+     }
+}
+
 function find_by_id_pro($table,$id)
 {
   global $db;
@@ -242,7 +254,7 @@ function count_by_id($table){
   global $db;
   if(tableExists($table))
   {
-    $sql    = "SELECT COUNT(id) AS total FROM ".$db->escape($table);
+    $sql    = "SELECT COUNT(id_employer) AS total FROM ".$db->escape($table);
     $result = $db->query($sql);
      return($db->fetch_assoc($result));
   }
@@ -323,15 +335,16 @@ function tableExists($table){
 
 
   /*--------------------------------------------------------------*/
-  /* Find current log in user by session id
+  /* Find current log in user by session id (coded by zacky)
   /*--------------------------------------------------------------*/
   function current_user(){
       static $current_user;
       global $db;
       if(!$current_user){
-         if(isset($_SESSION['user_id'])):
-             $user_id = intval($_SESSION['user_id']);
-             $current_user = find_by_id('users',$user_id);
+         if(isset($_SESSION['id_employer'])):
+             $user_id[] = $_SESSION['id_employer'];
+             $pick_id = $user_id[0]['id_employer'];
+             $current_user = find_by_employer('employer',$pick_id);
         endif;
       }
     return $current_user;
@@ -400,7 +413,7 @@ function tableExists($table){
   function find_by_groupLevel($level)
   {
     global $db;
-    $sql = "SELECT group_level FROM user_groups WHERE group_level = '{$db->escape($level)}' LIMIT 1 ";
+    $sql = "SELECT id_position FROM position WHERE id_position = '{$db->escape($level)}' LIMIT 1 ";
     $result = $db->query($sql);
     return($db->num_rows($result) === 0 ? true : false);
   }
@@ -410,17 +423,17 @@ function tableExists($table){
    function page_require_level($require_level){
      global $session;
      $current_user = current_user();
-     $login_level = find_by_groupLevel($current_user['user_level']);
+     $login_level = find_by_groupLevel($current_user['id_position']);
      //if user not login
      if (!$session->isUserLoggedIn(true)):
             $session->msg('d','Please login...');
             redirect('index.php', false);
       //if Group status Deactive
-     elseif($login_level['group_status'] === '0'):
+     elseif($login_level['id_position'] === '0'):
            $session->msg('d','This level user has been band!');
            redirect('home.php',false);
       //cheackin log in User level and Require level is Less than or equal to
-     elseif($current_user['user_level'] <= (int)$require_level):
+     elseif($current_user['id_position'] <= (int)$require_level):
               return true;
       else:
             $session->msg("d", "Sorry! you dont have permission to view the page.");

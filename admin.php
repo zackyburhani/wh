@@ -7,7 +7,7 @@
 <?php
  $c_categorie     = count_by_id_cat('categories');
  $c_product       = count_by_id_pro('products');
- $c_user          = count_by_id('users');
+ $c_user          = count_by_id('employer');
 ?>
 <?php include_once('layouts/header.php'); ?>
 
@@ -35,7 +35,7 @@
         </div>
         <div class="panel-value pull-right">
           <h2 class="margin-top"> <?php  echo $c_categorie['total']; ?> </h2>
-          <p class="text-muted"><a href="categorie.php">Categories</a></p>
+          <p class="text-muted"><a href="categories.php">Categories</a></p>
         </div>
        </div>
     </div>
