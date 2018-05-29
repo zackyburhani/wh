@@ -46,7 +46,7 @@ error_reporting(0);
                 <th class="text-center" style="width: 10%;"> Name Product</th>
                 <th class="text-center" style="width: 10%;"> Color Product </th>
                 <th class="text-center" style="width: 10%;"> Stock </th>
-				<th class="text-center" style="width: 10%;"> Package </th>
+				        <th class="text-center" style="width: 10%;"> Package </th>
                 <th class="text-center" style="width: 10%;"> Categori </th>
                 <th class="text-center" style="width: 10%;"> Warehouse </th>
                 <th class="text-center" style="width: 30px;"> Actions </th>
@@ -60,9 +60,9 @@ error_reporting(0);
                 <td class="text-center"> <?php echo remove_junk($items['nm_item']); ?></td>
                 <td class="text-center"> <?php echo remove_junk($items['colour']); ?></td>
                 <td class="text-center"> <?php echo remove_junk($items['stock']); ?></td>
-				<td class="text-center"> <?php echo remove_junk($items['id_package']); ?></td>
-				<td class="text-center"> <?php echo remove_junk($items['id_subcategories']); ?></td>
-				<td class="text-center"> <?php echo remove_junk($items['id_location']); ?></td>
+        				<td class="text-center"> <?php echo remove_junk($items['id_package']); ?></td>
+        				<td class="text-center"> <?php echo remove_junk($items['id_subcategories']); ?></td>
+        				<td class="text-center"> <?php echo remove_junk($items['id_location']); ?></td>
                 <td class="text-center">
                   <div class="btn-group">
                     <a href="edit_product.php?id=<?php echo (int)$items['id_item'];?>" class="btn btn-info btn-xs"  title="Edit" data-toggle="tooltip">

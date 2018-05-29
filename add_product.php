@@ -25,8 +25,6 @@
      $p_categori = remove_junk($db->escape($_POST['product-categorie']));
      $p_location  = remove_junk($db->escape($_POST['product-warehouse']));
 	
-	echo json_encode($p_categori);
-	
 	 $query  = "INSERT INTO item (";
      $query .=" id_item,nm_item,colour,width,height,lenght,weight,stock,id_package,id_subcategories,id_location";
      $query .=") VALUES (";
