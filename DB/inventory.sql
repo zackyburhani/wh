@@ -1,48 +1,69 @@
-﻿# Host: localhost  (Version 5.5.5-10.1.30-MariaDB)
-# Date: 2018-05-17 14:05:06
-# Generator: MySQL-Front 6.0  (Build 2.20)
+-- phpMyAdmin SQL Dump
+-- version 4.8.0
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost
+-- Generation Time: May 29, 2018 at 05:47 AM
+-- Server version: 10.1.31-MariaDB
+-- PHP Version: 7.2.4
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
 
 
-#
-# Structure for table "bpack"
-#
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
-DROP TABLE IF EXISTS `bpack`;
+--
+-- Database: `inventory`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bpack`
+--
+
 CREATE TABLE `bpack` (
   `id_bpack` varchar(10) NOT NULL,
   `id_package` varchar(10) NOT NULL,
   `id_item` varchar(10) NOT NULL,
   `qty` int(10) NOT NULL,
-  `total` int(10) NOT NULL,
-  PRIMARY KEY (`id_bpack`)
+  `total` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-#
-# Data for table "bpack"
-#
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `categories`
+--
 
-#
-# Structure for table "categories"
-#
-
-DROP TABLE IF EXISTS `categories`;
 CREATE TABLE `categories` (
   `id_categories` varchar(10) NOT NULL,
-  `nm_categories` varchar(20) NOT NULL,
-  PRIMARY KEY (`id_categories`)
+  `nm_categories` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-#
-# Data for table "categories"
-#
+--
+-- Dumping data for table `categories`
+--
 
+INSERT INTO `categories` (`id_categories`, `nm_categories`) VALUES
+('0001', 'elektronik'),
+('0002', 'olahraga'),
+('0003', 'handphone'),
+('0004', 'kamera'),
+('0005', 'dapur');
 
-#
-# Structure for table "detil_po"
-#
+-- --------------------------------------------------------
 
-DROP TABLE IF EXISTS `detil_po`;
+--
+-- Table structure for table `detil_po`
+--
+
 CREATE TABLE `detil_po` (
   `id_po` varchar(10) NOT NULL,
   `date_po` date NOT NULL,
@@ -50,82 +71,81 @@ CREATE TABLE `detil_po` (
   `status` varchar(20) NOT NULL,
   `id_warehouse` varchar(10) NOT NULL,
   `total_weight` int(20) NOT NULL,
-  `id_item` varchar(10) NOT NULL,
-  PRIMARY KEY (`id_po`)
+  `id_item` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-#
-# Data for table "detil_po"
-#
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `employer`
+--
 
-#
-# Structure for table "employer"
-#
-
-DROP TABLE IF EXISTS `employer`;
 CREATE TABLE `employer` (
   `id_employer` varchar(10) NOT NULL,
+  `username` varchar(60) NOT NULL,
   `nm_employer` varchar(30) NOT NULL,
   `id_position` varchar(10) NOT NULL,
-  `password` varchar(20) NOT NULL,
-  PRIMARY KEY (`id_employer`)
+  `password` varchar(50) NOT NULL,
+  `last_login` datetime DEFAULT NULL,
+  `status` varchar(1) NOT NULL,
+  `image` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-#
-# Data for table "employer"
-#
+--
+-- Dumping data for table `employer`
+--
 
+INSERT INTO `employer` (`id_employer`, `username`, `nm_employer`, `id_position`, `password`, `last_login`, `status`, `image`) VALUES
+('0001', 'Admin', 'Administrator', '0001', 'd033e22ae348aeb5660fc2140aec35850c4da997', '2018-05-29 05:38:36', '1', 'admin_v01D_support.png'),
+('0002', 'zackyburhani', 'Zacky Burhani Hotib', '0002', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '2018-05-28 20:12:43', '1', '');
 
-#
-# Structure for table "item"
-#
+-- --------------------------------------------------------
 
-DROP TABLE IF EXISTS `item`;
+--
+-- Table structure for table `item`
+--
+
 CREATE TABLE `item` (
   `id_item` varchar(10) NOT NULL,
   `nm_item` varchar(20) NOT NULL,
   `colour` varchar(20) NOT NULL,
   `width` int(20) NOT NULL,
   `height` int(20) NOT NULL,
-  `lenght` int(20) NOT NULL,
+  `length` int(20) NOT NULL,
   `weight` int(20) NOT NULL,
   `stock` int(20) NOT NULL,
   `id_package` varchar(10) NOT NULL,
-  `id_subcategories` varchar(20) NOT NULL,
-  `id_location` varchar(10) NOT NULL,
-  PRIMARY KEY (`id_item`)
+  `id_subcategories` varchar(20) DEFAULT NULL,
+  `id_location` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-#
-# Data for table "item"
-#
+--
+-- Dumping data for table `item`
+--
 
+INSERT INTO `item` (`id_item`, `nm_item`, `colour`, `width`, `height`, `length`, `weight`, `stock`, `id_package`, `id_subcategories`, `id_location`) VALUES
+('0001', 'Samsung LED TV 2', 'White', 200, 200, 200, 200, 2000, '1', '0005', '2');
 
-#
-# Structure for table "location"
-#
+-- --------------------------------------------------------
 
-DROP TABLE IF EXISTS `location`;
+--
+-- Table structure for table `location`
+--
+
 CREATE TABLE `location` (
   `id_location` varchar(10) NOT NULL,
   `unit` varchar(20) NOT NULL,
   `floor` varchar(20) NOT NULL,
   `room` varchar(20) NOT NULL,
-  `id_warehouse` varchar(10) NOT NULL,
-  PRIMARY KEY (`id_location`)
+  `id_warehouse` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-#
-# Data for table "location"
-#
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `package`
+--
 
-#
-# Structure for table "package"
-#
-
-DROP TABLE IF EXISTS `package`;
 CREATE TABLE `package` (
   `id_package` varchar(10) NOT NULL,
   `nm_package` varchar(20) NOT NULL,
@@ -133,53 +153,47 @@ CREATE TABLE `package` (
   `lenght` int(20) NOT NULL,
   `weight` int(20) NOT NULL,
   `width` int(20) NOT NULL,
-  `jml_stock` int(20) NOT NULL,
-  PRIMARY KEY (`id_package`)
+  `jml_stock` int(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-#
-# Data for table "package"
-#
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `po`
+--
 
-#
-# Structure for table "po"
-#
-
-DROP TABLE IF EXISTS `po`;
 CREATE TABLE `po` (
   `id_po` varchar(10) NOT NULL,
   `date_po` date NOT NULL,
-  `id_warehouse` varchar(10) NOT NULL,
-  PRIMARY KEY (`id_po`)
+  `id_warehouse` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-#
-# Data for table "po"
-#
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `position`
+--
 
-#
-# Structure for table "position"
-#
-
-DROP TABLE IF EXISTS `position`;
 CREATE TABLE `position` (
   `id_position` varchar(20) NOT NULL,
-  `nm_position` varchar(20) NOT NULL,
-  PRIMARY KEY (`id_position`)
+  `nm_position` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-#
-# Data for table "position"
-#
+--
+-- Dumping data for table `position`
+--
 
+INSERT INTO `position` (`id_position`, `nm_position`) VALUES
+('0001', 'administrator'),
+('0002', 'Manager'),
+('0003', 'Employee');
 
-#
-# Structure for table "shipment"
-#
+-- --------------------------------------------------------
 
-DROP TABLE IF EXISTS `shipment`;
+--
+-- Table structure for table `shipment`
+--
+
 CREATE TABLE `shipment` (
   `id_shipment` varchar(10) NOT NULL,
   `date_shipment` date NOT NULL,
@@ -188,89 +202,135 @@ CREATE TABLE `shipment` (
   `id_employer` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-#
-# Data for table "shipment"
-#
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `sub_categories`
+--
 
-#
-# Structure for table "sub_categories"
-#
-
-DROP TABLE IF EXISTS `sub_categories`;
 CREATE TABLE `sub_categories` (
   `id_subcategories` varchar(10) NOT NULL,
-  `nm_categories` varchar(20) NOT NULL,
-  `id_categories` varchar(10) NOT NULL,
-  PRIMARY KEY (`id_subcategories`)
+  `nm_subcategories` varchar(20) NOT NULL,
+  `id_categories` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-#
-# Data for table "sub_categories"
-#
+--
+-- Dumping data for table `sub_categories`
+--
 
+INSERT INTO `sub_categories` (`id_subcategories`, `nm_subcategories`, `id_categories`) VALUES
+('0001', 'Sepatu Running', '0002'),
+('0002', 'Laptop', '0001'),
+('0003', 'TV', '0001'),
+('0004', 'Iphone X', '0003'),
+('0005', 'DSLR', '0004'),
+('0006', 'Kompor', '0005');
 
-#
-# Structure for table "user_groups"
-#
+-- --------------------------------------------------------
 
-DROP TABLE IF EXISTS `user_groups`;
-CREATE TABLE `user_groups` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `group_name` varchar(150) NOT NULL,
-  `group_level` int(11) NOT NULL,
-  `group_status` int(1) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `group_level` (`group_level`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+--
+-- Table structure for table `warehouse`
+--
 
-#
-# Data for table "user_groups"
-#
-
-INSERT INTO `user_groups` VALUES (1,'Admin',1,1),(2,'special',2,1),(3,'User',3,1),(4,'gudang',4,1),(5,'manager',5,1);
-
-#
-# Structure for table "users"
-#
-
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(60) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `user_level` int(11) NOT NULL,
-  `image` varchar(255) DEFAULT 'no_image.jpg',
-  `status` int(1) NOT NULL,
-  `last_login` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `user_level` (`user_level`),
-  CONSTRAINT `FK_user` FOREIGN KEY (`user_level`) REFERENCES `user_groups` (`group_level`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
-
-#
-# Data for table "users"
-#
-
-INSERT INTO `users` VALUES (1,' Admin User','admin','d033e22ae348aeb5660fc2140aec35850c4da997',1,'no_image.jpg',1,'2018-05-17 09:03:08'),(2,'Special User','special','ba36b97a41e7faf742ab09bf88405ac04f99599a',2,'no_image.jpg',1,'2018-05-07 12:03:06'),(3,'Default User','user','12dea96fec20593566ab75692c9949596833adc9',3,'no_image.jpg',1,'2018-05-07 12:04:47');
-
-#
-# Structure for table "warehouse"
-#
-
-DROP TABLE IF EXISTS `warehouse`;
 CREATE TABLE `warehouse` (
   `id_warehouse` varchar(10) NOT NULL,
   `nm_warehouse` varchar(20) NOT NULL,
+  `country` varchar(50) NOT NULL,
   `address` text NOT NULL,
   `status` varchar(20) NOT NULL,
   `heavy_max` int(10) NOT NULL,
-  `heavy_consumed` int(10) NOT NULL,
-  PRIMARY KEY (`id_warehouse`)
+  `heavy_consumed` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-#
-# Data for table "warehouse"
-#
+--
+-- Indexes for dumped tables
+--
 
+--
+-- Indexes for table `bpack`
+--
+ALTER TABLE `bpack`
+  ADD PRIMARY KEY (`id_bpack`);
+
+--
+-- Indexes for table `categories`
+--
+ALTER TABLE `categories`
+  ADD PRIMARY KEY (`id_categories`);
+
+--
+-- Indexes for table `detil_po`
+--
+ALTER TABLE `detil_po`
+  ADD PRIMARY KEY (`id_po`);
+
+--
+-- Indexes for table `employer`
+--
+ALTER TABLE `employer`
+  ADD PRIMARY KEY (`id_employer`),
+  ADD KEY `id_position` (`id_position`);
+
+--
+-- Indexes for table `item`
+--
+ALTER TABLE `item`
+  ADD PRIMARY KEY (`id_item`);
+
+--
+-- Indexes for table `location`
+--
+ALTER TABLE `location`
+  ADD PRIMARY KEY (`id_location`);
+
+--
+-- Indexes for table `package`
+--
+ALTER TABLE `package`
+  ADD PRIMARY KEY (`id_package`);
+
+--
+-- Indexes for table `po`
+--
+ALTER TABLE `po`
+  ADD PRIMARY KEY (`id_po`);
+
+--
+-- Indexes for table `position`
+--
+ALTER TABLE `position`
+  ADD PRIMARY KEY (`id_position`);
+
+--
+-- Indexes for table `sub_categories`
+--
+ALTER TABLE `sub_categories`
+  ADD PRIMARY KEY (`id_subcategories`),
+  ADD KEY `id_categories` (`id_categories`);
+
+--
+-- Indexes for table `warehouse`
+--
+ALTER TABLE `warehouse`
+  ADD PRIMARY KEY (`id_warehouse`);
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `employer`
+--
+ALTER TABLE `employer`
+  ADD CONSTRAINT `employer_ibfk_1` FOREIGN KEY (`id_position`) REFERENCES `position` (`id_position`);
+
+--
+-- Constraints for table `sub_categories`
+--
+ALTER TABLE `sub_categories`
+  ADD CONSTRAINT `sub_categories_ibfk_1` FOREIGN KEY (`id_categories`) REFERENCES `categories` (`id_categories`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

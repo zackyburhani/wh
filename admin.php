@@ -5,13 +5,9 @@
   page_require_level(1);
 ?>
 <?php
- $c_categorie     = count_by_id('categories');
- $c_product       = count_by_id('products');
- $c_sale          = count_by_id('sales');
- $c_user          = count_by_id('users');
- $products_sold   = find_higest_saleing_product('10');
- $recent_products = find_recent_product_added('5');
- $recent_sales    = find_recent_sale_added('5')
+ $c_categorie     = count_by_id_cat('categories');
+ $c_product       = count_by_id_pro('products');
+ $c_user          = count_by_id('employer');
 ?>
 <?php include_once('layouts/header.php'); ?>
 
@@ -39,7 +35,7 @@
         </div>
         <div class="panel-value pull-right">
           <h2 class="margin-top"> <?php  echo $c_categorie['total']; ?> </h2>
-          <p class="text-muted"><a href="categorie.php">Categories</a></p>
+          <p class="text-muted"><a href="categories.php">Categories</a></p>
         </div>
        </div>
     </div>
@@ -50,7 +46,7 @@
           <i class="glyphicon glyphicon-usd"></i>
         </div>
         <div class="panel-value pull-right">
-          <h2 class="margin-top"> <?php  echo $c_sale['total']; ?></h2>
+          <h2 class="margin-top"> <?php  echo "0" ?></h2>
           <p class="text-muted">Sales</p>
         </div>
        </div>
