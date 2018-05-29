@@ -4,7 +4,7 @@
   // Checkin What level user has permission to view this page
   page_require_level(3);
 ?>
-<?php $user = current_user(); ?>
+<?php $user = current_user(); echo json_encode($user); die(); ?>
 <?php
   if(isset($_POST['update'])){
 
@@ -36,6 +36,7 @@
     }
   }
 ?>
+
 <?php include_once('layouts/header.php'); ?>
 <div class="login-page">
     <div class="text-center">

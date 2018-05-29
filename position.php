@@ -123,7 +123,7 @@
           <tr>
             <th class="text-center" style="width: 50px;">No. </th>
             <th class="text-center">Position Name</th>
-            <th class="text-center" style="width: 100px;">Actions</th>
+            <th class="text-center" style="width: 150px;">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -132,17 +132,17 @@
            <td class="text-center"><?php echo count_id();?></td>
            <td><?php echo remove_junk(ucwords($a_position['nm_position']))?></td>
            <td class="text-center">
-                <button data-target="#updatePosition<?php echo (int)$a_position['id_position'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
-                  <i class="glyphicon glyphicon-pencil"></i>
-                </button>
-                <button data-target="#deletePosition<?php echo (int)$a_position['id_position'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Remove">
-                  <i class="glyphicon glyphicon-trash"></i>
-                </button>
+              <button data-target="#updatePosition<?php echo (int)$a_position['id_position'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
+                <i class="glyphicon glyphicon-pencil"></i>
+              </button>
+              <button data-target="#deletePosition<?php echo (int)$a_position['id_position'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Remove">
+                <i class="glyphicon glyphicon-trash"></i>
+              </button>
            </td>
           </tr>
         <?php endforeach;?>
-       </tbody>
-     </table>
+        </tbody>
+      </table>
      </div>
     </div>
   </div>

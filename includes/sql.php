@@ -28,11 +28,27 @@ function find_all1($table) {
    }
 }
 
+//find field with order (zacky)
+function find_all_order($table,$order) {
+   global $db;
+   if(tableExists($table))
+   {
+     return find_by_sql("SELECT * FROM ".$db->escape($table)." ORDER BY ".$db->escape($order));
+   }
+}
+
+function find_allSubcategories() {
+   global $db;
+   return find_by_sql("SELECT * FROM categories INNER JOIN sub_categories ON sub_categories.id_categories = categories.id_categories ORDER BY nm_categories");
+}
+
+
+
 function find_warehouse($table) {
    global $db;
    if(tableExists($table))
    {
-     return find_by_sql("SELECT * FROM ".$db->escape($table)." whare name_warehouse='$_GET[name_warehouse]'");
+     return find_by_sql("SELECT * FROM ".$db->escape($table)." whare nm_warehouse='$_GET[nm_warehouse]'");
    }
 }
 
@@ -40,9 +56,41 @@ function find_all2($table) {
   global $db;
   if(tableExists($table))
   {
-    return find_by_sql("SELECT * FROM ".$db->escape($table)." where warehouse_id='$_GET[id]'");
+    return find_by_sql("SELECT * FROM ".$db->escape($table)." where id_warehouse='$_GET[id]'");
   }
 }
+
+//find all employee (zacky)
+function find_all_employee(){
+      global $db;
+      $results = array();
+      $sql = "SELECT u.id_employer,u.username,u.nm_employer,u.id_position,u.last_login,u.status,";
+      $sql .="g.nm_position ";
+      $sql .="FROM employer u ";
+      $sql .="LEFT JOIN position g ";
+      $sql .="ON g.id_position=u.id_position ORDER BY u.nm_employer ASC";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  //validation connected foreign key (zacky)
+  function find_all_idPosition($field){
+      global $db;
+      $results = array();
+      $sql = "SELECT id_position FROM employer WHERE id_position = '{$db->escape($field)}'";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  //validation connected foreign key (zacky)
+  function find_all_id($table,$field,$row){
+      global $db;
+      $results = array();
+      $sql = "SELECT {$db->escape($row)} FROM {$db->escape($table)} WHERE {$db->escape($row)} = '{$db->escape($field)}'";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
 /*--------------------------------------------------------------*/
 /* Function for Perform queries
 /*--------------------------------------------------------------*/
@@ -52,6 +100,21 @@ function find_by_sql($sql)
   $result = $db->query($sql);
   $result_set = $db->while_loop($result);
  return $result_set;
+}
+/*--------------------------------------------------------------*/
+/*  Function for Find data from table by id warehouse
+/*--------------------------------------------------------------*/
+function find_by_id_warehouse($table,$idwarehouse)
+{
+  global $db;
+  $id = (int)$idwarehouse;
+    if(tableExists($table)){
+          $sql = $db->query("SELECT * FROM {$db->escape($table)} WHERE id_warehouse='{$db->escape($id)}' LIMIT 1");
+          if($result = $db->fetch_assoc($sql))
+            return $result;
+          else
+            return null;
+     }
 }
 /*--------------------------------------------------------------*/
 /*  Function for Find data from table by id
@@ -68,10 +131,22 @@ function find_by_id($table,$id)
             return null;
      }
 }
+
+function find_by_employer($table,$id)
+{
+  global $db;
+    if(tableExists($table)){
+          $sql = $db->query("SELECT * FROM {$db->escape($table)} WHERE id_employer='{$db->escape($id)}' LIMIT 1");
+          if($result = $db->fetch_assoc($sql))
+            return $result;
+          else
+            return null;
+     }
+}
+
 function find_by_id_pro($table,$id)
 {
   global $db;
-  $id = (int)$id;
     if(tableExists($table)){
           $sql = $db->query("SELECT * FROM {$db->escape($table)} WHERE id_item='{$db->escape($id)}' LIMIT 1");
           if($result = $db->fetch_assoc($sql))
@@ -80,6 +155,7 @@ function find_by_id_pro($table,$id)
             return null;
      }
 }
+
 function find_by_id_cat($table,$id_categories)
 {
   global $db;
@@ -91,6 +167,36 @@ function find_by_id_cat($table,$id_categories)
           else
             return null;
      }
+}
+/*--------------------------------------------------------------*/
+/*  Function for Find data from table by id
+/*--------------------------------------------------------------*/
+function find_by_idwarehouse($table,$id)
+{
+  global $db;
+  $id = (int)$id;
+    if(tableExists($table)){
+          $sql = $db->query("SELECT * FROM {$db->escape($table)} WHERE id_warehouse='{$db->escape($id)}' LIMIT 1");
+          if($result = $db->fetch_assoc($sql))
+            return $result;
+          else
+            return null;
+     }
+}
+/*--------------------------------------------------------------*/
+/* Function for Delete data from table by id warehouse
+/*--------------------------------------------------------------*/
+function delete_by_id_warehouse($table,$idwarehouse)
+{
+  global $db;
+  if(tableExists($table))
+   {
+    $sql = "DELETE FROM ".$db->escape($table);
+    $sql .= " WHERE id_warehouse=". $db->escape($id);
+    $sql .= " LIMIT 1";
+    $db->query($sql);
+    return ($db->affected_rows() === 1) ? true : false;
+   }
 }
 /*--------------------------------------------------------------*/
 /* Function for Delete data from table by id
@@ -139,7 +245,7 @@ function count_by_id($table){
   global $db;
   if(tableExists($table))
   {
-    $sql    = "SELECT COUNT(id) AS total FROM ".$db->escape($table);
+    $sql    = "SELECT COUNT(id_employer) AS total FROM ".$db->escape($table);
     $result = $db->query($sql);
      return($db->fetch_assoc($result));
   }
@@ -217,15 +323,16 @@ function tableExists($table){
 
 
   /*--------------------------------------------------------------*/
-  /* Find current log in user by session id
+  /* Find current log in user by session id (coded by zacky)
   /*--------------------------------------------------------------*/
   function current_user(){
       static $current_user;
       global $db;
       if(!$current_user){
-         if(isset($_SESSION['user_id'])):
-             $user_id = intval($_SESSION['user_id']);
-             $current_user = find_by_id('users',$user_id);
+         if(isset($_SESSION['id_employer'])):
+             $user_id[] = $_SESSION['id_employer'];
+             $pick_id = $user_id[0]['id_employer'];
+             $current_user = find_by_employer('employer',$pick_id);
         endif;
       }
     return $current_user;
@@ -248,7 +355,11 @@ function tableExists($table){
   function find_all_item(){
       global $db;
       $results = array();
+<<<<<<< HEAD
       $sql = "SELECT * FROM item";
+=======
+      $sql = "SELECT * FROM item,sub_categories WHERE item.id_subcategories = sub_categories.id_subcategories";
+>>>>>>> 1847df02f8675406fbde2d34dee1211ebcd26e24
       $result = find_by_sql($sql);
       return $result;
   }
@@ -275,13 +386,22 @@ function tableExists($table){
     $result = $db->query($sql);
     return($db->num_rows($result) === 0 ? true : false);
   }
+
+  //find categoryName (zacky)
+  function find_by_categoryName($val)
+  {
+    global $db;
+    $sql = "SELECT nm_categories FROM categories WHERE nm_categories = '{$db->escape($val)}' LIMIT 1 ";
+    $result = $db->query($sql);
+    return($db->num_rows($result) === 0 ? true : false);
+  }
   /*--------------------------------------------------------------*/
   /* Find group level
   /*--------------------------------------------------------------*/
   function find_by_groupLevel($level)
   {
     global $db;
-    $sql = "SELECT group_level FROM user_groups WHERE group_level = '{$db->escape($level)}' LIMIT 1 ";
+    $sql = "SELECT id_position FROM position WHERE id_position = '{$db->escape($level)}' LIMIT 1 ";
     $result = $db->query($sql);
     return($db->num_rows($result) === 0 ? true : false);
   }
@@ -291,17 +411,17 @@ function tableExists($table){
    function page_require_level($require_level){
      global $session;
      $current_user = current_user();
-     $login_level = find_by_groupLevel($current_user['user_level']);
+     $login_level = find_by_groupLevel($current_user['id_position']);
      //if user not login
      if (!$session->isUserLoggedIn(true)):
             $session->msg('d','Please login...');
             redirect('index.php', false);
       //if Group status Deactive
-     elseif($login_level['group_status'] === '0'):
+     elseif($login_level['id_position'] === '0'):
            $session->msg('d','This level user has been band!');
            redirect('home.php',false);
       //cheackin log in User level and Require level is Less than or equal to
-     elseif($current_user['user_level'] <= (int)$require_level):
+     elseif($current_user['id_position'] <= (int)$require_level):
               return true;
       else:
             $session->msg("d", "Sorry! you dont have permission to view the page.");

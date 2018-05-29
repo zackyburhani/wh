@@ -6,7 +6,7 @@
   $warehouse = find_all('warehouse');
   $product = find_all2('products');
 
-  $page_title = "Warehouse " . $warehouse[0]["name_warehouse"];
+  $page_title = "Warehouse " . $warehouse[0]["nm_warehouse"];
 ?>
 <?php include_once('layouts/header.php'); ?>
 
@@ -21,7 +21,7 @@
       <div class="panel-heading">
         <strong>
           <span class="glyphicon glyphicon-th"></span>
-          <span><?php echo $warehouse[0]["name_warehouse"]; ?></span>
+          <span><?php echo $warehouse[0]["nm_warehouse"]; ?></span>
        </strong>
       </div>
         <div class="panel-body">

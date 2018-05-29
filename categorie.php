@@ -8,27 +8,14 @@
 ?>
 <?php
  if(isset($_POST['add_cat'])){
-   $req_field_id = array('id-categorie');
    $req_field = array('categorie-name');
-   validate_fields($req_field_id);
    validate_fields($req_field);
-   $id_cat = remove_junk($db->escape($_POST['id-categorie']));
    $cat_name = remove_junk($db->escape($_POST['categorie-name']));
    if(empty($errors)){
-      $sql  = "INSERT INTO categories (id_categories,nm_categories)";
-	  $sql .= " VALUES ('{$id_cat}','{$cat_name}')";
-	if($db->query($sql)){
-        $session->msg("s", "Successfully Added Categorie");
-        redirect('categorie.php',false);
-      } else {
-        $session->msg("d", "Sorry Failed to insert.");
-        redirect('categorie.php',false);
-      }
-   } else {
-     $session->msg("d", $errors);
-     redirect('categorie.php',false);
-   }
-     /* $getAllCategoriesName = "SELECT id_categories,nm_categories FROM categories";
+      $sql  = "INSERT INTO categories (name)";
+      $sql .= " VALUES ('{$cat_name}')";
+
+      $getAllCategoriesName = "SELECT name FROM categories where name = '$cat_name'";
       $ada=$db->query($getAllCategoriesName) or die(mysql_error());
       if(mysqli_num_rows($ada)>0)
       { 
@@ -46,7 +33,7 @@
    } else {
      $session->msg("d", $errors);
      redirect('categorie.php',false);
-   }*/
+   }
  }
 ?>
 <?php include_once('layouts/header.php'); ?>
@@ -67,11 +54,8 @@
         </div>
         <div class="panel-body">
           <form method="post" action="categorie.php">
-		  <div class="form-group">
-                <input type="text" class="form-control" name="id-categorie" placeholder="ID Categorie">
-            </div>
             <div class="form-group">
-                <input type="text" class="form-control" name="categorie-name" onkeypress="return hanyaHuruf(event)" placeholder="Categorie Name">
+                <input type="text" class="form-control" name="categorie-name" placeholder="Categorie Name">
             </div>
             <button type="submit" name="add_cat" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;&nbsp;Add categorie</button>
         </form>
@@ -91,8 +75,7 @@
             <thead>
                 <tr>
                     <th class="text-center" style="width: 50px;">#</th>
-                    <th>ID Categorie</th>
-					<th>Name Categorie</th>
+                    <th>Categories</th>
                     <th class="text-center" style="width: 100px;">Actions</th>
                 </tr>
             </thead>
@@ -100,14 +83,13 @@
               <?php foreach ($all_categories as $cat):?>
                 <tr>
                     <td class="text-center"><?php echo count_id();?></td>
-					<td><?php echo remove_junk(ucfirst($cat['id_categories'])); ?></td>
-                    <td><?php echo remove_junk(ucfirst($cat['nm_categories'])); ?></td>
+                    <td><?php echo remove_junk(ucfirst($cat['name'])); ?></td>
                     <td class="text-center">
                       <div class="btn-group">
-                        <a href="edit_categorie.php?id=<?php echo (int)$cat['id_categories'];?>"  class="btn btn-xs btn-warning" data-toggle="tooltip" title="Edit">
-							<span class="glyphicon glyphicon-edit"></span>
+                        <a href="edit_categorie.php?id=<?php echo (int)$cat['id'];?>"  class="btn btn-xs btn-warning" data-toggle="tooltip" title="Edit">
+                          <span class="glyphicon glyphicon-edit"></span>
                         </a>
-                        <a href="delete_categorie.php?id=<?php echo (int)$cat['id_categories'];?>"  class="btn btn-xs btn-danger" data-toggle="tooltip" title="Remove">
+                        <a href="delete_categorie.php?id=<?php echo (int)$cat['id'];?>"  class="btn btn-xs btn-danger" data-toggle="tooltip" title="Remove">
                           <span class="glyphicon glyphicon-trash"></span>
                         </a>
                       </div>
@@ -122,26 +104,4 @@
     </div>
    </div>
   </div>
-   <script>
-		function hanyaAngka(evt) {
-		  var charCode = (evt.which) ? evt.which : event.keyCode
-		   if (charCode > 31 && (charCode < 48 || charCode > 57))
- 
-		    return false;
-		  return true;
-		}
-		
-		function hanyaHuruf(evt) {
-		  var charCode = (evt.which) ? evt.which : event.keyCode
-		   if (charCode > 31 && (charCode < 48 || charCode > 57))
- 
-		    return true;
-		  return false;
-		}
-	</script>
-	<script language="JavaScript">
-	function showDetails(input){
-		window.open(input,"RataRata","width=800,height=200");
-	}
-</script>
   <?php include_once('layouts/footer.php'); ?>

@@ -12,7 +12,7 @@ if(empty($errors)){
     $userStatus = $user_id['status'];
     if($userStatus == 1){
       //create session with id
-      $session->login($user_id);
+      $tes = $session->login($user_id);
       //Update Sign in time
       $userKey = $user_id['id_employer'];
       updateLastLogIn($userKey);
