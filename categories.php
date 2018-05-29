@@ -293,7 +293,7 @@
                       <tr>
                         <th class="text-center" style="width: 10px;">No.</th>
                         <th>Name Category</th>
-                        <th class="text-center" style="width: 100px;">Actions</th>
+                        <th class="text-center" style="width: 130px;">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -323,7 +323,7 @@
                         <tr>
                           <th class="text-center">No.</th>
                           <th>Name Subcategory</th>
-                          <th class="text-center">Actions</th>
+                          <th class="text-center" style="width: 10px;">Actions</th>
                         </tr>
                       </thead>
                       <tbody>

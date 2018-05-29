@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 21, 2018 at 08:39 AM
+-- Generation Time: May 29, 2018 at 05:47 AM
 -- Server version: 10.1.31-MariaDB
 -- PHP Version: 7.2.4
 
@@ -47,6 +47,17 @@ CREATE TABLE `categories` (
   `nm_categories` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`id_categories`, `nm_categories`) VALUES
+('0001', 'elektronik'),
+('0002', 'olahraga'),
+('0003', 'handphone'),
+('0004', 'kamera'),
+('0005', 'dapur');
+
 -- --------------------------------------------------------
 
 --
@@ -76,16 +87,17 @@ CREATE TABLE `employer` (
   `id_position` varchar(10) NOT NULL,
   `password` varchar(50) NOT NULL,
   `last_login` datetime DEFAULT NULL,
-  `status` varchar(1) NOT NULL
+  `status` varchar(1) NOT NULL,
+  `image` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `employer`
 --
 
-INSERT INTO `employer` (`id_employer`, `username`, `nm_employer`, `id_position`, `password`, `last_login`, `status`) VALUES
-('0001', 'admin', 'admin', '0001', 'd033e22ae348aeb5660fc2140aec35850c4da997', '2018-05-21 08:33:55', '1'),
-('0002', 'amet', 'Amet', '0003', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '2018-05-21 08:33:43', '2');
+INSERT INTO `employer` (`id_employer`, `username`, `nm_employer`, `id_position`, `password`, `last_login`, `status`, `image`) VALUES
+('0001', 'Admin', 'Administrator', '0001', 'd033e22ae348aeb5660fc2140aec35850c4da997', '2018-05-29 05:38:36', '1', 'admin_v01D_support.png'),
+('0002', 'zackyburhani', 'Zacky Burhani Hotib', '0002', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '2018-05-28 20:12:43', '1', '');
 
 -- --------------------------------------------------------
 
@@ -99,13 +111,20 @@ CREATE TABLE `item` (
   `colour` varchar(20) NOT NULL,
   `width` int(20) NOT NULL,
   `height` int(20) NOT NULL,
-  `lenght` int(20) NOT NULL,
+  `length` int(20) NOT NULL,
   `weight` int(20) NOT NULL,
   `stock` int(20) NOT NULL,
   `id_package` varchar(10) NOT NULL,
-  `id_subcategories` varchar(20) NOT NULL,
+  `id_subcategories` varchar(20) DEFAULT NULL,
   `id_location` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `item`
+--
+
+INSERT INTO `item` (`id_item`, `nm_item`, `colour`, `width`, `height`, `length`, `weight`, `stock`, `id_package`, `id_subcategories`, `id_location`) VALUES
+('0001', 'Samsung LED TV 2', 'White', 200, 200, 200, 200, 2000, '1', '0005', '2');
 
 -- --------------------------------------------------------
 
@@ -166,6 +185,7 @@ CREATE TABLE `position` (
 
 INSERT INTO `position` (`id_position`, `nm_position`) VALUES
 ('0001', 'administrator'),
+('0002', 'Manager'),
 ('0003', 'Employee');
 
 -- --------------------------------------------------------
@@ -190,60 +210,21 @@ CREATE TABLE `shipment` (
 
 CREATE TABLE `sub_categories` (
   `id_subcategories` varchar(10) NOT NULL,
-  `nm_categories` varchar(20) NOT NULL,
+  `nm_subcategories` varchar(20) NOT NULL,
   `id_categories` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `users`
+-- Dumping data for table `sub_categories`
 --
 
-CREATE TABLE `users` (
-  `id` int(11) UNSIGNED NOT NULL,
-  `name` varchar(60) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `user_level` int(11) NOT NULL,
-  `image` varchar(255) DEFAULT 'no_image.jpg',
-  `status` int(1) NOT NULL,
-  `last_login` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `name`, `username`, `password`, `user_level`, `image`, `status`, `last_login`) VALUES
-(1, ' Admin User', 'admin', 'd033e22ae348aeb5660fc2140aec35850c4da997', 1, 'no_image.jpg', 1, '2018-05-19 07:48:15'),
-(2, 'Special User', 'special', 'ba36b97a41e7faf742ab09bf88405ac04f99599a', 2, 'no_image.jpg', 1, '2018-05-19 07:00:12'),
-(3, 'Default User', 'user', '12dea96fec20593566ab75692c9949596833adc9', 3, 'no_image.jpg', 1, '2018-05-19 07:00:37'),
-(4, 'faiz', 'admin', 'd033e22ae348aeb5660fc2140aec35850c4da997', 1, 'no_image.jpg', 1, NULL);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_groups`
---
-
-CREATE TABLE `user_groups` (
-  `id` int(11) NOT NULL,
-  `group_name` varchar(150) NOT NULL,
-  `group_level` int(11) NOT NULL,
-  `group_status` int(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `user_groups`
---
-
-INSERT INTO `user_groups` (`id`, `group_name`, `group_level`, `group_status`) VALUES
-(1, 'Admin', 1, 1),
-(2, 'special', 2, 1),
-(3, 'User', 3, 1),
-(4, 'gudang', 4, 1),
-(5, 'manager', 5, 1);
+INSERT INTO `sub_categories` (`id_subcategories`, `nm_subcategories`, `id_categories`) VALUES
+('0001', 'Sepatu Running', '0002'),
+('0002', 'Laptop', '0001'),
+('0003', 'TV', '0001'),
+('0004', 'Iphone X', '0003'),
+('0005', 'DSLR', '0004'),
+('0006', 'Kompor', '0005');
 
 -- --------------------------------------------------------
 
@@ -254,6 +235,7 @@ INSERT INTO `user_groups` (`id`, `group_name`, `group_level`, `group_status`) VA
 CREATE TABLE `warehouse` (
   `id_warehouse` varchar(10) NOT NULL,
   `nm_warehouse` varchar(20) NOT NULL,
+  `country` varchar(50) NOT NULL,
   `address` text NOT NULL,
   `status` varchar(20) NOT NULL,
   `heavy_max` int(10) NOT NULL,
@@ -323,43 +305,14 @@ ALTER TABLE `position`
 -- Indexes for table `sub_categories`
 --
 ALTER TABLE `sub_categories`
-  ADD PRIMARY KEY (`id_subcategories`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_level` (`user_level`);
-
---
--- Indexes for table `user_groups`
---
-ALTER TABLE `user_groups`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `group_level` (`group_level`);
+  ADD PRIMARY KEY (`id_subcategories`),
+  ADD KEY `id_categories` (`id_categories`);
 
 --
 -- Indexes for table `warehouse`
 --
 ALTER TABLE `warehouse`
   ADD PRIMARY KEY (`id_warehouse`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `user_groups`
---
-ALTER TABLE `user_groups`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
@@ -372,10 +325,10 @@ ALTER TABLE `employer`
   ADD CONSTRAINT `employer_ibfk_1` FOREIGN KEY (`id_position`) REFERENCES `position` (`id_position`);
 
 --
--- Constraints for table `users`
+-- Constraints for table `sub_categories`
 --
-ALTER TABLE `users`
-  ADD CONSTRAINT `FK_user` FOREIGN KEY (`user_level`) REFERENCES `user_groups` (`group_level`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `sub_categories`
+  ADD CONSTRAINT `sub_categories_ibfk_1` FOREIGN KEY (`id_categories`) REFERENCES `categories` (`id_categories`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
