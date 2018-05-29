@@ -16,24 +16,24 @@ if (isset($_POST['submit'])) {
 
   for($x = 0; $x < count($id_ware); $x++) {
     if ($ware[$x] != "" || $ware[$x] != "0") {
-      $query = "SELECT * FROM products WHERE name='$name[$x]' AND warehouse_id=$ware[$x]";
+      $query = "SELECT * FROM warehouse WHERE nm_warehouse='$name[$x]' AND id_warehouse=$ware[$x]";
       $result = $db->query($query);
       if ($result->num_rows > 0) {
         /*while($row = $result->fetch_assoc()) {
           $quantity = $row['quantity'] + $qty[$x];
         }*/
-        $query1="UPDATE products SET quantity=quantity+$qty[$x] WHERE name='$name[$x]' AND warehouse_id=$ware[$x]";
+        $query1="UPDATE item SET stock=stock+$qty[$x] WHERE nm_item='$name[$x]' AND id_warehouse=$ware[$x]";
         $db->query($query1);
-        $query1="UPDATE products SET quantity=quantity-$qty[$x] WHERE id='$id_prod[$x]' AND warehouse_id=$id_ware";
+        $query1="UPDATE item SET stock=stock-$qty[$x] WHERE id_item'$id_prod[$x]' AND id_warehouse=$id_ware";
         $db->query($query1);
       } else {
-        $query1 = "SELECT * FROM products WHERE id=$id_prod[$x] LIMIT 1";
+        $query1 = "SELECT * FROM item WHERE id_item=$id_prod[$x] LIMIT 1";
         $result1 = $db->query($query1);
         if ($result1->num_rows > 0) {
           while($row = $result1->fetch_assoc()) {
             $date = make_date();
-            $query2="INSERT INTO products (name, quantity, buy_price, sale_price, categorie_id, date, warehouse_id) VALUES('$row[name]', $qty[$x], $row[buy_price], $row[sale_price], $row[categorie_id], '$date', $ware[$x])";
-            $db->query($query2);
+            //$query2="INSERT INTO products (name, quantity, buy_price, sale_price, categorie_id, date, warehouse_id) VALUES('$row[name]', $qty[$x], $row[buy_price], $row[sale_price], $row[categorie_id], '$date', $ware[$x])";
+            //$db->query($query2);
           }
         }
       }
@@ -72,8 +72,8 @@ if (isset($_POST['submit'])) {
               <select class="form-control" name="product_warehouse">
                     <option value=""> Select a Warehouse</option>
                    <?php  foreach ($all_warehouse as $ware): ?>
-                     <option value="<?php echo (int)$ware['id']; ?>" <?php if($id === $ware['id']): echo "selected"; endif; ?>>
-                       <?php echo remove_junk($ware['name_warehouse']); ?></option>
+                     <option value="<?php echo (int)$ware['id_warehouse']; ?>" <?php if($id === $ware['id_warehouse']): echo "selected"; endif; ?>>
+                       <?php echo remove_junk($ware['nm_warehouse']); ?></option>
                    <?php endforeach; ?>
                  </select>
            </div>

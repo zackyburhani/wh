@@ -146,7 +146,7 @@ if(isset($_POST['update_location'])){
         <?php foreach($all_categories as $a_location): ?>
           <tr>
            <td class="text-center"><?php echo count_id();?></td>
-           <td class="text-center"><?php echo remove_junk(ucwords($a_location['unit']))?></td>
+           <td class="text-center"><a href="#detilItem<?php echo $a_location['id_location'];?>" data-toggle="modal" title="Detail"><?php echo remove_junk(ucwords($a_location['unit']))?></a></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_location['floor']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_location['room']))?></td>
             <td class="text-center"><?php echo remove_junk(ucwords($a_location['id_warehouse']))?></td>
@@ -193,7 +193,7 @@ if(isset($_POST['update_location'])){
         </div>  
         <div class="form-group">
           <label class="control-label">Room</label>
-          <textarea type="name" class="form-control" name="room"></textarea>
+          <input type="name" class="form-control" name="room">
           
         </div>
         <div class="form-group">
@@ -235,7 +235,7 @@ if(isset($_POST['update_location'])){
           <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_location['floor'])); ?>" name="floor">
         </div>  
         <div class="form-group">
-          <label class="control-label">Address</label>
+          <label class="control-label">Room</label>
           <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_location['room'])); ?>" name="room">
         </div> 
         <div class="form-group">
