@@ -273,6 +273,7 @@ if(isset($_POST['update_warehouse'])){
 </div>
 <?php endforeach;?>
 <!-- END MODAL UPDATE WAREHOUSE -->
+<!-- END MODAL UPDATE WAREHOUSE -->
 
 <!-- MODAL DELETE WAREHOUSE -->
 <?php foreach($all_categories as $a_warehouse): ?>
