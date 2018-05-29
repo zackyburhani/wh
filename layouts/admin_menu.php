@@ -16,20 +16,16 @@
    </ul>
   </li>
   <li>
-    <a href="categorie.php" >
+    <a href="categories.php" >
       <i class="glyphicon glyphicon-indent-left"></i>
       <span>Categories</span>
     </a>
   </li>
   <li>
-    <a href="#" class="submenu-toggle">
+    <a href="product.php" class="submenu-toggle">
       <i class="glyphicon glyphicon-th-large"></i>
       <span>Products</span>
     </a>
-    <ul class="nav submenu">
-       <li><a href="product.php">Manage products</a> </li>
-       <li><a href="add_product.php">Add product</a> </li>
-   </ul>
   </li>
  
   <li>

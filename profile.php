@@ -5,11 +5,11 @@
    page_require_level(3);
 ?>
   <?php
-  $user_id = (int)$_GET['id'];
+  $user_id = $_GET['id'];
   if(empty($user_id)):
     redirect('home.php',false);
   else:
-    $user_p = find_by_id('users',$user_id);
+    $user_p = find_by_employer('employer',$user_id);
   endif;
 ?>
 <?php include_once('layouts/header.php'); ?>
@@ -18,9 +18,9 @@
        <div class="panel profile">
          <div class="jumbotron text-center bg-red">
             <img class="img-circle img-size-2" src="uploads/users/<?php echo $user_p['image'];?>" alt="">
-           <h3><?php echo first_character($user_p['name']); ?></h3>
+           <h3><?php echo first_character($user_p['nm_employer']); ?></h3>
          </div>
-        <?php if( $user_p['id'] === $user['id']):?>
+        <?php if( $user_p['id_employer'] === $user['id_employer']):?>
          <ul class="nav nav-pills nav-stacked">
           <li><a href="edit_account.php"> <i class="glyphicon glyphicon-edit"></i> Edit profile</a></li>
          </ul>

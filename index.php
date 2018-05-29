@@ -3,32 +3,27 @@
   require_once('includes/load.php');
   if($session->isUserLoggedIn(true)) { redirect('home.php', false);}
 ?>
-<?php include_once('layouts/header.php'); ?>
-
-<style type="text/css">
-  body{
-    background-color: #003380;
-  }
-</style>
-
+  
 <div class="login-page">
     <div class="text-center">
-       <h1>Welcome</h1>
-       <p>Sign in to start your session</p>
+      <img src="img/logo-ikea.png" width="100%" style="padding-top: 40px; padding-bottom: 30px">
+<!--        <h1>Welcome</h1>
+       <p>Sign in to start your session</p> -->
      </div>
      <?php echo display_msg($msg); ?>
       <form method="post" action="auth.php" class="clearfix">
         <div class="form-group">
-              <label for="username" class="control-label">Username</label>
-              <input type="name" class="form-control" name="username" placeholder="Username">
+          <label for="username" class="control-label">Username</label>
+          <input type="name" class="form-control" name="username" placeholder="Username">
         </div>
         <div class="form-group">
-            <label for="Password" class="control-label">Password</label>
-            <input type="password" name= "password" class="form-control" placeholder="password">
+          <label for="Password" class="control-label">Password</label>
+          <input type="password" name= "password" class="form-control" placeholder="password">
         </div>
         <div class="form-group">
-                <button type="submit" class="btn btn-info  btn-block  ">Login</button>
+          <button type="submit" class="btn btn-info btn-block pull-right">Login</button>
         </div>
     </form>
 </div>
-<?php include_once('layouts/footer.php'); ?>
+
+<?php include_once('layouts/header.php'); ?>
