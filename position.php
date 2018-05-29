@@ -123,7 +123,7 @@
           <tr>
             <th class="text-center" style="width: 50px;">No. </th>
             <th class="text-center">Position Name</th>
-            <th class="text-center" style="width: 100px;">Actions</th>
+            <th class="text-center" style="width: 150px;">Actions</th>
           </tr>
         </thead>
         <tbody>

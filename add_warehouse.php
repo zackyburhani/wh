@@ -4,7 +4,7 @@
   // Checkin What level user has permission to view this page
   page_require_level(1);
   
-  $all_categories = find_all1('warehouse')
+  $all_categories = find_all1('warehouse');
 ?>
 
 <!-- INSERT WAREHOUSE -->
@@ -12,6 +12,7 @@
  if(isset($_POST['add_warehouse'])){
    $req_field = array('warehousename');
    validate_fields($req_field);
+   $id_wh   = autonumber('id_warehouse','warehouse');
    $cat_name = remove_junk($db->escape($_POST['warehousename']));
    $country = remove_junk($db->escape($_POST['country']));
    $address = remove_junk($db->escape($_POST['address']));
@@ -19,8 +20,8 @@
    $heavymax = remove_junk($db->escape($_POST['heavymax']));
    $consumed = remove_junk($db->escape($_POST['consumed']));
    if(empty($errors)){
-      $sql  = "INSERT INTO warehouse (nm_warehouse,country,address,status,heavy_max,heavy_consumed)";
-      $sql .= " VALUES ('{$cat_name}','{$country}','{$address}','{$status}','{$heavymax}','{$consumed}')";
+      $sql  = "INSERT INTO warehouse (id_warehouse,nm_warehouse,country,address,status,heavy_max,heavy_consumed)";
+      $sql .= " VALUES ('{$id_wh}','{$cat_name}','{$country}','{$address}','{$status}','{$heavymax}','{$consumed}')";
 
       $getAllWarehouseName = "SELECT nm_warehouse FROM warehouse where nm_warehouse = '$cat_name'";
       $ada=$db->query($getAllWarehouseName) or die(mysql_error());
@@ -82,6 +83,9 @@ if(isset($_POST['update_warehouse'])){
   $req_field = array('idwarehouse');
   validate_fields($req_field);
   $idwarehouse = remove_junk($db->escape($_POST['idwarehouse']));
+
+
+
   if(empty($errors)){
         $sql = "DELETE FROM warehouse WHERE id_warehouse='{$idwarehouse}'";
      $result = $db->query($sql);
