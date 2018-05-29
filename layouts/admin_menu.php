@@ -40,6 +40,20 @@
   </li>
 
   <li>
+    <a href="add_package.php" class="submenu-toggle">
+      <i class="glyphicon glyphicon-th-large"></i>
+       <span>Add Package</span>
+      </a>
+  </li>
+
+  <li>
+    <a href="po.php" class="submenu-toggle">
+      <i class="glyphicon glyphicon-th-large"></i>
+       <span>Purchase Order</span>
+      </a>
+  </li>
+
+  <li>
     <a href="add_menu.php" >
       <i class="glyphicon glyphicon-list-alt"></i>
       <span>Add New Menu</span>

@@ -86,7 +86,7 @@ function find_warehouse($table) {
    global $db;
    if(tableExists($table))
    {
-     return find_by_sql("SELECT * FROM ".$db->escape($table)." whare name_warehouse='$_GET[name_warehouse]'");
+     return find_by_sql("SELECT * FROM ".$db->escape($table)." whare nm_warehouse='$_GET[nm_warehouse]'");
    }
 }
 
@@ -94,7 +94,7 @@ function find_all2($table) {
   global $db;
   if(tableExists($table))
   {
-    return find_by_sql("SELECT * FROM ".$db->escape($table)." where warehouse_id='$_GET[id]'");
+    return find_by_sql("SELECT * FROM ".$db->escape($table)." where id_warehouse='$_GET[id]'");
   }
 }
 
@@ -138,6 +138,21 @@ function find_by_sql($sql)
   $result = $db->query($sql);
   $result_set = $db->while_loop($result);
  return $result_set;
+}
+/*--------------------------------------------------------------*/
+/*  Function for Find data from table by id warehouse
+/*--------------------------------------------------------------*/
+function find_by_id_warehouse($table,$idwarehouse)
+{
+  global $db;
+  $id = (int)$idwarehouse;
+    if(tableExists($table)){
+          $sql = $db->query("SELECT * FROM {$db->escape($table)} WHERE id_warehouse='{$db->escape($id)}' LIMIT 1");
+          if($result = $db->fetch_assoc($sql))
+            return $result;
+          else
+            return null;
+     }
 }
 /*--------------------------------------------------------------*/
 /*  Function for Find data from table by id
@@ -190,6 +205,36 @@ function find_by_id_cat($table,$id_categories)
           else
             return null;
      }
+}
+/*--------------------------------------------------------------*/
+/*  Function for Find data from table by id
+/*--------------------------------------------------------------*/
+function find_by_idwarehouse($table,$id)
+{
+  global $db;
+  $id = (int)$id;
+    if(tableExists($table)){
+          $sql = $db->query("SELECT * FROM {$db->escape($table)} WHERE id_warehouse='{$db->escape($id)}' LIMIT 1");
+          if($result = $db->fetch_assoc($sql))
+            return $result;
+          else
+            return null;
+     }
+}
+/*--------------------------------------------------------------*/
+/* Function for Delete data from table by id warehouse
+/*--------------------------------------------------------------*/
+function delete_by_id_warehouse($table,$idwarehouse)
+{
+  global $db;
+  if(tableExists($table))
+   {
+    $sql = "DELETE FROM ".$db->escape($table);
+    $sql .= " WHERE id_warehouse=". $db->escape($id);
+    $sql .= " LIMIT 1";
+    $db->query($sql);
+    return ($db->affected_rows() === 1) ? true : false;
+   }
 }
 /*--------------------------------------------------------------*/
 /* Function for Delete data from table by id

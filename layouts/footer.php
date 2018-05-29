@@ -19,6 +19,7 @@
 
 <script type="text/javascript">
 	$(document).ready( function () {
+      $('#tableWarehouse').DataTable();
     	$('#datatableProduct').DataTable();
       $('#CategoriesTable').DataTable();
       $('#tablePosition').DataTable();
