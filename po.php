@@ -102,39 +102,79 @@ if(isset($_POST['update_warehouse'])){
    </div>
 </div>
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-6">
     <div class="panel panel-default">
     <div class="panel-heading clearfix">
       <strong>
         <span class="glyphicon glyphicon-th"></span>
         <span>PURCHASE ORDER</span>
      </strong>
-       <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#addpo"><span class="glyphicon glyphicon-plus"></span> Entry PO Transaction
-        </button>
+    </div>
+     <div class="panel-body">
+      <form method="post" action="">
+        <div class="form-group">
+          <label class="control-label">No. PO</label>
+          <input type="text" class="form-control" name="warehousename">
+        </div>
+        <div class="form-group">
+          <label class="control-label">Warehouse</label>
+          <input type="text" class="form-control" name="country">
+        </div> 
+      </form>
+     </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="panel panel-default">
+    <div class="panel-heading clearfix">
+    </div>
+     <div class="panel-body">
+      <form method="post" action="">
+        <div class="form-group">
+          <label class="control-label">PO Date</label>
+          <input type="date" class="form-control" name="warehousename">
+        </div>
+        <div class="form-group">
+          <label class="control-label">Send Date</label>
+          <input type="date" class="form-control" name="country">
+        </div>
+        <div class="form-group">
+          <label class="control-label">For Warehouse</label>
+          <input type="text" class="form-control" name="country">
+        </div>   
+      </form>
+     </div>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="panel panel-default">
+    <div class="panel-heading clearfix">
+      <strong>
+        <span class="glyphicon glyphicon-th"></span>
+        <span>WAREHOUSE</span>
+     </strong>
     </div>
      <div class="panel-body">
       <table class="table table-bordered" id="">
         <thead>
           <tr>
-            <th class="text-center" style="width: 25px;">No.PO</th>
-            <th class="text-center" style="width: 25px;">Date</th>
-            <th class="text-center" style="width: 25px;">Item</th>
-            <th class="text-center" style="width: 25px;">Qty</th>
-            <th class="text-center" style="width: 25px;">From Warehouse</th>
-            <th class="text-center" style="width: 25px;">Total Weight</th>
-            <th class="text-center" style="width: 25px;">Status</th>
-            <th class="text-center" style="width: 50px;">Actions</th>
+            <th class="text-center" style="width: 50px;">No</th>
+            <th class="text-center" style="width: 50px;">Warehouse</th>
+            <th class="text-center" style="width: 50px;">Country</th>
+            <th class="text-center" style="width: 50px;">Address</th>
+            <th class="text-center" style="width: 50px;">Status</th>
+            <th class="text-center" style="width: 50px;">Heavy Max</th>
+            <th class="text-center" style="width: 50px;">Area Consumed</th>
+            <th class="text-center" style="width: 100px;">Actions</th>
           </tr>
         </thead>
         <tbody>
-        
+        <?php foreach($all_categories as $a_warehouse): ?>
           <tr>
            <td class="text-center"><?php echo count_id();?></td>
-           <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['date_po']))?></td>
-           <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['nm_item']))?></td>
-           <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['qty']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['nm_warehouse']))?></td>
-           <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['total_weight']))?></td>
+           <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['country']))?></td>
+           <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['address']))?></td>
            <td class="text-center">
             <?php if($a_warehouse['status'] === '1'): ?>
             <span class="label label-success"><?php echo "Produce"; ?></span>
@@ -142,16 +182,18 @@ if(isset($_POST['update_warehouse'])){
             <span class="label label-danger"><?php echo "Not Produce"; ?></span>
             <?php endif;?>
            </td>
+           <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['heavy_max']))?></td>
+           <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['heavy_consumed']))?></td>
            <td class="text-center">
                 <button data-target="#updateWarehouse<?php echo (int)$a_warehouse['id_warehouse'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
                 </button>
-                <button type="button" class="btn btn-danger btn-md" data-toggle="modal" data-target="#deleteWarehouse" title="Delete"><i class="glyphicon glyphicon-trash"></i>
+                <button type="button" class="btn btn-danger btn-md" data-toggle="modal" data-target="#deleteWarehouse<?php echo (int)$a_warehouse['id_warehouse'];?>" title="Delete"><i class="glyphicon glyphicon-trash"></i>
                 </button>
 
            </td>
           </tr>
-        
+        <?php endforeach;?>
        </tbody>
      </table>
      </div>
