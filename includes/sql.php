@@ -35,6 +35,13 @@ function find_all2($table) {
     return find_by_sql("SELECT * FROM ".$db->escape($table)." where warehouse_id='$_GET[id]'");
   }
 }
+function find_all3($table) {
+  global $db;
+  if(tableExists($table))
+  {
+    return find_by_sql("SELECT * FROM ".$db->escape($table)." where id_location ='$_GET[id_location]'");
+  }
+}
 /*--------------------------------------------------------------*/
 /* Function for Perform queries
 /*--------------------------------------------------------------*/
