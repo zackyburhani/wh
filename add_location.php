@@ -5,18 +5,19 @@
   page_require_level(1);
   
   $all_categories = find_all1('location');
+    $all_warehouse = find_all1('warehouse');
 ?>
 
 <!-- INSERT WAREHOUSE -->
 <?php
  if(isset($_POST['add_location'])){
-   $req_field = array('unit','floor','room','id_warehouse');
+   $req_field = array('unit','floor','room','location_add');
    validate_fields($req_field);
    $id_loc   = autonumber('id_location','location');
    $cat_unit = remove_junk($db->escape($_POST['unit']));
    $floor = remove_junk($db->escape($_POST['floor']));
    $room = remove_junk($db->escape($_POST['room']));
-   $id_wh = remove_junk($db->escape($_POST['id_warehouse']));
+   $id_wh = remove_junk($db->escape($_POST['location_add']));
    if(empty($errors)){
       $sql  = "INSERT INTO location (id_location,unit,floor,room,id_warehouse)";
       $sql .= " VALUES ('{$id_loc}','{$cat_unit}','{$floor}','{$room}','{$id_wh}')";
@@ -65,7 +66,7 @@ if(isset($_POST['update_location'])){
   $cat_unit = remove_junk($db->escape($_POST['unit']));
   $floor = remove_junk($db->escape($_POST['floor']));
   $room = remove_junk($db->escape($_POST['room']));
-  $id_wh = remove_junk($db->escape($_POST['id_warehouse']));
+  $id_wh = remove_junk($db->escape($_POST['location_add']));
   $idlocation = remove_junk($db->escape($_POST['id_location']));
   if(empty($errors)){
         $sql = "UPDATE location SET unit='{$cat_unit}',floor='{$floor}',room='{$room}',id_warehouse='{$id_wh}'";
@@ -167,7 +168,7 @@ if(isset($_POST['update_location'])){
   </div>
 </div>
 
-<!-- MODAL ADD NEW WAREHOUSE -->
+<!-- MODAL ADD NEW WAREHOUSE --><br>
 <div class="modal fade" id="addLocation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -197,8 +198,15 @@ if(isset($_POST['update_location'])){
           
         </div>
         <div class="form-group">
-          <label class="control-label">Warehouse</label>
-          <input type="name" class="form-control" name="id_warehouse">
+          <label class="control-label">Select Warehouse</label>
+           <select class="form-control" name="location_add">
+             <option>select a warehouse</option>
+            <?php  foreach ($all_warehouse as $ware): ?>
+
+            <option  value="<?php echo (int)$ware['id_warehouse']; ?>"> <?php echo remove_junk($ware['nm_warehouse']); ?> </option>
+            <?php endforeach; ?>
+                 </select>
+          <!--<input type="name" class="form-control" name="id_warehouse">-->
         </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
