@@ -4,18 +4,16 @@
 ?>
 <?php
 // Checkin What level user has permission to view this page
- page_require_level(2);
+ page_require_level(1);
 //pull out all user form database
- $user = current_user();
- $all_users = find_all_employee($user['id_warehouse']);
-
+ $all_users = find_all_admin();
 ?>
 
-<!-- ADD NEW USER -->
+<!-- ADD NEW ADMINISTRATOR -->
 <?php
   if(isset($_POST['add_user'])){
 
-   $req_fields = array('nm_employer','username','password','password2','id_position' );
+   $req_fields = array('nm_employer','username','password','password2','id_position','id_warehouse');
    validate_fields($req_fields);
 
    if(empty($errors)){
@@ -24,7 +22,7 @@
        $username      = remove_junk($db->escape($_POST['username']));
        $password      = remove_junk($db->escape($_POST['password']));
        $id_position   = remove_junk($db->escape($_POST['id_position']));
-       $id_warehouse  = $user['id_warehouse'];
+       $id_warehouse  = remove_junk($db->escape($_POST['id_warehouse']));
        $status        = 1;
        $password = sha1($password);
         $query = "INSERT INTO employer (";
@@ -35,23 +33,24 @@
         if($db->query($query)){
           //sucess
           $session->msg('s',"User account has been creted! ");
-          redirect('users.php', false);
+          redirect('superusers.php', false);
         } else {
           //failed
           $session->msg('d',' Sorry failed to create account!');
-          redirect('users.php', false);
+          redirect('superusers.php', false);
         }
    } else {
      $session->msg("d", $errors);
-      redirect('users.php',false);
+      redirect('superusers.php',false);
    }
  }
- // $all_position = find_all_position('position');
- $all_position = find_all_position_admin2($user['id_warehouse']);
+ $all_warehouse = find_all_position('warehouse');
+ $all_position  =  find_all_Position_admin();
+ $find_adminName = find_adminName();
 ?>
-<!-- END NEW USER -->
+<!-- END NEW ADMINISTRATOR -->
 
-<!-- UPDATE DATA USER -->
+<!-- UPDATE DATA ADMINISTRATOR -->
 <?php
   if(isset($_POST['update_user'])){
 
@@ -65,14 +64,14 @@
       $password     = remove_junk($db->escape($_POST['password']));
       $id_position  = remove_junk($db->escape($_POST['id_position']));
       $status       = remove_junk($db->escape($_POST['status']));
-      $id_warehouse = $user['id_warehouse']; 
+      $id_warehouse = remove_junk($db->escape($_POST['id_warehouse']));
 
       if($password == null){      
         $query  = "UPDATE employer SET id_employer='{$id_employer}',nm_employer='{$nm_employer}',username='{$username}',id_position='{$id_position}',status='{$status}',id_warehouse='{$id_warehouse}' WHERE id_employer='{$id_employer}'";
         $result = $db->query($query);
       } else {
         $password = sha1($password);
-        $queryPass  = "UPDATE employer SET id_employer='{$id_employer}',nm_employer='{$nm_employer}',username='{$username}',password='{$password}',id_position='{$id_position}',status='{$status}' WHERE id_employer='{$id_employer}'";
+        $queryPass  = "UPDATE employer SET id_employer='{$id_employer}',nm_employer='{$nm_employer}',username='{$username}',password='{$password}',id_position='{$id_position}',status='{$status}',id_warehouse='{$id_warehouse}' WHERE id_employer='{$id_employer}'";
 
         $result = $db->query($queryPass);
       }
@@ -80,35 +79,35 @@
       if($result && $db->affected_rows() === 1){
           //sucess
           $session->msg('s',"User Has Been Updated! ");
-          redirect('users.php', false);
+          redirect('superusers.php', false);
         } else {
           //failed
           $session->msg('d',' Sorry Failed To Updated User!');
-          redirect('users.php', false);
+          redirect('superusers.php', false);
         }
    } else {
      $session->msg("d", $errors);
-    redirect('users.php', false);
+    redirect('superusers.php', false);
    }
  }
 ?>
-<!-- END UPDATE DATA USER -->
+<!-- END UPDATE DATA ADMINISTRATOR -->
 
-<!-- DELETE DATA USER -->
+<!-- DELETE DATA ADMINISTRATOR -->
 <?php
   if(isset($_POST['delete_user'])){
     $id_employer = remove_junk($db->escape($_POST['id_employer']));
     $delete_id   = delete('id_employer','employer',$id_employer);
     if($delete_id){
       $session->msg("s","User has been deleted.");
-      redirect('users.php');
+      redirect('superusers.php');
     } else {
       $session->msg("d","User deletion failed");
-      redirect('users.php');
+      redirect('superusers.php');
     }  
   }
 ?>
-<!-- END DELETE DATA USER -->
+<!-- END DELETE DATA ADMINISTRATOR -->
 
 <?php include_once('layouts/header.php'); ?>
 <div class="row">
@@ -122,22 +121,23 @@
       <div class="panel-heading clearfix">
         <strong>
           <span class="glyphicon glyphicon-th"></span>
-          <span>Users</span>
+          <span>Administrators</span>
        </strong>
-         <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#addUser"><span class="glyphicon glyphicon-plus"></span> Add New User
+         <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#addUser"><span class="glyphicon glyphicon-plus"></span> Add New Administrator
         </button>
       </div>
      <div class="panel-body">
       <table class="table table-bordered table-striped" id="tableUser">
         <thead>
           <tr>
-            <th class="text-center" style="width: 10px;">No.</th>
-            <th class="text-center">Name </th>
-            <th class="text-center">Username</th>
-            <th class="text-center" style="width: 15%;">User Role</th>
-            <th class="text-center" style="width: 10%;">Status</th>
-            <th class="text-center" style="width: 20%;">Last Login</th>
-            <th class="text-center" style="width: 13  0px;">Actions</th>
+            <th class="text-center" style="width: 5%;">No.</th>
+            <th class="text-center" style="width: 10%;">Name </th>
+            <th class="text-center" style="width: 10%;">Username</th>
+            <th class="text-center" style="width: 10%;">User Role</th>
+            <th class="text-center" style="width: 5%;">Status</th>
+            <th class="text-center" style="width: 10%;">Last Login</th>
+            <th class="text-center" style="width: 9%;">Warehouse</th>
+            <th class="text-center" style="width: 13%;">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -155,6 +155,7 @@
           <?php endif;?>
            </td>
            <td><?php echo read_date($a_user['last_login'])?></td>
+           <td><?php echo remove_junk($a_user['nm_warehouse'])?></td>
            <td class="text-center"> 
               <button data-target="#updateUser<?php echo (int)$a_user['id_employer'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
@@ -173,7 +174,7 @@
   </div>
 </div>
 
-<!-- Entry Data User -->
+<!-- Entry Data ADMINISTRATOR -->
 <div class="modal fade" id="addUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -181,11 +182,11 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-user"></span>  Add New User</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-user"></span>  Add New Administrator For Inter IKEA</h4>
         
       </div>
       <div class="modal-body">
-        <form method="post" action="users.php">
+        <form method="post" action="superusers.php">
             <div class="form-group">
               <label for="name">Name</label>
               <input type="text" class="form-control" name="nm_employer" placeholder="Full Name" required>
@@ -204,13 +205,17 @@
             </div>
             <div class="form-group">
               <label for="level">User Role</label>
-                <select class="form-control" name="id_position">
-                  <?php if($all_position == null) { ?>
-                   <option value="">-</option> 
-                  <?php } ?>
-                  <?php foreach ($all_position as $group ):?>
-                   <option value="<?php echo ucwords($group['id_position']);?>"><?php echo ucwords($group['nm_position']);?></option>
-                  <?php endforeach;?>
+                <?php foreach($find_adminName as $name) : ?>
+                  <input type="hidden" class="form-control" name="id_position" value="<?php echo remove_junk($name['id_position']); ?>">
+                  <input type="text" class="form-control" readonly value="<?php echo remove_junk($name['nm_position']); ?>">
+                <?php endforeach;?>
+            </div>
+            <div class="form-group">
+              <label for="level">Warehouse</label>
+                <select class="form-control" name="id_warehouse">
+                  <?php foreach ($all_warehouse as $group ):?>
+                   <option value="<?php echo ucwords($group['id_warehouse']);?>"><?php echo ucwords($group['nm_warehouse']);?></option>
+                <?php endforeach;?>
                 </select>
             </div>
           </div>
@@ -222,9 +227,9 @@
     </div>
   </div>
 </div>
-<!-- END Entry Data User -->
+<!-- END Entry Data ADMINISTRATOR -->
 
-<!-- Update Entry Data User -->
+<!-- Update Entry Data ADMINISTRATOR -->
 <?php foreach($all_users as $a_user): ?>
   <div class="modal fade" id="updateUser<?php echo (int)$a_user['id_employer'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -233,11 +238,11 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-user"></span> Update Data User</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-user"></span> Update Data Administrator</h4>
         
       </div>
       <div class="modal-body">
-        <form method="post" action="users.php">
+        <form method="post" action="superusers.php">
           <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_user['id_employer'])); ?>" name="id_employer">
             <div class="form-group">
                 <label for="name">Name</label>
@@ -258,11 +263,10 @@
             
             <div class="form-group">
               <label for="level">User Role</label>
-                <select class="form-control" name="id_position">
-                  <?php foreach ($all_position as $group ):?>
-                   <option <?php if( $group['id_position']==$a_user['id_position']){echo "selected"; } ?> value="<?php echo ucwords($group['id_position']);?>"><?php echo ucwords($group['nm_position']);?></option>
+                <?php foreach($find_adminName as $name) : ?>
+                  <input type="hidden" class="form-control" name="id_position" value="<?php echo remove_junk($name['id_position']); ?>">
+                  <input type="text" class="form-control" readonly value="<?php echo remove_junk($name['nm_position']); ?>">
                 <?php endforeach;?>
-                </select>
             </div>
             
             <div class="form-group">
@@ -270,6 +274,14 @@
                 <select class="form-control" name="status">
                    <option <?php if( $a_user['status']=='1'){echo "selected"; } ?> value="1">Active</option>
                    <option <?php if( $a_user['status']=='2'){echo "selected"; } ?> value="2">Deactive</option>
+                </select>
+            </div>
+            <div class="form-group">
+              <label for="level">Warehouse</label>
+                <select class="form-control" name="id_warehouse">
+                  <?php foreach ($all_warehouse as $group ):?>
+                   <option <?php if( $group['id_warehouse']==$a_user['id_warehouse']){echo "selected"; } ?> value="<?php echo ucwords($group['id_warehouse']);?>"><?php echo ucwords($group['nm_warehouse']);?></option>
+                <?php endforeach;?>
                 </select>
             </div>
           </div>
@@ -282,7 +294,7 @@
   </div>
 </div>
 <?php endforeach;?>
-<!-- END Update Entry Data User -->
+<!-- END Update Entry Data ADMINISTRATOR -->
 
 <!-- Delete Modal -->
 <?php foreach($all_users as $a_user): ?> 
@@ -297,7 +309,7 @@
         </div>
         <div class="modal-body">
           Are You Sure Want To Delete <b><u><?php echo remove_junk(ucwords($a_user['nm_employer'])); ?></u></b> ?
-        <form method="post" action="users.php" class="clearfix">
+        <form method="post" action="superusers.php" class="clearfix">
           <div class="form-group">
             <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_user['id_employer'])); ?>" name="id_employer">
           </div>    

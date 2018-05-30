@@ -2,11 +2,15 @@
   $page_title = 'All categories';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
-  page_require_level(1);
+  page_require_level(3);
   //get all categories
-  $all_categories    = find_all1('categories');
-  $all_subcategories = find_all1('sub_categories');
-  $join_categories   = find_allSubcategories();
+  $user = current_user();
+  $id = $user['id_warehouse'];
+  $all_categories    = find_all_categories('categories',$id);
+  $all_subcategories = find_all_subcategories('sub_categories',$id);
+  $join_categories   = find_allSubcategories($id);
+
+
 ?>
 
 <!-- ADD NEW CATEGORY -->
@@ -15,17 +19,18 @@
     $req_field = array('categories-name');
     validate_fields($req_field_id);
     validate_fields($req_field);
-    $id_cat   = autonumber('id_categories','categories');
-    $cat_name = remove_junk($db->escape($_POST['categories-name']));
+    $id_cat       = autonumber('id_categories','categories');
+    $cat_name     = remove_junk($db->escape($_POST['categories-name']));
+    $id_warehouse = $user['id_warehouse'];
 
-    if(find_by_categoryName($_POST['categories-name']) === false ){
-      $session->msg('d','<b>Sorry!</b> Entered Category Name Already In Database!');
-      redirect('categories.php', false);
-    }
+    // if(find_by_categoryName($_POST['categories-name']) === false ){
+    //   $session->msg('d','<b>Sorry!</b> Entered Category Name Already In Database!');
+    //   redirect('categories.php', false);
+    // }
 
     if(empty($errors)){
-      $sql  = "INSERT INTO categories (id_categories,nm_categories)";
-      $sql .= " VALUES ('{$id_cat}','{$cat_name}')";
+      $sql  = "INSERT INTO categories (id_categories,nm_categories,id_warehouse)";
+      $sql .= " VALUES ('{$id_cat}','{$cat_name}','{$id_warehouse}')";
       if($db->query($sql)){
         $session->msg("s", "Successfully Added Category");
         redirect('categories.php',false);
@@ -49,8 +54,9 @@
     if(empty($errors)){
       $nm_categories = remove_junk($db->escape($_POST['nm_categories']));
       $id_categories = remove_junk($db->escape($_POST['id_categories']));
+      $id_warehouse = $user['id_warehouse'];
       $query  = "UPDATE categories SET ";
-      $query .= "nm_categories='{$nm_categories}',id_categories='{$id_categories}'";
+      $query .= "nm_categories='{$nm_categories}',id_categories='{$id_categories}',id_warehouse='{$id_warehouse}'";
       $query .= "WHERE id_categories='{$id_categories}'";
       $result = $db->query($query);
         if($result && $db->affected_rows() === 1){

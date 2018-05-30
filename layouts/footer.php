@@ -25,6 +25,8 @@
       $('#tablePosition').DataTable();
       $('#tableUser').DataTable();
       $('#SubcategoriesTable').DataTable();
+      $('#tablePackage').DataTable();
+
   	});
 </script>
 

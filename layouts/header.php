@@ -14,6 +14,13 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker3.min.css" />
     <link rel="stylesheet" href="libs/css/main.css" />
+
+    <!-- DATATABLES -->
+    <link rel="stylesheet" href="libs/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="libs/datatables/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="libs/datatables/jquery.dataTables.css">
+    <link rel="stylesheet" href="libs/datatables/jquery.dataTables.min.css">
+    <!-- END DATATABLES -->
   </head>
   <body>
   <?php  if ($session->isUserLoggedIn(true)): ?>
@@ -56,16 +63,20 @@
      </div>
     </header>
     <div class="sidebar">
-      <?php if($user['id_position'] === '0001'): ?>
+      <?php if($user['level_user'] === '0'): ?>
         <!-- admin menu -->
       <?php include_once('admin_menu.php');?>
 
-      <?php elseif($user['id_position'] === '0002'): ?>
+      <?php elseif($user['level_user'] === '1'): ?>
         <!-- Special user -->
       <?php include_once('special_menu.php');?>
 
-      <?php elseif($user['id_position'] === '0003'): ?>
+      <?php elseif($user['level_user'] === '2'): ?>
         <!-- User menu -->
+      <?php include_once('user_menu.php');?>
+
+      <?php elseif($user['level_user'] === '3'): ?>
+
       <?php include_once('user_menu.php');?>
 
       <?php endif;?>

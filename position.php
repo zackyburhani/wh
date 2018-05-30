@@ -2,35 +2,40 @@
   $page_title = 'All Group';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
-   page_require_level(1);
+   page_require_level(2);
+   $all_warehouse = find_all1('warehouse');
+   $user = current_user();
+
 ?>
 
 <!-- ADD NEW POSITION -->
 <?php
   if(isset($_POST['add_position'])){
 
-   $req_fields = array('nm_position');
+   $req_fields = array('nm_position','level_user');
    validate_fields($req_fields);
 
-   if(find_by_positionName($_POST['nm_position']) === false ){
-     $session->msg('d','<b>Sorry!</b> Entered Position Name Already In Database!');
-     redirect('position.php', false);
-   }
+   // if(find_by_positionName($_POST['nm_position']) === false ){
+   //   $session->msg('d','<b>Sorry!</b> Entered Position Name Already In Database!');
+   //   redirect('position.php', false);
+   // }
    if(empty($errors)){
-        $nm_position = remove_junk($db->escape($_POST['nm_position']));
-        $id_position = autonumber('id_position','position');
+        $level_user   = remove_junk($db->escape($_POST['level_user']));
+        $nm_position  = remove_junk($db->escape($_POST['nm_position']));
+        $id_position  = autonumber('id_position','position');
+        $id_warehouse = $user['id_warehouse'];
         $query  = "INSERT INTO position (";
-        $query .="id_position,nm_position";
+        $query .="id_position,nm_position,level_user,id_warehouse";
         $query .=") VALUES (";
-        $query .=" '{$id_position}','{$nm_position}'";
-        $query .=")";
+        $query .=" '{$id_position}','{$nm_position}','{$level_user}','{$id_warehouse}'";
+        $query .=")"; 
         if($db->query($query)){
           //sucess
-          $session->msg('s',"Position has been creted! ");
+          $session->msg('s',"Position Has Been Created! ");
           redirect('position.php', false);
         } else {
           //failed
-          $session->msg('d',' Sorry failed to create Position!');
+          $session->msg('d',' Sorry Failed To Create Position!');
           redirect('position.php', false);
         }
    } else {
@@ -38,7 +43,8 @@
       redirect('position.php',false);
    }
  }
- $all_position = find_all_position('position');
+
+ $all_position = find_all_position_admin2($user['id_warehouse']);
 ?>
 <!-- END NEW POSITION -->
 
@@ -49,10 +55,12 @@
    $req_fields = array('nm_position','id_position');
    validate_fields($req_fields);
    if(empty($errors)){
-         $nm_position = remove_junk($db->escape($_POST['nm_position']));
-         $id_position = remove_junk($db->escape($_POST['id_position']));
+        $level_user   = remove_junk($db->escape($_POST['level_user']));
+        $nm_position  = remove_junk($db->escape($_POST['nm_position']));
+        $id_position  = remove_junk($db->escape($_POST['id_position']));
+        $id_warehouse = $user['id_warehouse'];
         $query  = "UPDATE position SET ";
-        $query .= "nm_position='{$nm_position}',id_position='{$id_position}'";
+        $query .= "nm_position='{$nm_position}',id_position='{$id_position}',id_warehouse='{$id_warehouse}',level_user='{$level_user}'";
         $query .= "WHERE id_position='{$id_position}'";
         $result = $db->query($query);
          if($result && $db->affected_rows() === 1){
@@ -123,7 +131,8 @@
           <tr>
             <th class="text-center" style="width: 50px;">No. </th>
             <th class="text-center">Position Name</th>
-            <th class="text-center" style="width: 100px;">Actions</th>
+            <th class="text-center">Level User</th>
+            <th class="text-center" style="width: 150px;">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -131,6 +140,7 @@
           <tr>
            <td class="text-center"><?php echo count_id();?></td>
            <td><?php echo remove_junk(ucwords($a_position['nm_position']))?></td>
+           <td align="center"><?php echo remove_junk(ucwords($a_position['level_user']))?></td>
            <td class="text-center">
               <button data-target="#updatePosition<?php echo (int)$a_position['id_position'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                 <i class="glyphicon glyphicon-pencil"></i>
@@ -163,8 +173,16 @@
       <form method="post" action="position.php" class="clearfix">
         <div class="form-group">
           <label for="name" class="control-label">Name Position</label>
-          <input type="name" class="form-control" placeholder="New Position" name="nm_position" required>
-        </div>    
+          <input type="name" class="form-control" placeholder="New Position" name="nm_position" required> 
+        </div>
+        <div class="form-group">
+          <label for="name" class="control-label">Level User</label>
+          <select class="form-control" name="level_user">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>  
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
@@ -195,7 +213,19 @@
             <label for="name" class="control-label">Name Position</label>
             <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_position['id_position'])); ?>" name="id_position">
             <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_position['nm_position'])); ?>" name="nm_position" required>
-          </div>    
+          </div>
+          <div class="form-group">
+          <label for="name" class="control-label">Level User</label>
+          <select class="form-control" name="level_user">
+            <?php if($all_position == null) { ?>
+              <option value="">-</option>
+                <?php } else { ?>
+                   <option value="1">1</option>
+                   <option value="2">2</option>
+                   <option value="3">3</option>
+                <?php } ?> 
+          </select>  
+        </div>     
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>

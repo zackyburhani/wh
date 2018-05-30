@@ -2,7 +2,7 @@
   $page_title = 'Add Package';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
-  page_require_level(1);
+  page_require_level(2);
   
   $all_package = find_all1('package')
 ?>
@@ -119,7 +119,7 @@ if(isset($_POST['update_package'])){
         </button>
     </div>
      <div class="panel-body">
-      <table class="table table-bordered" id="">
+      <table class="table table-bordered" id="tablePackage">
         <thead>
           <tr>
             <th class="text-center" style="width: 50px;">No</th>
