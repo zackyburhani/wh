@@ -465,7 +465,8 @@ function tableExists($table){
   /*--------------------------------------------------------------*/
   /* Function for cheaking which user level has access to page
   /*--------------------------------------------------------------*/
-   function page_require_level($require_level){
+   function page_require_level($require_level)
+   {
      global $session;
      $current_user = current_user();
      $login_level = find_by_groupLevel($current_user['id_position']);
@@ -478,13 +479,7 @@ function tableExists($table){
            $session->msg('d','This level user has been band!');
            redirect('home.php',false);
       //cheackin log in User level and Require level is Less than or equal to
-     elseif($current_user['id_position'] <= (int)$require_level):
-              return true;
-      else:
-            $session->msg("d", "Sorry! you dont have permission to view the page.");
-            redirect('home.php', false);
         endif;
-
      }
    /*--------------------------------------------------------------*/
    /* Function for Finding all product name

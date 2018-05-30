@@ -6,15 +6,15 @@
     </a>
   </li>
   <li>
-    <a href="categorie.php" >
+    <a href="categories.php" >
       <i class="glyphicon glyphicon-indent-left"></i>
-      <span>Categorie</span>
+      <span>Categories</span>
     </a>
   </li>
   <li>
     <a href="#" class="submenu-toggle">
       <i class="glyphicon glyphicon-th-large"></i>
-      <span>Product</span>
+      <span>Products</span>
     </a>
     <ul class="nav submenu">
        <li><a href="product.php">Manage product</a> </li>
@@ -22,9 +22,9 @@
    </ul>
   </li>
   <li>
-    <a href="media.php" >
-      <i class="glyphicon glyphicon-picture"></i>
-      <span>Media</span>
+    <a href="po.php" >
+      <i class="glyphicon glyphicon-transfer"></i>
+      <span>Purchase Order</span>
     </a>
   </li>
 </ul>

@@ -154,7 +154,6 @@ if(isset($_POST['update_warehouse'])){
                 </button>
                 <button type="button" class="btn btn-danger btn-md" data-toggle="modal" data-target="#deleteWarehouse<?php echo (int)$a_warehouse['id_warehouse'];?>" title="Delete"><i class="glyphicon glyphicon-trash"></i>
                 </button>
-
            </td>
           </tr>
         <?php endforeach;?>
