@@ -134,6 +134,15 @@ function find_all2($table) {
   }
 }
 
+// function find_all3($table) {
+//   global $db;
+//   if(tableExists($table))
+//   {
+//     return find_by_sql("SELECT * FROM ".$db->escape($table)." where id_location ='$_GET[id_location]'");
+//   }
+// }
+
+
 //find all employee (zacky)
 function find_all_employee($id_warehouse){
       global $db;
@@ -176,6 +185,7 @@ function find_adminName(){
       $result = find_by_sql($sql);
       return $result;
   }
+
 
 /*--------------------------------------------------------------*/
 /* Function for Perform queries
