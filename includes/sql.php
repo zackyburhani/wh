@@ -118,6 +118,12 @@ function find_warehouse($table) {
    }
 }
 
+function find_po_warehouse($id_warehouse) {
+   global $db;
+     $sql = $db->query("SELECT nm_warehouse FROM employer JOIN warehouse ON employer.id_warehouse = warehouse.id_warehouse WHERE employer.id_warehouse = '{$db->escape($id_warehouse)}'");
+     return $db->fetch_assoc($sql);
+}
+
 function find_package($table) {
    global $db;
    if(tableExists($table))
@@ -490,6 +496,14 @@ function tableExists($table){
       return $result;
   }
   
+  function find_all_item_po($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = "SELECT * FROM item JOIN location ON item.id_location = location.id_location JOIN warehouse ON location.id_warehouse = warehouse.id_warehouse JOIN employer ON employer.id_warehouse=warehouse.id_warehouse AND employer.id_warehouse = '$id_warehouse' ";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
   /*--------------------------------------------------------------*/
   /* Function to update the last log in of a user
   /*--------------------------------------------------------------*/
