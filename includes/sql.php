@@ -61,6 +61,11 @@ function find_by_id_position($table,$id)
      }
 }
 
+//find all position (zacky)
+function find_all_PO($id) { 
+  return find_by_sql("SELECT * FROM po WHERE id_warehouse = '$id'");
+}
+
 function find_prod_warehouse($table) {
   global $db;
   if(tableExists($table))
@@ -166,6 +171,14 @@ function find_all_admin(){
       return $result;
   }
 
+  function find_all_detailPO($id_warehouse,$id_po){
+      global $db;
+      $results = array();
+      $sql = "SELECT * FROM po JOIN detil_po ON po.id_po = detil_po.id_po WHERE po.id_warehouse = '$id_warehouse' and po.id_po = '$id_po'";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
 function find_adminName(){
       global $db;
       $results = array();
@@ -179,6 +192,15 @@ function find_adminName(){
       global $db;
       $results = array();
       $sql = "SELECT id_position FROM employer WHERE id_position = '{$db->escape($field)}'";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  //validation connected foreign key (zacky)
+  function find_all_idPo($field){
+      global $db;
+      $results = array();
+      $sql = "SELECT id_po FROM po WHERE id_po = '{$db->escape($field)}'";
       $result = find_by_sql($sql);
       return $result;
   }

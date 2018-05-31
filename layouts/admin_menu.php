@@ -49,10 +49,14 @@
   </li>
 
   <li>
-    <a href="po.php" class="submenu-toggle">
+    <a href="#" class="submenu-toggle">
       <i class="glyphicon glyphicon-th-large"></i>
        <span>Purchase Order</span>
       </a>
+      <ul class="nav submenu">
+        <li><a href="po.php">Add Purchase Order</a></li>
+          <li><a href="history_po.php">History Purchase Order</a></li>
+      </ul>
   </li>
 
 </ul>
