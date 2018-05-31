@@ -16,7 +16,7 @@ if (isset($_POST['submit'])) {
 
   for($x = 0; $x < count($id_ware); $x++) {
     if ($ware[$x] != "" || $ware[$x] != "0") {
-      $query = "SELECT * FROM warehouse WHERE nm_warehouse='$name[$x]' AND id_warehouse=$ware[$x]";
+      $query = "SELECT * FROM warehouse WHERE nm_warehouse ='$name[$x]' AND id_warehouse=$ware[$x]";
       $result = $db->query($query);
       if ($result->num_rows > 0) {
         /*while($row = $result->fetch_assoc()) {

@@ -147,7 +147,7 @@ if(isset($_POST['update_location'])){
         <?php foreach($all_categories as $a_location): ?>
           <tr>
            <td class="text-center"><?php echo count_id();?></td>
-           <td class="text-center"><a href="#detilItem<?php echo $a_location['id_location'];?>" data-toggle="modal" title="Detail"><?php echo remove_junk(ucwords($a_location['unit']))?></a></td>
+           <td class="text-center"><a href="product.php ?> echo $a_location['id_location'];?>" data-toggle="modal" title="Detail"><?php echo remove_junk(ucwords($a_location['unit']))?></a></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_location['floor']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_location['room']))?></td>
             <td class="text-center"><?php echo remove_junk(ucwords($a_location['id_warehouse']))?></td>
