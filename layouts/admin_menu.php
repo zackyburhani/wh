@@ -32,10 +32,11 @@
   <li>
     <a href="#" class="submenu-toggle">
       <i class="glyphicon glyphicon-th-large"></i>
-       <span>Add Warehouse</span>
+       <span>Warehouse</span>
       </a>
       <ul class="nav submenu">
         <li><a href="add_warehouse.php">Add Inventory</a></li>
+          <li><a href="add_location.php">Add Location</a></li>
         <li><a href="move_product.php">Move Quantity Warehouse</a></li>
       </ul>
   </li>
