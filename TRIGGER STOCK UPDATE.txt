@@ -1,0 +1,9 @@
+TG_STOCKUPDATE_SHIPMENT
+SHIPMENT
+AFTER
+INSERT
+
+BEGIN
+   UPDATE item SET stock=stock-NEW.qty
+   WHERE id_item=NEW.id_item;
+END
