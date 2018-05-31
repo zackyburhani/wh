@@ -174,8 +174,16 @@ function find_all_admin(){
   function find_all_detailPO($id_warehouse,$id_po){
       global $db;
       $results = array();
-      $sql = "SELECT po.id_po,po.date_po,po.id_warehouse FROM po JOIN detil_po ON po.id_po = detil_po.id_po WHERE po.id_warehouse = '$id_warehouse' and po.id_po = '$id_po'";
+      $sql = "SELECT po.id_po,po.date_po,po.id_warehouse,status,detil_po.id_item,total_weight,qty FROM po JOIN detil_po ON po.id_po = detil_po.id_po WHERE po.id_warehouse = '$id_warehouse' and po.id_po = '$id_po'";
       $result = find_by_sql($sql);
+      return $result;
+  }
+
+  function countDetail($id_po){
+      global $db;
+      $results = array();
+      $sql = $db->query("SELECT sum(total_weight) as total FROM detil_po WHERE id_po = '$id_po' ");
+      $result = $db->fetch_assoc($sql);
       return $result;
   }
 

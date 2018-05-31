@@ -31,7 +31,7 @@
             <th class="text-center">ID Purchase Order</th>
             <th class="text-center">Date Purchase Order</th>
             <th class="text-center">ID Warehouse</th>
-            <th class="text-center" style="width: 150px;">Actions</th>
+            <th class="text-center" style="width: 150px;">Details</th>
           </tr>
         </thead>
         <tbody>
@@ -103,6 +103,10 @@
                <td align="center"><?php echo remove_junk(ucwords($detail['total_weight']))?></td>
               </tr>
             <?php endforeach;?>
+               <?php $data = countDetail($a_po['id_po']); ?>
+               <tr>
+                 <td><?php echo $data['total']; ?></td>
+               </tr>
             </tbody>
           </table>
         </div>
