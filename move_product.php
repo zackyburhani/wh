@@ -3,7 +3,7 @@ error_reporting(0);
   $page_title = 'Move Product';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
-  page_require_level(1);
+  page_require_level(2);
   
   $all_warehouse = find_all1('warehouse');
   
