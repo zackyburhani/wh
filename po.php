@@ -51,8 +51,11 @@
 
             $cart = unserialize(serialize($_SESSION['cart']));
             for($i=0; $i<count($cart);$i++) {
+
+              $cart[$i]->total_weight = $cart[$i]->weight * $cart[$i]->qty;
+
               $sql2  = "INSERT INTO detil_po (id_po, date_po, qty, status, id_warehouse ,total_weight ,id_item)";
-              $sql2 .= " VALUES ('{$id_po}','{$send_date}','{$cart[$i]->qty}','{$status}','{$from_warehouse}','{$total_weight}', '{$cart[$i]->id_item}')";
+              $sql2 .= " VALUES ('{$id_po}','{$send_date}','{$cart[$i]->qty}','{$status}','{$from_warehouse}','{$cart[$i]->total_weight}', '{$cart[$i]->id_item}')";
                 $ada=$db->query($sql2);
             }
             unset($_SESSION['cart']);
@@ -111,6 +114,7 @@ class POrder{
  var $id_subcategories;
  var $id_location;
  var $qty;
+ var $total_weight;
 
 }
 
@@ -133,7 +137,8 @@ if(isset($_GET['add_item']) && !isset($_POST['update']))  {
   $po->id_package       = $product->id_package;
   $po->id_subcategories = $product->id_subcategories;
   $po->id_location      = $product->id_location;
-  $iteminstock            = $product->stock;
+  $po->total_weight     = $product->total_weight;
+  $iteminstock          = $product->stock;
   $po->qty = $qty;
 
 
@@ -298,6 +303,7 @@ if(isset($_POST['update'])) {
                 $index = 0;
                 for($i=0; $i<count($cart); $i++){
                 $s += $cart[$i]->weight * $cart[$i]->qty;
+                $cart[$i]->total_weight = $cart[$i]->weight * $cart[$i]->qty
 
               ?> 
                <tr>
@@ -317,10 +323,8 @@ if(isset($_POST['update'])) {
                   <!-- hidden input to detil_po -->
                   <input type="hidden" value="<?php echo $cart[$i]->id_item; ?>" name="id_itemDP">
                   <input type="hidden" value="<?php echo $cart[$i]->qty; ?>" name="qtyDP">
-                  <input type="hidden" value="<?php echo $cart[$i]->weight * $cart[$i]->qty; ?>" name="total_weightDP">
+                  <input type="hidden" value="<?php echo $cart[$i]->total_weight; ?>" name="total_weightDP">
                   <!-- hidden input to detil_po -->
-
-
                </tr>
                 <?php 
                   $index++;
