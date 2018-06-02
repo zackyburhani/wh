@@ -6,6 +6,7 @@
    $all_warehouse = find_all1('warehouse');
    $user = current_user();
    $list_po = find_all_PO_admin(); 
+
 ?>
 
 <!-- Approve PO -->

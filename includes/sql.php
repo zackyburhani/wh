@@ -210,6 +210,30 @@ function find_all_admin(){
       return $result;
   }
 
+  function find_all_PO_destination_notif($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = $db->query("SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'Approved'");
+      $result = $db->num_rows($sql);
+      return $result;
+  }
+
+  function find_all_PO_destination_admin($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = "SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'Approved'";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  function find_all_PO_destination_admin_notif($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = $db->query("SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'Approved'");
+      $result = $db->num_rows($sql);
+      return $result;
+  }
+
   function find_all_historyPO($id_warehouse){
       global $db;
       $results = array();
@@ -222,7 +246,7 @@ function find_all_admin(){
   function find_all_PO_approved2($id_warehouse){
       global $db;
       $results = array();
-      $sql = "SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'Success' order by detil_po.id_po desc";
+      $sql = "SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'On Destination' order by detil_po.id_po desc";
       $result = find_by_sql($sql);
       return $result;
   }
@@ -230,7 +254,7 @@ function find_all_admin(){
   function find_all_PO_approved1(){
       global $db;
       $results = array();
-      $sql = "SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and detil_po.status = ('Success' or 'Approved') order by detil_po.id_po desc";
+      $sql = "SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item as id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and detil_po.status = ('On Destination' or 'Success' or 'Approved') order by detil_po.id_po desc";
       $result = find_by_sql($sql);
       return $result;
   }
@@ -240,6 +264,14 @@ function find_all_admin(){
       $results = array();
       $sql = "SELECT po.id_po,po.date_po as date_po,po.id_warehouse as For_wh,detil_po.date_po as date_send,qty,status,detil_po.id_warehouse as From_wh,total_weight,id_item FROM po JOIN detil_po WHERE po.id_po = detil_po.id_po and status = 'On Process' GROUP by po.id_po";
       $result = find_by_sql($sql);
+      return $result;
+  }
+
+  function find_all_PO_admin_notif($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = $db->query("SELECT po.id_po,po.date_po as date_po,po.id_warehouse as For_wh,detil_po.date_po as date_send,qty,detil_po.status,detil_po.id_warehouse as From_wh,total_weight,id_item FROM po,detil_po,employer WHERE po.id_po = detil_po.id_po and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'On Process' GROUP by po.id_po");
+      $result = $db->num_rows($sql);
       return $result;
   }
 

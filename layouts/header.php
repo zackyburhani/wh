@@ -44,9 +44,20 @@
       </div>
       <div class="pull-right clearfix">
         <ul class="info-menu list-inline list-unstyled">
-          <a href="#">
+          <?php if ($user['id_warehouse'] =='0001'){ ?>
+            <a href="approve1_po.php">
               <i class="fa fa-envelope-o"></i>
-              <span class="label label-danger"><?php echo notification($user['id_warehouse']); ?></span>
+              <span class="label label-danger"><?php echo $notif = find_all_PO_admin_notif($user['id_warehouse']); ?></span>
+            </a>
+          <?php } else { ?>
+            <?php   $warehouse = find_by_id_warehouse('warehouse',$user['id_warehouse']); ?>
+              <?php if($warehouse['status'] != 0) { ?>
+                <a href="approve2_po.php">
+                  <?php $notif = find_all_PO_destination_notif($user['id_warehouse']);  ?>
+                  <i class="fa fa-envelope-o"></i>
+                  <span class="label label-danger"><?php echo $notif ?></span>
+              <?php } ?>
+          <?php } ?>
             </a>
 
           <li class="profile">

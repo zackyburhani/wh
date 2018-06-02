@@ -4,15 +4,9 @@
   $all_warehouse = find_all1('warehouse');
   $user = current_user();
 
-  $warehouse = find_by_id_warehouse('warehouse',$user['id_warehouse']);;
-    if($warehouse['status'] != 0){
-      page_require_level(2);
-    } else {
-      $session->msg('d','Sorry! you dont have permission to view the page. !');
-          redirect('home.php', false);
-    }
+  page_require_level(1);
 
-   $list_po =  find_all_PO_destination($user['id_warehouse']); 
+   $list_po =  find_all_PO_destination_admin($user['id_warehouse']); 
 ?>
 
 <!-- Approve PO -->
@@ -89,7 +83,7 @@
                <td align="center"><?php echo remove_junk(ucwords($list['date_send']))?></td>
                <?php if($list['status'] == "Approved") { ?>
                 <td align="center"><label class="label label-danger"><?php echo remove_junk(ucwords($list['status']))?></label></td>
-               <?php } else if($list['status'] == "Approved") { ?>
+               <?php } else if($list['status'] == "On Destination") { ?>
                 <td align="center"><label class="label label-success"><?php echo remove_junk(ucwords($list['status']))?></label></td>
                <?php } ?>
                <td align="center"><?php echo remove_junk(ucwords($list['for_wh']))?></td>
@@ -153,7 +147,7 @@
                    <td align="center"><?php echo remove_junk(ucwords($detail['From_wh']))?></td>
                    <td align="center"><?php echo remove_junk(ucwords($detail['id_item']))?></td>
                    <td align="center"><?php echo remove_junk(ucwords($detail['qty']))?></td>
-                   <?php if($detail['status'] == "On Process") { ?>
+                   <?php if($detail['status'] == "Approved") { ?>
                     <td align="center"><span class="label label-danger"><?php echo remove_junk(ucwords($detail['status']))?></span></td>
                    <?php } else { ?>
                     <td align="center"><span class="label label-success"><?php echo remove_junk(ucwords($detail['status']))?></span></td>

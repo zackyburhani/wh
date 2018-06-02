@@ -48,14 +48,14 @@
   <li>
     <a href="#" class="submenu-toggle">
       <i class="glyphicon glyphicon-th-large"></i>
-       <span>Purchase Order <span class="label label-danger" id="jumlah"><?php echo notification($user['id_warehouse']); ?></span></span>
+       <span>Purchase Order <span class="label label-danger" id="jumlah"></span></span>
       </a>
       <ul class="nav submenu">
         <li><a href="po.php">Add Purchase Order</a></li>
         <li><a href="history_po.php">History Purchase Order</a></li>
         <?php   $warehouse = find_by_id_warehouse('warehouse',$user['id_warehouse']); ?>
         <?php if($warehouse['status'] != 0) { ?>
-          <li><a href="approve2_po.php">Offer Purchase Order <span class="label label-danger" id="jumlah"><?php echo notification($user['id_warehouse']); ?></span></a></li>
+          <li><a href="approve2_po.php">Offer Purchase Order <span class="label label-danger" id="jumlah"><?php echo $notif = find_all_PO_destination_notif($user['id_warehouse']);  ?></span></a></li>
            <li><a href="history_approved2.php">History Approved</a></li>
         <?php } ?>
       </ul>

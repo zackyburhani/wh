@@ -29,7 +29,12 @@
     $send_date      = remove_junk($db->escape($_POST['send_date']));
     $total_weight   = remove_junk($db->escape($_POST['total_weightDP']));
     $from_warehouse = remove_junk($db->escape($_POST['from_id_warehouse']));
-    $status         = "On Process";
+    
+    if($from_warehouse == '0001'){
+      $status         = "Approved";
+    } else {
+      $status         = "On Process";
+    }
 
     if($send_date < $date_po){
       $session->msg("d", "Send Date Invalid");
