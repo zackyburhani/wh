@@ -82,6 +82,10 @@ function find_all1($table) {
    }
 }
 
+function find_warehouse_po($id_warehouse) {
+  return find_by_sql("SELECT * FROM warehouse WHERE id_warehouse != '$id_warehouse' and status != 0");
+}
+
 function find_all_categories($table,$id) {
    global $db;
    if(tableExists($table))

@@ -8,7 +8,8 @@
   $user            = current_user();
   $all_categories  = find_all1('warehouse');
   $getWarehouse    = find_po_warehouse($user['id_warehouse']);
-  $getAllWarehouse = find_all1('warehouse');
+  $getAllWarehouse = find_warehouse_po($user['id_warehouse']);
+
   $getItem         = find_all1('item');
   
 ?>
@@ -126,7 +127,7 @@ class POrder{
 if(isset($_GET['add_item']) && !isset($_POST['update']))  { 
   $id =$_GET['id_item'];
   $qty = remove_junk($db->escape($_GET['qty']));
-  $sql     = "SELECT * FROM item WHERE id_item = '$id'";
+  $sql     = "SELECT id_item,nm_item,colour,width,height,length,weight,stock,id_package,id_subcategories,location.id_location,location.id_warehouse FROM item,location,employer WHERE employer.id_warehouse = location.id_warehouse and item.id_location = location.id_location and  id_item = '$id'";
   $result  = $db->query($sql); 
   $product = mysqli_fetch_object($result);
 
@@ -144,6 +145,7 @@ if(isset($_GET['add_item']) && !isset($_POST['update']))  {
   $po->id_location      = $product->id_location;
   $po->total_weight     = $product->total_weight;
   $iteminstock          = $product->stock;
+  $po->id_warehouse     = $product->id_warehouse;
   $po->qty = $qty;
 
 
@@ -271,6 +273,20 @@ if(isset($_POST['update'])) {
        </div>
       </div>
     </div>
+
+  <?php 
+
+  function show(){
+    $tampung = array();
+    $cart = unserialize(serialize($_SESSION['cart']));
+    for($i=0; $i<count($cart);$i++) {
+       $cart[$i]->qty = $arrQuantity[$i];
+       return $arrQuantity[$i];
+      }
+  }
+  ?>
+
+  <?php echo show(); ?>
   
   <?php if($_SESSION['cart'] != null) { ?>
     <div class="col-md-12">
@@ -289,7 +305,7 @@ if(isset($_POST['update'])) {
           <table class="table table-bordered">
             <thead>
               <tr>
-                <th><center>ID Item</center></th>
+                <th><center>ID Item </center></th>
                 <th><center>Item Name</center></th>
                 <th><center>Colour</center></th>
                 <th><center>Weight</center></th>

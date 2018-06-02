@@ -44,21 +44,47 @@
       </div>
       <div class="pull-right clearfix">
         <ul class="info-menu list-inline list-unstyled">
-          <?php if ($user['id_warehouse'] =='0001'){ ?>
-            <a href="approve1_po.php">
-              <i class="fa fa-envelope-o"></i>
-              <span class="label label-danger"><?php echo $notif = find_all_PO_admin_notif($user['id_warehouse']); ?></span>
+
+          <?php $offer_admin   = find_all_PO_destination_admin_notif($user['id_warehouse']); ?>
+          <?php $approve_admin = find_all_PO_admin_notif($user['id_warehouse']); ?>
+
+
+          <?php $approve2 = find_all_PO_destination_notif($user['id_warehouse']);  ?>
+          <?php $warehouse = find_by_id_warehouse('warehouse',$user['id_warehouse']); ?>
+          <?php if($warehouse['status'] != 0) { ?>
+
+          <li class="profile">
+            <span class="label label-danger"><?php  if ($user['id_warehouse'] =='0001') {$total = $offer_admin+$approve_admin; if($total != null) {echo $total;} } else { if($approve2 != null) { echo $total = $approve2;}}?></span>
+            <a href="#" data-toggle="dropdown" class="toggle" aria-expanded="false">
+              <span class="fa fa-envelope-o"><i class="caret"></i></span> 
             </a>
-          <?php } else { ?>
-            <?php   $warehouse = find_by_id_warehouse('warehouse',$user['id_warehouse']); ?>
-              <?php if($warehouse['status'] != 0) { ?>
-                <a href="approve2_po.php">
-                  <?php $notif = find_all_PO_destination_notif($user['id_warehouse']);  ?>
-                  <i class="fa fa-envelope-o"></i>
-                  <span class="label label-danger"><?php echo $notif ?></span>
-              <?php } ?>
-          <?php } ?>
-            </a>
+          
+            <ul class="dropdown-menu">
+              <li>
+                  <?php if ($user['id_warehouse'] =='0001'){ ?>
+                    
+                    <a href="offer_po.php">
+                      <i class="fa fa-envelope-o"></i> Offer PO
+                      <span class="label label-danger"><?php if($offer_admin != null) { echo $offer_admin; }  ?></span>
+                    </a>
+
+                    <a href="approve1_po.php">
+                      <i class="fa fa-envelope-o"></i> Approve PO
+                      <span class="label label-danger"><?php if($approve_admin != null) {echo $approve_admin;} ?></span>
+                    </a>
+                  <?php } else { ?>   
+                    <a href="approve2_po.php">
+                      <i class="fa fa-envelope-o"></i> Offer PO
+                          <span class="label label-danger"><?php if($approve2 != null)  {echo $approve2;} ?></span>
+                      <?php } ?>
+                    </a>
+              </li>
+           </ul>
+          </li>
+
+        <?php } ?>
+
+          
 
           <li class="profile">
             <a href="#" data-toggle="dropdown" class="toggle" aria-expanded="false">

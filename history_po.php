@@ -92,7 +92,9 @@
                <td align="center"><?php echo remove_junk(ucwords($detail['id_item']))?></td>
                <td align="center"><?php echo remove_junk(ucwords($detail['date_po']))?></td>
                <td align="center"><?php echo remove_junk(ucwords($detail['qty']))?></td>
-               <?php if($detail['status'] == "On Process") { ?>
+               <?php if($detail['status'] == "On Process" || $detail['status'] == "Approved") { ?>
+                <td align="center"><label class="label label-danger"><?php echo remove_junk(ucwords($detail['status']))?></label></td>
+               <?php } else if($detail['status'] == "On Destination") { ?>
                 <td align="center"><label class="label label-warning"><?php echo remove_junk(ucwords($detail['status']))?></label></td>
                <?php } else { ?>
                 <td align="center"><label class="label label-success"><?php echo remove_junk(ucwords($detail['status']))?></label></td>
