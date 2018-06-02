@@ -9,6 +9,16 @@
            echo ucfirst($user['name']);
             else echo "Simple inventory System";?>
     </title>
+    <style type="text/css">
+      .btn-circle.btn-lg {
+          width: 40px;
+          height: 40px;
+          padding: 5px 10px;
+          font-size: 18px;
+          line-height: 1.0;
+          border-radius: 25px;
+        }
+    </style>
     <!-- <link rel="icon" href="img/icon.png" type="image/ico"> -->
     <link rel="icon" type="image/ico" href="img/icon.ico" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
@@ -34,6 +44,11 @@
       </div>
       <div class="pull-right clearfix">
         <ul class="info-menu list-inline list-unstyled">
+          <a href="#">
+              <i class="fa fa-envelope-o"></i>
+              <span class="label label-danger"><?php echo notification($user['id_warehouse']); ?></span>
+            </a>
+
           <li class="profile">
             <a href="#" data-toggle="dropdown" class="toggle" aria-expanded="false">
               <img src="uploads/users/<?php echo $user['image'];?>" alt=" " class="img-circle img-inline">

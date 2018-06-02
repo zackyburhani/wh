@@ -171,10 +171,74 @@ function find_all_admin(){
       return $result;
   }
 
+  function notification($id_warehouse){
+    global $db;
+    $sql = $db->query("SELECT po.id_po,po.date_po,po.id_warehouse as For_wh,detil_po.date_po,qty,status,detil_po.id_warehouse as From_wh,total_weight,id_item FROM po JOIN detil_po WHERE po.id_po = detil_po.id_po AND po.id_warehouse = '$id_warehouse' and status = 'On Process' GROUP by po.id_po");
+    $result = $db->num_rows($sql);
+    return $result;
+  }
+
   function find_all_detailPO($id_warehouse,$id_po){
       global $db;
       $results = array();
-      $sql = "SELECT po.id_po,po.date_po,po.id_warehouse,status,detil_po.id_item,total_weight,qty FROM po JOIN detil_po ON po.id_po = detil_po.id_po WHERE po.id_warehouse = '$id_warehouse' and po.id_po = '$id_po'";
+      $sql = "SELECT po.id_po,po.date_po,po.id_warehouse,status,detil_po.id_item,total_weight,qty,detil_po.id_warehouse as from_wh FROM po JOIN detil_po ON po.id_po = detil_po.id_po WHERE po.id_warehouse = '$id_warehouse' and po.id_po = '$id_po'";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  function find_all_detailPO_admin($id_po){
+      global $db;
+      $results = array();
+      $sql = "SELECT po.id_po,po.date_po,po.id_warehouse,status,detil_po.id_item,total_weight,qty,detil_po.id_warehouse as From_wh FROM po JOIN detil_po ON po.id_po = detil_po.id_po WHERE po.id_po = '$id_po' order by po.id_po desc";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  function find_all_listPO($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = "SELECT po.id_po,po.date_po as date_po,po.id_warehouse as For_wh,detil_po.date_po as date_send,qty,status,detil_po.id_warehouse as From_wh,total_weight,id_item FROM po JOIN detil_po WHERE po.id_po = detil_po.id_po AND po.id_warehouse = '$id_warehouse' and status = 'On Process' GROUP by po.id_po";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  function find_all_PO_destination($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = "SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'Approved'";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  function find_all_historyPO($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = "SELECT * FROM po WHERE id_warehouse = '$id_warehouse' order by id_po desc";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+
+  function find_all_PO_approved2($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = "SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'Success' order by detil_po.id_po desc";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  function find_all_PO_approved1(){
+      global $db;
+      $results = array();
+      $sql = "SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and detil_po.status = ('Success' or 'Approved') order by detil_po.id_po desc";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  function find_all_PO_admin(){
+      global $db;
+      $results = array();
+      $sql = "SELECT po.id_po,po.date_po as date_po,po.id_warehouse as For_wh,detil_po.date_po as date_send,qty,status,detil_po.id_warehouse as From_wh,total_weight,id_item FROM po JOIN detil_po WHERE po.id_po = detil_po.id_po and status = 'On Process' GROUP by po.id_po";
       $result = find_by_sql($sql);
       return $result;
   }
@@ -239,7 +303,7 @@ function find_by_sql($sql)
 function find_by_id_warehouse($table,$idwarehouse)
 {
   global $db;
-  $id = (int)$idwarehouse;
+  $id = $idwarehouse;
     if(tableExists($table)){
           $sql = $db->query("SELECT * FROM {$db->escape($table)} WHERE id_warehouse='{$db->escape($id)}' LIMIT 1");
           if($result = $db->fetch_assoc($sql))
@@ -526,7 +590,7 @@ function tableExists($table){
       return $result;
   }
   
-  function find_all_item_po($id_warehouse){
+  function find_all_item_po(){
       global $db;
       $results = array();
       $sql = "SELECT * FROM item JOIN location ON item.id_location = location.id_location JOIN warehouse ON location.id_warehouse = warehouse.id_warehouse JOIN employer ON employer.id_warehouse=warehouse.id_warehouse AND employer.id_warehouse = '$id_warehouse' ";

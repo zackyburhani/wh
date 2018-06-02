@@ -9,10 +9,9 @@
   $id = $user['id_warehouse'];
   $join_subcategories  = find_allSubcategories($id);
   $all_categories      = find_all_order('categories','nm_categories',$id);
-  $all_package         = find_all_Position('package');
+  $all_package         = find_all_Position('package'); 
 
 ?> 
-
 
 <!-- ADD PRODUCT -->
 <?php

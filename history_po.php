@@ -5,7 +5,7 @@
    page_require_level(2);
    $all_warehouse = find_all1('warehouse');
    $user = current_user();
-   $all_po  = find_all_PO($user['id_warehouse']);
+   $all_po  = find_all_historyPO($user['id_warehouse']);
 ?>
 
 <?php include_once('layouts/header.php'); ?>
@@ -30,7 +30,6 @@
             <th class="text-center" style="width: 50px;">No. </th>
             <th class="text-center">ID Purchase Order</th>
             <th class="text-center">Date Purchase Order</th>
-            <th class="text-center">ID Warehouse</th>
             <th class="text-center" style="width: 150px;">Details</th>
           </tr>
         </thead>
@@ -40,7 +39,6 @@
            <td class="text-center"><?php echo count_id();?></td>
            <td><?php echo remove_junk(ucwords($a_po['id_po']))?></td>
            <td><?php echo remove_junk(ucwords($a_po['date_po']))?></td>
-           <td align="center"><?php echo remove_junk(ucwords($a_po['id_warehouse']))?></td>
            <td class="text-center">
               <button data-target="#detailPo<?php echo $a_po['id_po'];?>" class="btn btn-md btn-primary" data-toggle="modal" title="Remove">
                 <i class="glyphicon glyphicon-eye-open"></i>
@@ -81,7 +79,7 @@
                 <th class="text-center">Date Sent</th>
                 <th class="text-center">QTY</th>
                 <th class="text-center">Status</th>
-                <th class="text-center">ID Warehouse</th>
+                <th class="text-center">From Warehouse</th>
                 <th class="text-center">Total Weight</th>
               </tr>
             </thead>
@@ -99,13 +97,14 @@
                <?php } else { ?>
                 <td align="center"><label class="label label-success"><?php echo remove_junk(ucwords($detail['status']))?></label></td>
                <?php } ?>
-               <td align="center"><?php echo remove_junk(ucwords($detail['id_warehouse']))?></td>
+               <td align="center"><?php echo remove_junk(ucwords($detail['from_wh']))?></td>
                <td align="center"><?php echo remove_junk(ucwords($detail['total_weight']))?></td>
               </tr>
             <?php endforeach;?>
                <?php $data = countDetail($a_po['id_po']); ?>
                <tr>
-                 <td><?php echo $data['total']; ?></td>
+                  <td colspan="7" align="right"><b>SUM WEIGHT</b></td>
+                  <td colspan="1" align="center"><b><?php echo $data['total']; ?></b></td>
                </tr>
             </tbody>
           </table>

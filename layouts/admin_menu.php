@@ -51,11 +51,13 @@
   <li>
     <a href="#" class="submenu-toggle">
       <i class="glyphicon glyphicon-th-large"></i>
-       <span>Purchase Order</span>
+       <span>Purchase Order <span class="label label-danger" id="jumlah"><?php echo notification($user['id_warehouse']); ?></span></span>
       </a>
       <ul class="nav submenu">
         <li><a href="po.php">Add Purchase Order</a></li>
-          <li><a href="history_po.php">History Purchase Order</a></li>
+        <li><a href="history_po.php">History Purchase Order</a></li>
+        <li><a href="approve1_po.php">Approve Purchase Order <span class="label label-danger" id="jumlah"><?php echo notification($user['id_warehouse']); ?></span></a></li>
+        <li><a href="history_approved1.php">History Approved</a></li>
       </ul>
   </li>
 
