@@ -132,10 +132,10 @@
           <form method="get" action="product.php">
             <select class="form-control" name="id">
               <option value=""> Select Location Warehouse</option>
-                <?php  //foreach ($all_warehouse as $ware): ?>
-                  <option value="<?php //echo (int)$ware['id']; ?>" <?php //if($_GET['id'] === $ware['id']): echo "selected"; endif; ?> >
-                  <?php //echo remove_junk($ware['name_warehouse']); ?></option>
-                <?php //endforeach; ?>
+                <?php  foreach ($all_warehouse as $ware): ?>
+                  <option value="<?php echo (int)$ware['id']; ?>" <?php if($_GET['id'] === $ware['id']): echo "selected"; endif; ?> >
+                  <?php echo remove_junk($ware['name_warehouse']); ?></option>
+                <?php endforeach; ?>
             </select>
           </div>
           <div class="col-md-1">

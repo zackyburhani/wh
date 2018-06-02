@@ -65,8 +65,14 @@ function find_prod_warehouse($table) {
   global $db;
   if(tableExists($table))
   {
-    return find_by_sql("SELECT * FROM ".$db->escape($table)." where warehouse_id='$_GET[product_warehouse]'");
+    return find_by_sql("SELECT * FROM ".$db->escape($table)." where id_warehouse='$_GET[location_p]'");
   }
+}
+
+function find_prod_warehouse_1($table) {
+
+    return find_by_sql("SELECT * FROM location where id_warehouse = '$table'");
+  
 }
 
 function find_all1($table) {
@@ -74,6 +80,14 @@ function find_all1($table) {
    if(tableExists($table))
    {
      return find_by_sql("SELECT * FROM ".$db->escape($table));
+   }
+}
+
+function find_all1_ware($table) {
+   global $db;
+   if(tableExists($table))
+   {
+     return find_by_sql("SELECT unit,floor,room,nm_warehouse from location,warehouse ");
    }
 }
 
@@ -573,14 +587,14 @@ function tableExists($table){
    /*--------------------------------------------------------------*/
   function join_product_table(){
      global $db;
-    $sql  =" SELECT * from q_produk";
+    $sql  =" SELECT * from location";
     return find_by_sql($sql);
 
    }
 
   function join_product_table1(){
     global $db;
-   $sql  =" SELECT * from q_produk WHERE warehouse_id=$_GET[id]";
+   $sql  =" SELECT * from location WHERE id_warehouse=$_GET[id_location]";
    return find_by_sql($sql);
 
   }
