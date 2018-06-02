@@ -68,20 +68,20 @@ error_reporting(0);
          <form method="get" action="move_product.php">
            <div class="form-group">
            <?php
-            if(isset($_GET['id_location'])){
-              $id = $_GET["id_location"];
+            if(isset($_GET['location'])){
+              $id = $_GET["location"];
             }else{
               $id = 0;
             }
             ?>
-              <select class="form-control" name="id">
+              <select class="form-control" name="product_warehouse">
                     <option value=""> Select Warehouse</option>
                    <?php  foreach ($all_warehouse as $ware): ?>
-                     <option value="<?php echo (int)$ware['id']; ?>" <?php if($_GET['id'] === $ware['id']): echo "selected"; endif; ?> >
-                       <?php echo remove_junk($ware['name_warehouse']); ?></option>
+                     <option value="<?php echo (int)$ware['id_location']; ?>" <?php if($_GET['id_location'] === $ware['id_location']): echo "selected"; endif; ?> >
+                       <?php echo remove_junk($ware['unit']); ?></option>
                    <?php endforeach; ?>
                  </select>
-                 <button type="submit" class="btn btn-danger">Sort</button>
+                 <button type="submit" name="show_product" class="btn btn-danger">Sort</button>
          </div>
        </form>
        </div>

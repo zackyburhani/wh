@@ -65,13 +65,13 @@ function find_prod_warehouse($table) {
   global $db;
   if(tableExists($table))
   {
-    return find_by_sql("SELECT * FROM ".$db->escape($table)." where id_warehouse='$_GET[location_p]'");
+    return find_by_sql("SELECT * FROM ".$db->escape($table)." where id_location='$_GET[location]'");
   }
 }
 
 function find_prod_warehouse_1($table) {
 
-    return find_by_sql("SELECT * FROM location where id_warehouse = '$table'");
+    return find_by_sql("SELECT * FROM location where id_location = '$table'");
   
 }
 
