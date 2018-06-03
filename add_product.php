@@ -3,6 +3,8 @@
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
   page_require_level(2);
+  //get all categories
+   $user = current_user();
    $all_subcategories  = find_all_order('sub_categories','nm_subcategories');
    $all_categories  = find_all_order('categories','nm_categories');
    $join_subcategories  = find_allSubcategories();

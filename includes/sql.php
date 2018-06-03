@@ -90,12 +90,38 @@ function find_all_categories($table,$id) {
    }
 }
 
+function find_all_location($table,$id) {
+   global $db;
+   if(tableExists($table))
+   {
+     return find_by_sql("SELECT unit,floor,room,id_location FROM {$db->escape($table)} WHERE id_warehouse = '{$db->escape($id)}'");
+   }
+}
+
+function find_all_package($table,$id) {
+   global $db;
+   if(tableExists($table))
+   {
+     return find_by_sql("SELECT * FROM {$db->escape($table)} WHERE id_warehouse = '$id'");
+   }
+}
+
 function find_all_subcategories($table,$id) {
    global $db;
    if(tableExists($table))
    {
      return find_by_sql("SELECT *FROM {$db->escape($table)},categories WHERE {$db->escape($table)}.id_categories = categories.id_categories and id_warehouse = '{$db->escape($id)}' ORDER BY nm_subcategories");
    }
+}
+
+function find_all_product($id) {
+   global $db;
+     return find_by_sql("SELECT * FROM item,location WHERE item.id_location = location.id_location AND id_warehouse = '{$db->escape($id)}'");
+}
+
+function get_product($table,$id){
+  global $db;
+    return find_by_sql("SELECT id_item,nm_item,colour,stock,nm_package,nm_subcategories,unit FROM item,package,sub_categories,location,warehouse WHERE item.id_package = package.id_package AND item.id_subcategories = sub_categories.id_subcategories AND item.id_location = location.id_location AND location.id_warehouse = warehouse.id_warehouse AND location.id_warehouse = '{$db->escape($id)}'");
 }
 
 
