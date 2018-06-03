@@ -70,8 +70,14 @@ function find_prod_warehouse($table) {
   global $db;
   if(tableExists($table))
   {
-    return find_by_sql("SELECT * FROM ".$db->escape($table)." where warehouse_id='$_GET[product_warehouse]'");
+    return find_by_sql("SELECT * FROM ".$db->escape($table)." where id_location='$_GET[location]'");
   }
+}
+
+function find_prod_warehouse_1($table) {
+
+    return find_by_sql("SELECT * FROM location where id_location = '$table'");
+  
 }
 
 function find_all1($table) {
@@ -90,6 +96,14 @@ function find_warehouse_id($id_warehouse) {
   global $db;
   $sql = $db->query("SELECT * FROM warehouse WHERE id_warehouse = '$id_warehouse'");
   return $db->fetch_assoc($sql);
+}
+
+function find_all1_ware($table) {
+   global $db;
+   if(tableExists($table))
+   {
+     return find_by_sql("SELECT unit,floor,room,nm_warehouse from location,warehouse ");
+   }
 }
 
 function find_all_categories($table,$id) {
@@ -126,7 +140,7 @@ function find_all_subcategories($table,$id) {
 
 function find_all_product($id) {
    global $db;
-     return find_by_sql("SELECT * FROM item,location WHERE item.id_location = location.id_location AND id_warehouse = '{$db->escape($id)}'");
+     return find_by_sql("SELECT * FROM item,location,sub_categories,categories WHERE categories.id_categories = sub_categories.id_categories and item.id_subcategories = sub_categories.id_subcategories and item.id_location = location.id_location AND location.id_warehouse = '$id'");
 }
 
 function get_product($table,$id){
@@ -162,6 +176,12 @@ function find_warehouse($table) {
 function find_po_warehouse($id_warehouse) {
    global $db;
      $sql = $db->query("SELECT nm_warehouse FROM employer JOIN warehouse ON employer.id_warehouse = warehouse.id_warehouse WHERE employer.id_warehouse = '{$db->escape($id_warehouse)}'");
+     return $db->fetch_assoc($sql);
+}
+
+function find_product_fetch($id_item) {
+   global $db;
+     $sql = $db->query("SELECT * FROM item  WHERE id_item = '$id_item'");
      return $db->fetch_assoc($sql);
 }
 
@@ -730,14 +750,14 @@ function tableExists($table){
    /*--------------------------------------------------------------*/
   function join_product_table(){
      global $db;
-    $sql  =" SELECT * from q_produk";
+    $sql  =" SELECT * from location";
     return find_by_sql($sql);
 
    }
 
   function join_product_table1(){
     global $db;
-   $sql  =" SELECT * from q_produk WHERE warehouse_id=$_GET[id]";
+   $sql  =" SELECT * from location WHERE id_warehouse=$_GET[id_location]";
    return find_by_sql($sql);
 
   }

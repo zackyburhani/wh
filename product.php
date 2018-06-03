@@ -8,7 +8,7 @@
   $id = $user['id_warehouse'];
 
   $join_subcategories  = find_allSubcategories($id);
-  $all_categories      = find_all_order('categories','nm_categories',$id);
+  // $all_categories      = find_all_order('categories','nm_categories',$id);
   $all_package         = find_all_Position('package'); 
   $all_warehouse_id    = find_warehouse_id($user['id_warehouse']);
 
@@ -19,7 +19,7 @@
   // $join_subcategories  = find_allSubcategories($id);
   $all_package         = find_all_package('package',$id);
   $all_location        = find_all_location('location',$id);
-
+  
 ?> 
 
 <!-- ADD PRODUCT -->
@@ -42,12 +42,12 @@
       $id_subcategories = remove_junk($db->escape($_POST['id_subcategories']));
       $id_location      = remove_junk($db->escape($_POST['id_location']));
     
-      //reduce area consumed
-      $consumed     = $all_warehouse_id['heavy_consumed']; 
+      //reduce area consumed 
+      $consumed     = $all_warehouse_id['heavy_consumed'];
       $heavy_max    = $all_warehouse_id['heavy_max'];
       $id_warehouse = $all_warehouse_id['id_warehouse']; 
       $reduced      = ($weight*$stock)+$consumed;
-      
+
       if($reduced > $heavy_max){
         $session->msg('d',"You Do Not Have Enough Storage Space !");
         redirect('product.php', false);
@@ -106,14 +106,34 @@
     $id_location      = remove_junk($db->escape($_POST['id_location']));
     $id_categories    = remove_junk($db->escape($_POST['id_categories']));
 
+    $product_fetch    = find_product_fetch($id_item);
+    //reduce area consumed
+    $stock_fetch      = $product_fetch['stock'];
+    $weight_fetch     = $product_fetch['weight'];
+    $consumed         = $all_warehouse_id['heavy_consumed']; 
+    $heavy_max        = $all_warehouse_id['heavy_max'];
+    $id_warehouse     = $all_warehouse_id['id_warehouse']; 
+    $count            = $consumed-($stock_fetch*$weight_fetch);
+    $reduced          = $count+($weight*$stock);
+
+    if($reduced > $heavy_max){
+      $session->msg('d',"You Do Not Have Enough Storage Space !");
+      redirect('product.php', false);
+    }
+
         $id_warehouse = $user['id_warehouse'];
         $query  = "UPDATE item SET ";
         $query .= "nm_item = '{$nm_item}',colour = '{$colour}',id_subcategories = '{$id_subcategories}',width = '{$width}',height = '{$height}',length = '{$length}',weight = '{$weight}',stock = '{$stock}',id_package = '{$id_package}',id_location = '{$id_location}', id_item = '{$id_item}' ";
         $query .= "WHERE id_item = '{$id_item}'";
 
+        $query2  = "UPDATE warehouse SET ";
+        $query2 .= "heavy_consumed='{$reduced}' ";
+        $query2 .= "WHERE id_warehouse = '{$id_warehouse}'";
+
         $result = $db->query($query);
          if($result && $db->affected_rows() === 1){
           //sucess
+          $db->query($query2);
           $session->msg('s',"Product Has Been Updated! ");
           redirect('product.php', false);
         } else {
@@ -137,19 +157,23 @@
     $stock   = remove_junk($db->escape($_POST['stock'])); 
     $id_item = remove_junk($db->escape($_POST['id_item']));
 
-    //delete function
-    $delete_id   = delete('id_item','item',$id_item);
-
     //reduce area consumed
     $consumed     = $all_warehouse_id['heavy_consumed']; 
     $heavy_max    = $all_warehouse_id['heavy_max'];
     $id_warehouse = $all_warehouse_id['id_warehouse']; 
     $reduced      = $consumed-($weight*$stock);
 
+    if($reduced < 0){
+      $session->msg("d","Can not Delete The Product.");
+      redirect('product.php');
+    }
+
     $query  = "UPDATE warehouse SET ";
     $query .= "heavy_consumed='{$reduced}'";
     $query .= " WHERE id_warehouse = '{$id_warehouse}'";
 
+    //delete function
+    $delete_id   = delete('id_item','item',$id_item);
     if($delete_id){
       $db->query($query);
       $session->msg("s","Product Has Been Deleted.");
@@ -172,14 +196,14 @@
   <div class="col-md-13">
     <div class="panel panel-default">
       <div class="panel-heading clearfix">
-        <div class="col-md-6">
+        <!-- <div class="col-md-6">
           <form method="get" action="product.php">
             <select class="form-control" name="id">
               <option value=""> Select Location Warehouse</option>
-                <?php  //foreach ($all_warehouse as $ware): ?>
-                  <option value="<?php //echo (int)$ware['id']; ?>" <?php //if($_GET['id'] === $ware['id']): echo "selected"; endif; ?> >
-                  <?php //echo remove_junk($ware['name_warehouse']); ?></option>
-                <?php //endforeach; ?>
+                <?php  foreach ($all_warehouse as $ware): ?>
+                  <option value="<?php echo (int)$ware['id']; ?>" <?php if($_GET['id'] === $ware['id']): echo "selected"; endif; ?> >
+                  <?php echo remove_junk($ware['name_warehouse']); ?></option>
+                <?php endforeach; ?>
             </select>
           </div>
           <div class="col-md-1">
@@ -189,7 +213,13 @@
          <div class="pull-right">
            <button data-target="#add_product" class="btn btn-md btn-info" data-toggle="modal" title="Remove"><i class="glyphicon glyphicon-plus"></i> Add New
             </button>
-         </div>
+         </div> -->
+          <strong>
+            <span class="glyphicon glyphicon-th"></span>
+            <span>Products</span>
+          </strong>
+          <button data-target="#add_product" class="btn btn-md btn-info pull-right" data-toggle="modal" title="Remove"><i class="glyphicon glyphicon-plus"></i> Add New
+            </button>
         </div>
         
         <div class="panel-body">
@@ -441,7 +471,7 @@
                           <option value="">-</option>
                             <?php } else { ?>
                               <?php foreach ($all_package as $row5) : ?>
-                                <option value="<?php echo $row5['id_categories']; ?>" <?php if($item['id_package'] === $row5['id_package']): echo "selected"; endif; ?> ><?php echo remove_junk($row5['nm_package']); ?></option>
+                                <option value="<?php echo $row5['id_package']; ?>" <?php if($item['id_package'] === $row5['id_package']): echo "selected"; endif; ?> ><?php echo remove_junk($row5['nm_package']); ?></option>
                               <?php endforeach; ?> 
                           <?php } ?>
                       </select>
@@ -449,10 +479,13 @@
                     <div class="col-md-3">
                       <label for="name" class="control-label">Location Warehouse</label>
                       <select class="form-control" name="id_location">
-                        <option value="">Select Location Warehouse</option>
-                        <option value="2">A</option>
-                        <option value="3">B</option>
-                        <option value="4">C</option>
+                        <?php if($all_location == null) { ?>
+                          <option value="">-</option>
+                          <?php } else { ?>
+                            <?php foreach($all_location as $row){ ?>
+                              <option value="<?php echo remove_junk($row['id_location']); ?>" <?php if($item['id_location'] === $row['id_location']): echo "selected"; endif; ?>><?php echo remove_junk(ucwords($row['unit'])); ?></option>
+                          <?php } ?>  
+                        <?php } ?>
                       </select>
                     </div>
                 </div>
