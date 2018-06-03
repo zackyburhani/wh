@@ -27,6 +27,9 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+    <!-- Sweet Alert -->
+    <link rel="stylesheet" href="libs/css/sweetalert.css">
+
     <!-- DATATABLES -->
     <link rel="stylesheet" href="libs/datatables/dataTables.bootstrap.css">
     <link rel="stylesheet" href="libs/datatables/dataTables.bootstrap.min.css">

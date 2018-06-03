@@ -34,7 +34,9 @@
        <span>Warehouse</span>
       </a>
       <ul class="nav submenu">
+        <li><a href="warehouse.php">Add Location</a></li>
         <li><a href="move_product.php">Move Quantity Warehouse</a></li>
+        <li><a href="warehouse.php">Warehouse Condition</a></li>
       </ul>
   </li>
 

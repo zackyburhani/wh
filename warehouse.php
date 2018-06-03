@@ -1,62 +1,165 @@
 <?php
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
-  page_require_level(1);
+  page_require_level(2);
   
-  $warehouse = find_all('warehouse');
-  $product = find_all2('products');
+  $user = current_user();
+  $warehouse = find_warehouse_id($user['id_warehouse']);
+  $get_product = get_item_condition($user['id_warehouse']);
+  $get_package = get_package_condition($user['id_warehouse']);
 
-  $page_title = "Warehouse " . $warehouse[0]["nm_warehouse"];
+  $page_title = "Warehouse ".$warehouse["nm_warehouse"];
 ?>
 <?php include_once('layouts/header.php'); ?>
 
-  <div class="row">
-     <div class="col-md-12">
-       <?php echo display_msg($msg); ?>
-     </div>
-  </div>
-   <div class="row">
-    <div class="col-md-7">
+<div class="row">
+   <div class="col-md-12">
+     <?php echo display_msg($msg); ?>
+   </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+          <strong>
+            <span class="glyphicon glyphicon-th"></span>
+            <span>DETAIL Warehouse</span>
+         </strong>
+        </div>
+        <div class="panel-body">
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-2">
+                <label class="control-label">ID Warehouse</label>
+              </div>
+              <div class="col-md-4">
+                <input type="text" value="<?php echo $warehouse['id_warehouse'] ?>" class="form-control" name="id_po" readonly>
+              </div>
+
+              <div class="col-md-2">
+                <label class="control-label">Status</label>
+              </div>
+              <div class="col-md-4">
+                <?php if($warehouse['status'] == 0) { ?>
+                  <input type="text" value="Not Produce" class="form-control" name="id_po" readonly>
+                <?php } else { ?>
+                  <input type="text" value="Produce" class="form-control" name="id_po" readonly>
+                <?php } ?>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-2">
+                <label class="control-label">Heavy Maximum</label>
+              </div>
+              <div class="col-md-4">
+                <input type="text" value="<?php echo number_format($warehouse['heavy_max']) ?>" class="form-control" name="id_po" readonly>
+              </div>
+
+              <div class="col-md-2">
+                <label class="control-label">Heavy Consumed</label>
+              </div>
+              <div class="col-md-4">
+                <input type="text" value="<?php echo number_format($warehouse['heavy_consumed']) ?>" class="form-control" name="id_po" readonly>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
     <div class="panel panel-default">
-      <div class="panel-heading">
+      <div class="panel-heading clearfix">
         <strong>
           <span class="glyphicon glyphicon-th"></span>
-          <span><?php echo $warehouse[0]["nm_warehouse"]; ?></span>
+          <span>Warehouse Condition</span>
        </strong>
       </div>
-        <div class="panel-body">
-          <table class="table table-bordered table-striped table-hover">
-            <thead>
-                <tr>
-                    <th class="text-center" style="width: 50px;">#</th>
-                    <th>Product</th>
-                    <th class="text-center" style="width: 100px;">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-              <?php foreach ($product as $pro):?>
-                <tr>
-                    <td class="text-center"><?php echo count_id();?></td>
-                    <td><?php echo remove_junk(ucfirst($pro['name'])); ?></td>
-                    <td class="text-center">
-                      <div class="btn-group">
-                        <a href="edit_categorie.php?id=<?php echo (int)$pro['id'];?>"  class="btn btn-xs btn-warning" data-toggle="tooltip" title="Edit">
-                          <span class="glyphicon glyphicon-edit"></span>
-                        </a>
-                        <a href="delete_categorie.php?id=<?php echo (int)$pro['id'];?>"  class="btn btn-xs btn-danger" data-toggle="tooltip" title="Remove">
-                          <span class="glyphicon glyphicon-trash"></span>
-                        </a>
-                      </div>
-                    </td>
-
-                </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
+       <div class="panel-body">
+         <table class="table table-bordered table-striped" id="tableWarehouse">
+        <thead>
+          <tr>
+            <th class="text-center" style="width: 5%;">No.</th>
+            <th class="text-center" style="width: 10%;">Item </th>
+            <th class="text-center" style="width: 10%;">Stock</th>
+            <th class="text-center" style="width: 10%;">Consumed Area</th>
+            <th class="text-center" style="width: 5%;">Order</th>
+          </tr>
+        </thead>
+        <tbody>
+        <?php $no=1; ?>
+        <?php foreach($get_product as $product): ?>
+          <tr>
+           <td class="text-center"><?php echo $no++;?>.</td>
+           <td><?php echo remove_junk(ucwords($product['nm_item']))?></td>
+           <td><?php echo remove_junk($product['stock'])?></td>
+           <td class="text-center"><?php echo $product['weight']*$product['stock']?></td>
+           <td class="text-center"> 
+            <form method="GET" action="po.php">
+              <input type="hidden" name="id_item" value="<?php echo $product['id_item']; ?>">
+              <button type="submit" title="Order" class="btn btn-md btn-success" name="add_item">
+                  <i class="glyphicon glyphicon-new-window"></i>
+              </button>
+            </form>
+           </td>
+          </tr>
+        <?php endforeach;?>
+       </tbody>
+     </table>
        </div>
+      </div>
     </div>
+
+
+    <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading clearfix">
+        <strong>
+          <span class="glyphicon glyphicon-th"></span>
+          <span>Warehouse Condition</span>
+       </strong>
+      </div>
+       <div class="panel-body">
+         <table class="table table-bordered table-striped" id="tablePackage">
+        <thead>
+          <tr>
+            <th class="text-center" style="width: 5%;">No.</th>
+            <th class="text-center" style="width: 10%;">Package </th>
+            <th class="text-center" style="width: 10%;">Stock</th>
+            <th class="text-center" style="width: 10%;">Consumed Area</th>
+            <th class="text-center" style="width: 5%;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+        <?php $no=1; ?>
+        <?php foreach($get_package as $package): ?>
+          <tr>
+           <td class="text-center"><?php echo $no++;?>.</td>
+           <td><?php echo remove_junk(ucwords($package['nm_package']))?></td>
+           <td><?php echo remove_junk($package['jml_stock'])?></td>
+           <td class="text-center"><?php echo remove_junk(ucwords($package['heavy_consumed']))?></td>
+           <td class="text-center"> 
+              <button type="submit" class="btn btn-md btn-success" name="add_item">
+                  <i class="glyphicon glyphicon-new-window"></i>
+              </button>
+           </td>
+          </tr>
+        <?php endforeach;?>
+       </tbody>
+     </table>
+       </div>
+      </div>
     </div>
-   </div>
   </div>
 
-  <?php include_once('layouts/footer.php'); ?>
+
+<?php include_once('layouts/footer.php'); ?>
+

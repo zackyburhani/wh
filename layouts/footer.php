@@ -13,7 +13,9 @@
   <script src="libs/datatables/dataTables.bootstrap.js"></script>
   <!-- END DATATABLES -->
 
-  
+  <!-- Sweet Alert -->
+  <script src="libs/js/sweetalert.min.js"></script>
+
 
 <?php if(isset($db)) { $db->db_disconnect(); } ?>
 
@@ -36,6 +38,7 @@
  		$(".alert-danger").fadeTo(900, 0).slideUp(900, function(){ $(this).remove(); }); 
  	}, 3000); 
 </script>
+
 
  </body>
 </html>

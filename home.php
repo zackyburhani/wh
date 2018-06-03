@@ -17,4 +17,30 @@
     </div>
  </div>
 </div>
+
+   <!-- Alert if Stock out -->
+
+<?php 
+
+$user = current_user();
+$get_product = get_item_condition($user['id_warehouse']);
+  
+     $array = array();
+     foreach($get_product as $product) {
+        if($product['stock'] <= 1000){  
+          echo '<script> setTimeout(function() {
+                  swal({
+                          title: "Your Items Almost Stock Out!",
+                          type: "warning"
+                        }, function() {
+                        window.location = "warehouse.php";
+                      });
+                  }, 100);
+                </script>';
+        } 
+      }
+
+
+ ?>
+
 <?php include_once('layouts/footer.php'); ?>

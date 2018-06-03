@@ -164,7 +164,7 @@
     $reduced      = $consumed-($weight*$stock);
 
     if($reduced < 0){
-      $session->msg("d","Can not Delete The Product.");
+      $session->msg("d","Can Not Delete The Product.");
       redirect('product.php');
     }
 

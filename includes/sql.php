@@ -148,6 +148,16 @@ function get_product($table,$id){
     return find_by_sql("SELECT id_item,nm_item,colour,stock,nm_package,nm_subcategories,unit FROM item,package,sub_categories,location,warehouse WHERE item.id_package = package.id_package AND item.id_subcategories = sub_categories.id_subcategories AND item.id_location = location.id_location AND location.id_warehouse = warehouse.id_warehouse AND location.id_warehouse = '{$db->escape($id)}'");
 }
 
+function get_item_condition($id_warehouse){
+  global $db;
+    return find_by_sql("SELECT * FROM item,location,warehouse where item.id_location = location.id_location and location.id_warehouse = warehouse.id_warehouse and stock < 1000 and warehouse.id_warehouse = '$id_warehouse'");
+}
+
+function get_package_condition($id_warehouse){
+  global $db;
+    return find_by_sql("SELECT * FROM package,warehouse where package.id_warehouse = warehouse.id_warehouse and jml_stock < 1000 and warehouse.id_warehouse = '$id_warehouse'");
+}
+
 
 //find field with order (zacky)
 function find_all_order($table,$order,$id) {
@@ -182,6 +192,12 @@ function find_po_warehouse($id_warehouse) {
 function find_product_fetch($id_item) {
    global $db;
      $sql = $db->query("SELECT * FROM item  WHERE id_item = '$id_item'");
+     return $db->fetch_assoc($sql);
+}
+
+function find_package_fetch($id_package) {
+   global $db;
+     $sql = $db->query("SELECT * FROM package  WHERE id_package = '$id_package'");
      return $db->fetch_assoc($sql);
 }
 

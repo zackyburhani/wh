@@ -9,6 +9,7 @@
   $all_categories  = find_all1('warehouse');
   $getWarehouse    = find_po_warehouse($user['id_warehouse']);
   $getAllWarehouse = find_warehouse_po($user['id_warehouse']);
+  $all_warehouse_id    = find_warehouse_id($user['id_warehouse']);
 
   $getItem         = find_all1('item');
   
@@ -193,9 +194,14 @@ if(isset($_POST['update'])) {
   $cart = unserialize(serialize($_SESSION['cart']));
   for($i=0; $i<count($cart);$i++) {
      $cart[$i]->qty = $arrQuantity[$i];
-     
-     if($cart[$i]->stock < $arrQuantity[$i]) {
-      $session->msg("d", "Sorry! QTY > Stock");
+
+     $consumed     = $all_warehouse_id['heavy_consumed'];
+     $heavy_max    = $all_warehouse_id['heavy_max'];
+     $id_warehouse = $all_warehouse_id['id_warehouse']; 
+     $reduced      = ($cart[$i]->weight*$cart[$i]->qty);
+
+     if($reduced > $heavy_max) {
+      $session->msg("d", "Total Weight Greater Than Area Warehouse");
       redirect('po.php',false);
     }
 
@@ -317,7 +323,7 @@ if(isset($_POST['update'])) {
                   <td align="center"> <?php echo $cart[$i]->nm_item; ?> </td>
                   <td align="center"> <?php echo $cart[$i]->colour; ?> </td>
                   <td align="center"> <?php echo $cart[$i]->weight; ?> </td>
-                  <td align="center"> <?php echo $cart[$i]->stock-$cart[$i]->qty; ?> </td>
+                  <td align="center"> <?php echo $cart[$i]->stock ?> </td>
                   <td align="center"> <?php echo $cart[$i]->id_package; ?> </td>
                   <td align="center"> <?php echo $cart[$i]->id_location; ?> </td>
                   <td align="center">
