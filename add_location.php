@@ -239,13 +239,14 @@ if(isset($_POST['update_location'])){
           <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_location['room'])); ?>" name="room">
         </div> 
         <div class="form-group">
-          <label class="control-label"></label>
+          <label clas
+          s="control-label"></label>
           <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_location['room'])); ?>" name="room">
         </div> 
     
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" name="update_location" class="btn btn-primary">Update</button>
+        z<button type="submit" name="update_location" class="btn btn-primary">Update</button>
       </div>
     </form>
     </div>
@@ -267,10 +268,10 @@ if(isset($_POST['update_location'])){
         <h4 class="modal-title" id="exampleModalLabel">Delete Location</h4>
       </div>
       <div class="modal-body">
-      <form method="post" action="add_location.php" class="clearfix">
+      <form method="post" action="add_location.php" class="cl?php echo remove_junk(ucwords($a_location['unit'])); ?></b> From <b><?php echo remove_junk(ucwords($a_location['floor'])); ?></b>?</p>  
+      </div>earfix">
         <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_location['id_location'])); ?>" name="idlocation">
-        <p>Are You Sure to Delete Warehouse <b><?php echo remove_junk(ucwords($a_location['unit'])); ?></b> From <b><?php echo remove_junk(ucwords($a_location['floor'])); ?></b>?</p>  
-      </div>
+        <p>Are You Sure to Delete Warehouse <b><
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="submit" name="delete_location" class="btn btn-danger">Delete</button>

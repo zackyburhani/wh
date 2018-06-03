@@ -50,11 +50,19 @@ function find_by_id_position($table,$id)
      }
 }
 
+function find_po($table) {
+  global $db;
+  if(tableExists($table))
+  {
+    return find_by_sql("SELECT * FROM ".$db->escape($table)." where id_po='$_GET[no_po]'");
+  }
+}
+
 function find_prod_warehouse($table) {
   global $db;
   if(tableExists($table))
   {
-    return find_by_sql("SELECT * FROM ".$db->escape($table)." where warehouse_id='$_GET[product_warehouse]'");
+    return find_by_sql("SELECT * FROM ".$db->escape($table)." where id_warehouse='$_GET[item]'");
   }
 }
 
@@ -506,6 +514,20 @@ function tableExists($table){
     return find_by_sql($sql);
 
    }
+
+  function join_po_table(){
+     global $db;
+    $sql  =" SELECT * from detil_po";
+    return find_by_sql($sql);
+
+   }
+
+   function join_po_table1(){
+    global $db;
+   $sql  =" SELECT * from detil_po WHERE id_po=$_GET[no_po]";
+   return find_by_sql($sql);
+
+  }
 
   function join_product_table1(){
     global $db;

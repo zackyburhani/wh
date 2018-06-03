@@ -4,149 +4,95 @@ error_reporting(0);
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
   page_require_level(1);
-  
-  $all_warehouse = find_all1('warehouse');
-  
-if (isset($_POST['submit'])) {
-  $id_prod = $_POST['id'];
-  $name = $_POST['name'];
-  $qty = $_POST['quantity'];
-  $ware = $_POST['warehouse'];
-  $id_ware = $_POST['id_ware'];
-
-  for($x = 0; $x < count($id_ware); $x++) {
-    if ($ware[$x] != "" || $ware[$x] != "0") {
-      $query = "SELECT * FROM warehouse WHERE nm_warehouse='$name[$x]' AND id_warehouse=$ware[$x]";
-      $result = $db->query($query);
-      if ($result->num_rows > 0) {
-        /*while($row = $result->fetch_assoc()) {
-          $quantity = $row['quantity'] + $qty[$x];
-        }*/
-        $query1="UPDATE item SET stock=stock+$qty[$x] WHERE nm_item='$name[$x]' AND id_warehouse=$ware[$x]";
-        $db->query($query1);
-        $query1="UPDATE item SET stock=stock-$qty[$x] WHERE id_item'$id_prod[$x]' AND id_warehouse=$id_ware";
-        $db->query($query1);
-      } else {
-        $query1 = "SELECT * FROM item WHERE id_item=$id_prod[$x] LIMIT 1";
-        $result1 = $db->query($query1);
-        if ($result1->num_rows > 0) {
-          while($row = $result1->fetch_assoc()) {
-            $date = make_date();
-            //$query2="INSERT INTO products (name, quantity, buy_price, sale_price, categorie_id, date, warehouse_id) VALUES('$row[name]', $qty[$x], $row[buy_price], $row[sale_price], $row[categorie_id], '$date', $ware[$x])";
-            //$db->query($query2);
-          }
-        }
-      }
-    }
-  }
-}
-  
+ $po = find_all1('detil_po');
+ ?>
+<?php
+ if (isset($_POST['ganti'])) {
+    
+   }
+ 
 ?>
 
 <?php include_once('layouts/header.php'); ?>
-
   <div class="row">
      <div class="col-md-12">
        <?php echo display_msg($msg); ?>
      </div>
   </div>
-  <div class="row">
-    <div class="col-md-5">
-     <div class="panel panel-default">
-       <div class="panel-heading">
-         <strong>
-           <span class="glyphicon glyphicon-th"></span>
-           <span>Pilih Warehouse</span>
-        </strong>
-       </div>
-       <div class="panel-body">
-         <form method="get" action="move_product.php">
-           <div class="form-group">
-           <?php
-            if(isset($_GET['show_product'])){
-              $id = $_GET["product_warehouse"];
-            }else{
-              $id = 0;
-            }
-            ?>
-              <select class="form-control" name="product_warehouse">
-                    <option value=""> Select a Warehouse</option>
-                   <?php  foreach ($all_warehouse as $ware): ?>
-                     <option value="<?php echo (int)$ware['id_warehouse']; ?>" <?php if($id === $ware['id_warehouse']): echo "selected"; endif; ?>>
-                       <?php echo remove_junk($ware['nm_warehouse']); ?></option>
-                   <?php endforeach; ?>
-                 </select>
-           </div>
-           <button type="submit" name="show_product" class="btn btn-primary" value="Tampil"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;&nbsp;&nbsp;Tampil Product</button>
-       </form>
-       </div>
-     </div>
-    </div>
-  </div>
-  <?php
- if(isset($_GET['show_product'])){
-  $warehouse_id = $_GET["product_warehouse"];
-  $prod_warehouse = find_prod_warehouse('products');
-?>
-   <div class="row">
-   <div class="col-md-12">
+  <div class="col-md-13">
     <div class="panel panel-default">
-      <div class="panel-heading">
-        <strong>
-          <span class="glyphicon glyphicon-th"></span>
-          <span>All Warehouse</span>
-       </strong>
-      </div>
-        <div class="panel-body">
-        <form method="post" action="move_product.php">
-          <input type="hidden" name="id_ware" value="<?php echo (int)$warehouse_id; ?>">
-          <table class="table table-bordered table-striped table-hover">
-            <thead>
-                <tr>
-                    <th class="text-center" style="width: 50px;">#</th>
-                    <th>Warehouse</th>
-                    <th class="text-center" style="width: 100px;">Stok</th>
-                    <th class="text-center" colspan="2">Actions</th>
-                </tr>
-            </thead>
-           <tbody>
-              <?php foreach ($prod_warehouse as $cat):?>
-                <tr>
-                    <td class="text-center"><input type="hidden" name="id[]" value="<?php echo (int)$cat['id']; ?>"><input type="hidden" name="name[]" value="<?php echo $cat['name']; ?>"><?php echo count_id();?></td>
-                    <td><?php echo remove_junk(ucfirst($cat['name'])); ?></td>
-                    <td class="text-center"><?php echo remove_junk(ucfirst($cat['quantity'])); ?></td>
-                    <td class="text-center">
-                      <input type="number" class="form-control" name="quantity[]" min="0" max="<?php echo remove_junk(ucfirst($cat['quantity'])); ?>" style="width: 100px;" value="0">
-                    </td>
-                    <td>
-                      <select class="form-control" name="warehouse[]">
-                        <option value="0"> Select a Warehouse</option>
-                        <?php  foreach ($all_warehouse as $ware): 
-                          if ((int)$ware['id'] != $warehouse_id) {?>
-                            <option value="<?php echo (int)$ware['id']; ?>">
-                            <?php echo remove_junk($ware['name_warehouse']); ?></option>
-                        <?php
-                          }
-                          
-                        endforeach; ?>
-                    </select>
-                    </td>
+      <div class="panel-heading clearfix">
 
-                </tr>
-              <?php endforeach; ?>
+        </div>
+        
+        <div class="panel-body">
+          <table class="table table-bordered" id="datatableProduct">  
+             <thead>
               <tr>
-                      <td colspan="5"><button type="submit" name="submit" class="btn btn-danger"><span class="glyphicon glyphicon-transfer"></span>&nbsp;&nbsp;&nbsp;Move</button></td>
-                </tr>
+               <th class="text-center" style="width: 1px;">No.</th>
+                <th class="text-center"> Id Purchase Order</th>
+                <th class="text-center"> Date Shipment </th>
+                <th class="text-center"> Quantity </th>
+                <th class="text-center"> Id Warehouse </th>
+                <th class="text-center"> Status </th>
+                <th class="text-center"> Actions </th>
+              </tr>
+            </thead>
+            <tbody>
+             
+              <?php foreach ($po as $po1):?>     
+               <tr>
+                <td class="text-center"><?php echo count_id();?></td>
+               <td class="text-center"> <input type="hidden" name="no_po" value="<?php echo remove_junk($po1['id_po']); ?>"><?php echo remove_junk($po1['id_po']); ?></td>
+                <td> <?php echo remove_junk($po1['date_po']); ?></td>
+                <td class="text-center"> <?php echo remove_junk($po1['qty']); ?></td>
+                <td class="text-center"> <?php echo remove_junk($po1['id_warehouse']); ?></td>
+                 <td class="text-center">
+                    <?php if($a_po1['status']==true): ?>
+                    <span class="label label-success" id="stat"><?php echo "Success"; ?></span>
+                    <?php else: ?>
+                    <span class="label label-danger"><?php echo "On Destination"; ?></span>
+                    <?php endif;?>
+                </td>
+                <td class="text-center">
+                  <button class="btn btn-md btn-success" title="Change" name="ganti" >
+                    <i class="glyphicon glyphicon-ok"></i>
+                  </button>
+                </td>
+              </tr>
+             <?php endforeach; ?>
             </tbody>
-          </table>
-          </form>
-       </div>
+          </tabel>
+        </div>
+      </div>
     </div>
-    </div>
-<?php
-     }
-?>
-    
-   </div>
   </div>
+</table>
+
+
+
+<script src="jquery-1.10.2.min.js"></script>
+<script src="jquery.chained.min.js"></script>
+<script>
+  $("#sub_category").chained("#category");
+</script>
+ <script>
+    $(".hapus").click(function () {
+        var jawab = confirm("Press a button!");
+        if (jawab === true) {
+            var hapus = false;
+            if (!hapus) {
+                hapus = true;
+                $.post('hapus.php', {id: $(this).attr('data-id')},
+                function (data) {
+                    alert(data);
+                });
+                hapus = false;
+            }
+        } else {
+            return false;
+        }
+    });
+</script>
+
   <?php include_once('layouts/footer.php'); ?>
