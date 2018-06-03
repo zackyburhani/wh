@@ -122,6 +122,7 @@ function find_all_location($table,$id) {
    }
 }
 
+//note on oracle
 function find_all_package($table,$id) {
    global $db;
    if(tableExists($table))
@@ -129,6 +130,26 @@ function find_all_package($table,$id) {
      return find_by_sql("SELECT * FROM {$db->escape($table)} WHERE id_warehouse = '$id'");
    }
 }
+
+function find_all_bpack($id_warehouse) {
+  global $db;
+  return find_by_sql("SELECT * FROM package,item WHERE package.id_package = item.id_package and package.id_warehouse = '$id_warehouse' group by package.id_package");
+}
+
+
+//note on oracle
+function find_weight_item($id_item) {
+  global $db;
+     $sql = $db->query("SELECT item.weight as w_item from item where id_item = '$id_item'");
+     return $db->fetch_assoc($sql);
+}
+
+function find_weight_package($id_package) {
+  global $db;
+     $sql = $db->query("SELECT package.weight as w_package from package where package.id_package = '$id_package'");
+     return $db->fetch_assoc($sql);
+}
+
 
 function find_all_subcategories($table,$id) {
    global $db;
@@ -153,6 +174,7 @@ function get_item_condition($id_warehouse){
     return find_by_sql("SELECT * FROM item,location,warehouse where item.id_location = location.id_location and location.id_warehouse = warehouse.id_warehouse and stock < 1000 and warehouse.id_warehouse = '$id_warehouse'");
 }
 
+//note on oracle
 function get_package_condition($id_warehouse){
   global $db;
     return find_by_sql("SELECT * FROM package,warehouse where package.id_warehouse = warehouse.id_warehouse and jml_stock < 1000 and warehouse.id_warehouse = '$id_warehouse'");

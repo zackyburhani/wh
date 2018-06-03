@@ -40,7 +40,7 @@
   <body>
   <?php  if ($session->isUserLoggedIn(true)): ?>
     <header id="header">
-      <div class="logo pull-left"> DATA WAREHOUSE </div>
+      <div class="logo pull-left"> INVENTORY IKEA </div>
       <div class="header-content">
       <div class="header-date pull-left">
         <strong><?php echo date("F j, Y, g:i a");?></strong>

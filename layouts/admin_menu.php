@@ -24,14 +24,14 @@
   </li>
   <li>
     <a href="product.php" class="submenu-toggle">
-      <i class="glyphicon glyphicon-th-large"></i>
+      <i class="fa fa-cubes"></i>
       <span>Products</span>
     </a>
   </li>
  
   <li>
     <a href="#" class="submenu-toggle">
-      <i class="glyphicon glyphicon-th-large"></i>
+      <i class="fa fa-university"></i>
        <span>Warehouse</span>
       </a>
       <ul class="nav submenu">
@@ -43,15 +43,19 @@
   </li>
 
   <li>
-    <a href="add_package.php" class="submenu-toggle">
-      <i class="glyphicon glyphicon-th-large"></i>
-       <span>Add Package</span>
+    <a href="#" class="submenu-toggle">
+      <i class="fa fa-archive"></i>
+       <span>Package</span>
       </a>
+      <ul class="nav submenu">
+        <li><a href="add_package.php">Add Package</a></li>
+          <li><a href="add_bpack.php">Combine Package</a></li>
+      </ul>
   </li>
 
   <li>
     <a href="#" class="submenu-toggle">
-      <i class="glyphicon glyphicon-th-large"></i>
+      <i class="fa fa-handshake-o"></i>
        <span>Purchase Order</span>
       </a>
       <ul class="nav submenu">
