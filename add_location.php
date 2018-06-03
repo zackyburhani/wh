@@ -4,8 +4,10 @@
   // Checkin What level user has permission to view this page
   page_require_level(1);
   
+  $user = current_user();
   $all_categories = find_all1('location');
-    $all_warehouse = find_all1('warehouse');
+  // $all_warehouse = find_all1('warehouse');
+  $all_warehouse = find_warehouse_id($user['id_warehouse']);
 ?>
 
 <!-- INSERT WAREHOUSE -->
@@ -152,10 +154,10 @@ if(isset($_POST['update_location'])){
            <td class="text-center"><?php echo remove_junk(ucwords($a_location['room']))?></td>
             <td class="text-center"><?php echo remove_junk(ucwords($a_location['id_warehouse']))?></td>
            <td class="text-center">
-                <button data-target="#updateLocation<?php echo (int)$a_location['id_location'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
+                <button data-target="#updateLocation<?php echo $a_location['id_location'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
                 </button>
-                <button type="button" class="btn btn-danger btn-md" data-toggle="modal" data-target="#deletelocation<?php echo (int)$a_location['id_location'];?>" title="Delete"><i class="glyphicon glyphicon-trash"></i>
+                <button type="button" class="btn btn-danger btn-md" data-toggle="modal" data-target="#deletelocation<?php echo $a_location['id_location'];?>" title="Delete"><i class="glyphicon glyphicon-trash"></i>
                 </button>
 
            </td>
@@ -180,10 +182,7 @@ if(isset($_POST['update_location'])){
       </div>
       <div class="modal-body">
       <form method="post" action="add_location.php" class="clearfix">
-        <div class="form-group">
-          <!--<label class="control-label">Location Unit</label>-->
           <input type="hidden" class="form-control" name="location">
-        </div>
         <div class="form-group">
           <label class="control-label">Location Unit</label>
           <input type="name" class="form-control" name="unit">
@@ -195,26 +194,19 @@ if(isset($_POST['update_location'])){
         <div class="form-group">
           <label class="control-label">Room</label>
           <input type="name" class="form-control" name="room">
-          
         </div>
         <div class="form-group">
           <label class="control-label">Select Warehouse</label>
-           <select class="form-control" name="location_add">
-             <option>select a warehouse</option>
-            <?php  foreach ($all_warehouse as $ware): ?>
-
-            <option  value="<?php echo (int)$ware['id_warehouse']; ?>"> <?php echo remove_junk($ware['nm_warehouse']); ?> </option>
-            <?php endforeach; ?>
-                 </select>
-          <!--<input type="name" class="form-control" name="id_warehouse">-->
+          <input type="name" class="form-control" value="<?php echo $all_warehouse['nm_warehouse']; ?>" readonly>
+          <input type="hidden" value="<?php echo $all_warehouse['id_warehouse']; ?>" name="location_add">
         </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" name="add_location" class="btn btn-primary">Save</button>
       </div>
-    </form>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" title="Close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+      <button type="submit" name="add_location" title="Save" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
     </div>
   </div>
+  </form>
 </div>
   </div>
 </div>

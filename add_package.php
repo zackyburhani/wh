@@ -16,11 +16,11 @@
    $id_package = autonumber('id_package','package');
    $id = $user['id_warehouse'];
    $packagename = remove_junk($db->escape($_POST['packagename']));
-   $height = remove_junk($db->escape($_POST['height']));
-   $weight = remove_junk($db->escape($_POST['weight']));
-   $lenght = remove_junk($db->escape($_POST['lenght']));
-   $width = remove_junk($db->escape($_POST['width']));
-   $stock = remove_junk($db->escape($_POST['stock']));
+   $height      = remove_junk($db->escape($_POST['height']));
+   $weight      = remove_junk($db->escape($_POST['weight']));
+   $lenght      = remove_junk($db->escape($_POST['lenght']));
+   $width       = remove_junk($db->escape($_POST['width']));
+   $stock       = remove_junk($db->escape($_POST['stock']));
    if(empty($errors)){
       $sql  = "INSERT INTO package (id_package,nm_package,height,weight,lenght,width,jml_stock,id_warehouse)";
       $sql .= " VALUES ('{$id_package}','{$packagename}','{$height}','{$weight}','{$lenght}','{$width}','{$stock}','{$id}')";
@@ -54,12 +54,12 @@ if(isset($_POST['update_package'])){
   $req_field = array('packagename','height','weight','lenght','width','stock','idpackage');
   validate_fields($req_field);
   $packagename = remove_junk($db->escape($_POST['packagename']));
-  $height = remove_junk($db->escape($_POST['height']));
-  $weight = remove_junk($db->escape($_POST['weight']));
-  $lenght = remove_junk($db->escape($_POST['lenght']));
-  $width = remove_junk($db->escape($_POST['width']));
-  $stock = remove_junk($db->escape($_POST['stock']));
-  $idpackage = remove_junk($db->escape($_POST['idpackage']));
+  $height      = remove_junk($db->escape($_POST['height']));
+  $weight      = remove_junk($db->escape($_POST['weight']));
+  $lenght      = remove_junk($db->escape($_POST['lenght']));
+  $width       = remove_junk($db->escape($_POST['width']));
+  $stock       = remove_junk($db->escape($_POST['stock']));
+  $idpackage   = remove_junk($db->escape($_POST['idpackage']));
   if(empty($errors)){
         $sql = "UPDATE package SET nm_package='{$packagename}',height='{$height}',weight='{$weight}',lenght='{$lenght}',width='{$width}',jml_stock='{$stock}'";
        $sql .= " WHERE id_package='{$idpackage}'";
@@ -117,7 +117,7 @@ if(isset($_POST['update_package'])){
         <span class="glyphicon glyphicon-th"></span>
         <span>PACKAGE</span>
      </strong>
-       <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#addPackage"><span class="glyphicon glyphicon-plus"></span> Add New Package
+       <button type="button" title="Add New Package" class="btn btn-info pull-right" data-toggle="modal" data-target="#addPackage"><span class="glyphicon glyphicon-plus"></span> Add New Package
         </button>
     </div>
      <div class="panel-body">
@@ -148,7 +148,7 @@ if(isset($_POST['update_package'])){
                 <button data-target="#updatePackage<?php echo (int)$a_package['id_package'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
                 </button>
-                <button data-target="#deletePackage<?php echo (int)$a_package['id_package'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Hapus">
+                <button data-target="#deletePackage<?php echo (int)$a_package['id_package'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete">
                   <i class="glyphicon glyphicon-trash"></i>
                 </button>
            </td>
@@ -199,8 +199,8 @@ if(isset($_POST['update_package'])){
         </div>      
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" name="add_package" class="btn btn-primary">Save</button>
+        <button type="button" title="Close" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+        <button type="submit" title="Save" name="add_package" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
       </div>
     </form>
     </div>
@@ -250,8 +250,8 @@ if(isset($_POST['update_package'])){
         </div>    
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" name="update_package" class="btn btn-primary">Update</button>
+        <button type="button" title="Close" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+        <button type="submit" title="Update" name="update_package" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Update</button>
       </div>
     </form>
     </div>
@@ -278,8 +278,8 @@ if(isset($_POST['update_package'])){
         <p>Are You Sure to Delete Package <b><?php echo remove_junk(ucwords($a_package['nm_package'])); ?></b>?</p>  
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" name="delete_package" class="btn btn-danger">Delete</button>
+        <button type="button" class="btn btn-secondary" title="Close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+        <button type="submit" name="delete_package" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</button>
       </div>
     </form>
     </div>

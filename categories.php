@@ -222,7 +222,7 @@
             <div class="form-group">
               <input type="text" class="form-control" name="categories-name" onkeypress="return hanyaHuruf(event)" placeholder="Category Name">
             </div>
-            <button type="submit" name="add_cat" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;Add category</button>
+            <button type="submit" name="add_cat" title="Add Category" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;Add category</button>
           </form>
         </div>
        </div>
@@ -257,7 +257,7 @@
                     <input type="text" class="form-control" name="nm_subcategories" placeholder="Subcategory Name">
                 </div>
 
-                <button type="submit" name="add_subCategory" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;Add Subcategory</button>
+                <button type="submit" title="Add Subcategory" name="add_subCategory" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;Add Subcategory</button>
             </form>
             </div>
           </div>
@@ -310,7 +310,7 @@
                         <td class="text-center">
                           <button data-target="#updateCategory<?php echo (int)$cat['id_categories'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit"><i class="glyphicon glyphicon-edit"></i>
                           </button>
-                          <button data-target="#deleteCategory<?php echo (int)$cat['id_categories'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Edit"><i class="glyphicon glyphicon-trash"></i>
+                          <button data-target="#deleteCategory<?php echo (int)$cat['id_categories'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete"><i class="glyphicon glyphicon-trash"></i>
                           </button>
                         </td>
                       </tr>
@@ -327,9 +327,9 @@
                     <table id="SubcategoriesTable" class="table table-bordered table-striped table-hover">
                       <thead>
                         <tr>
-                          <th class="text-center">No.</th>
+                          <th class="text-center" style="width: 10px;">No.</th>
                           <th>Name Subcategory</th>
-                          <th class="text-center" style="width: 10px;">Actions</th>
+                          <th class="text-center" style="width: 100px;">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -341,7 +341,7 @@
                           <td class="text-center">
                             <button data-target="#updateSubcategory<?php echo $subcat['id_subcategories'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit"><i class="glyphicon glyphicon-edit"></i>
                             </button>
-                            <button data-target="#deleteCategory<?php echo $subcat['id_subcategories'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Edit"><i class="glyphicon glyphicon-trash"></i>
+                            <button data-target="#deleteCategory<?php echo $subcat['id_subcategories'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete"><i class="glyphicon glyphicon-trash"></i>
                             </button>
                           </td>
                         </tr>

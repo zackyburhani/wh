@@ -16,7 +16,7 @@
   $get_product         = get_product('item',$id);
   $all_categories      = find_all_categories('categories',$id);
   $all_subcategories   = find_all_subcategories('sub_categories',$id);
-  $join_subcategories  = find_allSubcategories($id);
+  // $join_subcategories  = find_allSubcategories($id);
   $all_package         = find_all_package('package',$id);
   $all_location        = find_all_location('location',$id);
 

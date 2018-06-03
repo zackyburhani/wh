@@ -15,7 +15,7 @@ function autonumber($id, $table){
   return $new_code;
 }
 
-
+ 
 /*--------------------------------------------------------------*/
 /* Function for find all database table rows by table name
 /*--------------------------------------------------------------*/
