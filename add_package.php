@@ -3,8 +3,9 @@
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
   page_require_level(2);
-  
-  $all_package = find_all1('package')
+  $user = current_user();
+  $id = $user['id_warehouse'];
+  $all_package = find_all_package('package',$id);
 ?>
 
 <!-- INSERT PACKAGE -->
@@ -13,6 +14,7 @@
    $req_field = array('packagename');
    validate_fields($req_field);
    $id_package = autonumber('id_package','package');
+   $id = $user['id_warehouse'];
    $packagename = remove_junk($db->escape($_POST['packagename']));
    $height = remove_junk($db->escape($_POST['height']));
    $weight = remove_junk($db->escape($_POST['weight']));
@@ -20,8 +22,8 @@
    $width = remove_junk($db->escape($_POST['width']));
    $stock = remove_junk($db->escape($_POST['stock']));
    if(empty($errors)){
-      $sql  = "INSERT INTO package (id_package,nm_package,height,weight,lenght,width,jml_stock)";
-      $sql .= " VALUES ('{$id_package}','{$packagename}','{$height}','{$weight}','{$lenght}','{$width}','{$stock}')";
+      $sql  = "INSERT INTO package (id_package,nm_package,height,weight,lenght,width,jml_stock,id_warehouse)";
+      $sql .= " VALUES ('{$id_package}','{$packagename}','{$height}','{$weight}','{$lenght}','{$width}','{$stock}','{$id}')";
 
       $getAllPackageName = "SELECT nm_package FROM package where nm_package = '$packagename'";
       $ada=$db->query($getAllPackageName) or die(mysql_error());

@@ -100,12 +100,38 @@ function find_all_categories($table,$id) {
    }
 }
 
+function find_all_location($table,$id) {
+   global $db;
+   if(tableExists($table))
+   {
+     return find_by_sql("SELECT unit,floor,room,id_location FROM {$db->escape($table)} WHERE id_warehouse = '{$db->escape($id)}'");
+   }
+}
+
+function find_all_package($table,$id) {
+   global $db;
+   if(tableExists($table))
+   {
+     return find_by_sql("SELECT * FROM {$db->escape($table)} WHERE id_warehouse = '$id'");
+   }
+}
+
 function find_all_subcategories($table,$id) {
    global $db;
    if(tableExists($table))
    {
      return find_by_sql("SELECT *FROM {$db->escape($table)},categories WHERE {$db->escape($table)}.id_categories = categories.id_categories and id_warehouse = '{$db->escape($id)}' ORDER BY nm_subcategories");
    }
+}
+
+function find_all_product($id) {
+   global $db;
+     return find_by_sql("SELECT * FROM item,location WHERE item.id_location = location.id_location AND id_warehouse = '{$db->escape($id)}'");
+}
+
+function get_product($table,$id){
+  global $db;
+    return find_by_sql("SELECT id_item,nm_item,colour,stock,nm_package,nm_subcategories,unit FROM item,package,sub_categories,location,warehouse WHERE item.id_package = package.id_package AND item.id_subcategories = sub_categories.id_subcategories AND item.id_location = location.id_location AND location.id_warehouse = warehouse.id_warehouse AND location.id_warehouse = '{$db->escape($id)}'");
 }
 
 
@@ -685,7 +711,8 @@ function tableExists($table){
   /*--------------------------------------------------------------*/
   /* Function for cheaking which user level has access to page
   /*--------------------------------------------------------------*/
-   function page_require_level($require_level){
+   function page_require_level($require_level)
+   {
      global $session;
      $current_user = current_user();
      $login_level = find_by_groupLevel($current_user['level_user']);
@@ -695,13 +722,7 @@ function tableExists($table){
             $session->msg('d','Please login...');
             redirect('index.php', false);
       //cheackin log in User level and Require level is Less than or equal to
-     elseif($current_user['id_position'] <= (int)$require_level):
-              return true;
-      else:
-            $session->msg("d", "Sorry! you dont have permission to view the page.");
-            redirect('home.php', false);
         endif;
-
      }
    /*--------------------------------------------------------------*/
    /* Function for Finding all product name

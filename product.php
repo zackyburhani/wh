@@ -3,14 +3,22 @@
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
    page_require_level(2);
-	$all_item = find_all_item();
   // $all_categories = find_all1('categories');
   $user = current_user();
   $id = $user['id_warehouse'];
+
   $join_subcategories  = find_allSubcategories($id);
   $all_categories      = find_all_order('categories','nm_categories',$id);
   $all_package         = find_all_Position('package'); 
   $all_warehouse_id    = find_warehouse_id($user['id_warehouse']);
+
+  $all_product         = find_all_product($id);
+  $get_product         = get_product('item',$id);
+  $all_categories      = find_all_categories('categories',$id);
+  $all_subcategories   = find_all_subcategories('sub_categories',$id);
+  $join_subcategories  = find_allSubcategories($id);
+  $all_package         = find_all_package('package',$id);
+  $all_location        = find_all_location('location',$id);
 
 ?> 
 
@@ -18,9 +26,10 @@
 <?php
   if(isset($_POST['add_Product'])){
 
-    $req_fields = array('nm_item','colour','stock','id_package','id_subcategories', 'id_location' );
+    $req_fields = array('nm_item','colour','stock','id_package','id_subcategories', 'id_location');
     validate_fields($req_fields);
     if(empty($errors)){
+      $id_warehouse = $user['id_warehouse'];
       $id_item          = autonumber('id_item','item');
       $nm_item          = remove_junk($db->escape($_POST['nm_item']));
       $colour           = remove_junk($db->escape($_POST['colour']));
@@ -28,7 +37,7 @@
       $height           = remove_junk($db->escape($_POST['height']));
       $length           = remove_junk($db->escape($_POST['length']));
       $weight           = remove_junk($db->escape($_POST['weight']));
-      $stock            = remove_junk($db->escape($_POST['stock']));     
+      $stock            = remove_junk($db->escape($_POST['stock']));  
       $id_package       = remove_junk($db->escape($_POST['id_package']));
       $id_subcategories = remove_junk($db->escape($_POST['id_subcategories']));
       $id_location      = remove_junk($db->escape($_POST['id_location']));
@@ -95,8 +104,9 @@
     $id_package       = remove_junk($db->escape($_POST['id_package']));
     $id_subcategories = remove_junk($db->escape($_POST['id_subcategories']));
     $id_location      = remove_junk($db->escape($_POST['id_location']));
+    $id_categories    = remove_junk($db->escape($_POST['id_categories']));
 
-
+        $id_warehouse = $user['id_warehouse'];
         $query  = "UPDATE item SET ";
         $query .= "nm_item = '{$nm_item}',colour = '{$colour}',id_subcategories = '{$id_subcategories}',width = '{$width}',height = '{$height}',length = '{$length}',weight = '{$weight}',stock = '{$stock}',id_package = '{$id_package}',id_location = '{$id_location}', id_item = '{$id_item}' ";
         $query .= "WHERE id_item = '{$id_item}'";
@@ -197,15 +207,15 @@
               </tr>
             </thead>
             <tbody>
-              <?php foreach ($all_item as $items):?>
+              <?php foreach ($get_product as $items):?>
               <tr>
                 <td class="text-center"><?php echo count_id().".";?></td>
-                <td class="text-center"><a href="#detilItem<?php echo $items['id_item'];?>" data-toggle="modal" title="Detail"> <?php echo remove_junk($items['nm_item']); ?></a></td>
-                <td class="text-center"> <?php echo remove_junk($items['colour']); ?></td>
-                <td class="text-center"> <?php echo remove_junk($items['stock']); ?></td>
-        				<td class="text-center"> <?php echo remove_junk($items['nm_package']); ?></td>
-        				<td class="text-center"> <?php echo remove_junk($items['nm_subcategories']); ?></td>
-        				<td class="text-center"> <?php echo remove_junk($items['id_location']); ?></td>
+                <td class="text-center"><a href="#detilItem<?php echo $items['id_item'];?>" data-toggle="modal" title="Detail"> <?php echo remove_junk(ucfirst($items['nm_item'])); ?></a></td>
+                <td class="text-center"> <?php echo remove_junk(ucfirst($items['colour'])); ?></td>
+                <td class="text-center"> <?php echo remove_junk(ucfirst($items['stock'])); ?></td>
+        				<td class="text-center"> <?php echo remove_junk(ucfirst($items['nm_package'])); ?></td>
+        				<td class="text-center"> <?php echo remove_junk(ucfirst($items['nm_subcategories'])); ?></td>
+        				<td class="text-center"> <?php echo remove_junk(ucfirst($items['unit'])); ?></td>
                 <td class="text-center">
                   <button data-target="#updateItem<?php echo $items['id_item'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Update">
                     <i class="glyphicon glyphicon-edit"></i>
@@ -281,10 +291,13 @@
                     <div class="col-md-3">
                       <label for="name" class="control-label">Location Warehouse</label>
                       <select class="form-control" name="id_location">
-                        <option value="">Select Location Warehouse</option>
-                        <option value="0002">A</option>
-                        <option value="3">B</option>
-                        <option value="4">C</option>
+                        <?php if($all_location == null) { ?>
+                          <option value="">-</option>
+                          <?php } else { ?>
+                            <?php foreach($all_location as $row){ ?>
+                              <option value="<?php echo remove_junk($row['id_location']); ?>"><?php echo remove_junk(ucwords($row['unit'])); ?></option>
+                          <?php } ?>  
+                        <?php } ?>
                       </select>
                     </div>
                 </div>
@@ -378,7 +391,7 @@
 <!-- END ADD NEW PRODUCT -->
 
 <!-- Update Data Product -->
-<?php foreach($all_item as $item) { ?>
+<?php foreach($all_product as $item) { ?>
 <div class="modal fade" id="updateItem<?php echo $item['id_item'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -534,7 +547,7 @@
 <!-- END Update Data Product -->
 
 <!-- Delete Modal -->
-<?php foreach($all_item as $item) : ?>
+<?php foreach($all_product as $item) : ?>
   <div class="modal fade" id="deleteItem<?php echo $item['id_item'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
@@ -565,7 +578,7 @@
 <!-- DELETE MODAL -->
 
 <!-- DETIL PRODUCT -->
-<?php foreach($all_item as $item) : ?>
+<?php foreach($all_product as $item) : ?>
   <div class="modal fade" id="detilItem<?php echo $item['id_item'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
