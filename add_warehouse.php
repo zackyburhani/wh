@@ -18,7 +18,7 @@
    $address = remove_junk($db->escape($_POST['address']));
    $status = remove_junk($db->escape($_POST['status']));
    $heavymax = remove_junk($db->escape($_POST['heavymax']));
-   $consumed = remove_junk($db->escape($_POST['consumed']));
+   $consumed = 0;
    if(empty($errors)){
       $sql  = "INSERT INTO warehouse (id_warehouse,nm_warehouse,country,address,status,heavy_max,heavy_consumed)";
       $sql .= " VALUES ('{$id_wh}','{$cat_name}','{$country}','{$address}','{$status}','{$heavymax}','{$consumed}')";
@@ -56,10 +56,9 @@ if(isset($_POST['update_warehouse'])){
   $address = remove_junk($db->escape($_POST['address']));
   $status = remove_junk($db->escape($_POST['status']));
   $heavymax = remove_junk($db->escape($_POST['heavymax']));
-  $consumed = remove_junk($db->escape($_POST['consumed']));
   $idwarehouse = remove_junk($db->escape($_POST['idwarehouse']));
   if(empty($errors)){
-        $sql = "UPDATE warehouse SET nm_warehouse='{$cat_name}',country='{$country}',address='{$address}',status='{$status}',heavy_max='{$heavymax}',heavy_consumed='{$consumed}'";
+        $sql = "UPDATE warehouse SET nm_warehouse='{$cat_name}',country='{$country}',address='{$address}',status='{$status}',heavy_max='{$heavymax}'";
        $sql .= " WHERE id_warehouse='{$idwarehouse}'";
      $result = $db->query($sql);
      if($result && $db->affected_rows() === 1) {
@@ -202,10 +201,6 @@ if(isset($_POST['update_warehouse'])){
         <div class="form-group">
           <label class="control-label">Heavy Max</label>
           <input type="name" class="form-control" name="heavymax">
-        </div>  
-        <div class="form-group">
-          <label class="control-label">Area Consumed</label>
-          <input type="name" class="form-control" name="consumed">
         </div>      
       </div>
       <div class="modal-footer">
@@ -256,10 +251,6 @@ if(isset($_POST['update_warehouse'])){
         <div class="form-group">
           <label class="control-label">Heavy Max</label>
           <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_warehouse['heavy_max'])); ?>" name="heavymax">
-        </div>  
-        <div class="form-group">
-          <label class="control-label">Area Consumed</label>
-          <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_warehouse['heavy_consumed'])); ?>" name="consumed">
         </div>    
       </div>
       <div class="modal-footer">

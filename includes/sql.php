@@ -86,6 +86,12 @@ function find_warehouse_po($id_warehouse) {
   return find_by_sql("SELECT * FROM warehouse WHERE id_warehouse != '$id_warehouse' and status != 0");
 }
 
+function find_warehouse_id($id_warehouse) {
+  global $db;
+  $sql = $db->query("SELECT * FROM warehouse WHERE id_warehouse = '$id_warehouse'");
+  return $db->fetch_assoc($sql);
+}
+
 function find_all_categories($table,$id) {
    global $db;
    if(tableExists($table))
@@ -621,7 +627,7 @@ function tableExists($table){
   function find_all_item(){
       global $db;
       $results = array();
-      $sql = "SELECT * FROM item,sub_categories,package WHERE item.id_package = package.id_package and item.id_subcategories = sub_categories.id_subcategories";
+      $sql = "SELECT id_item,nm_item,colour,item.width,item.height,item.length,item.weight,item.stock,item.id_package,item.id_subcategories,sub_categories.nm_subcategories,sub_categories.id_categories,package.id_package,package.nm_package,package.height as p_height,package.lenght as p_lenght,package.weight as p_weight,package.width as p_width,package.jml_stock,item.id_location FROM item,sub_categories,package WHERE item.id_package = package.id_package and item.id_subcategories = sub_categories.id_subcategories";
       $result = find_by_sql($sql);
       return $result;
   }
