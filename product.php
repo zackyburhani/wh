@@ -3,24 +3,33 @@
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
    page_require_level(2);
-	$all_item = find_all_item();
   // $all_categories = find_all1('categories');
-  $user = $user = current_user();
+  $user = current_user();
   $id = $user['id_warehouse'];
+
   $join_subcategories  = find_allSubcategories($id);
-  $all_categories      = find_all_order('categories','nm_categories',$id);
-  $all_package         = find_all_Position('package');
+  // $all_categories      = find_all_order('categories','nm_categories',$id);
+  $all_package         = find_all_Position('package'); 
+  $all_warehouse_id    = find_warehouse_id($user['id_warehouse']);
 
+  $all_product         = find_all_product($id);
+  $get_product         = get_product('item',$id);
+  $all_categories      = find_all_categories('categories',$id);
+  $all_subcategories   = find_all_subcategories('sub_categories',$id);
+  // $join_subcategories  = find_allSubcategories($id);
+  $all_package         = find_all_package('package',$id);
+  $all_location        = find_all_location('location',$id);
+  
 ?> 
-
 
 <!-- ADD PRODUCT -->
 <?php
   if(isset($_POST['add_Product'])){
 
-    $req_fields = array('nm_item','colour','stock','id_package','id_subcategories', 'id_location' );
+    $req_fields = array('nm_item','colour','stock','id_package','id_subcategories', 'id_location');
     validate_fields($req_fields);
     if(empty($errors)){
+      $id_warehouse = $user['id_warehouse'];
       $id_item          = autonumber('id_item','item');
       $nm_item          = remove_junk($db->escape($_POST['nm_item']));
       $colour           = remove_junk($db->escape($_POST['colour']));
@@ -28,20 +37,39 @@
       $height           = remove_junk($db->escape($_POST['height']));
       $length           = remove_junk($db->escape($_POST['length']));
       $weight           = remove_junk($db->escape($_POST['weight']));
-      $stock            = remove_junk($db->escape($_POST['stock']));     
+      $stock            = remove_junk($db->escape($_POST['stock']));  
       $id_package       = remove_junk($db->escape($_POST['id_package']));
       $id_subcategories = remove_junk($db->escape($_POST['id_subcategories']));
       $id_location      = remove_junk($db->escape($_POST['id_location']));
     
-      $query  = "INSERT INTO item (";
-      $query .=" id_item,nm_item,colour,width,height,length,weight,stock,id_package,id_subcategories,id_location";
-      $query .=") VALUES (";
-      $query .=" '{$id_item}', '{$nm_item}', '{$colour}', '{$width}', '{$height}', '{$length}', '{$weight}', '{$stock}', '{$id_package}', '{$id_subcategories}', '{$id_location}'";
-      $query .=")";
+      //reduce area consumed 
+      $consumed     = $all_warehouse_id['heavy_consumed'];
+      $heavy_max    = $all_warehouse_id['heavy_max'];
+      $id_warehouse = $all_warehouse_id['id_warehouse']; 
+      $reduced      = ($weight*$stock)+$consumed;
+
+      if($reduced > $heavy_max){
+        $session->msg('d',"You Do Not Have Enough Storage Space !");
+        redirect('product.php', false);
+      }
+
+        $query  = "UPDATE warehouse SET ";
+        $query .= "heavy_consumed='{$reduced}' ";
+        $query .= "WHERE id_warehouse = '{$id_warehouse}'";
 
       if($db->query($query)){
-        $session->msg('s',"Product added ");
-        redirect('product.php', false);
+        
+        //insert item
+        $query2  = "INSERT INTO item (";
+        $query2 .=" id_item,nm_item,colour,width,height,length,weight,stock,id_package,id_subcategories,id_location";
+        $query2 .=") VALUES (";
+        $query2 .=" '{$id_item}', '{$nm_item}', '{$colour}', '{$width}', '{$height}', '{$length}', '{$weight}', '{$stock}', '{$id_package}', '{$id_subcategories}', '{$id_location}'";
+        $query2 .=")";
+
+        if($db->query($query2)) {
+          $session->msg('s',"Product added ");
+          redirect('product.php', false);  
+        } 
       } else {
         $session->msg('d',' Sorry failed to added!');
         redirect('product.php', false);
@@ -76,15 +104,36 @@
     $id_package       = remove_junk($db->escape($_POST['id_package']));
     $id_subcategories = remove_junk($db->escape($_POST['id_subcategories']));
     $id_location      = remove_junk($db->escape($_POST['id_location']));
+    $id_categories    = remove_junk($db->escape($_POST['id_categories']));
 
+    $product_fetch    = find_product_fetch($id_item);
+    //reduce area consumed
+    $stock_fetch      = $product_fetch['stock'];
+    $weight_fetch     = $product_fetch['weight'];
+    $consumed         = $all_warehouse_id['heavy_consumed']; 
+    $heavy_max        = $all_warehouse_id['heavy_max'];
+    $id_warehouse     = $all_warehouse_id['id_warehouse']; 
+    $count            = $consumed-($stock_fetch*$weight_fetch);
+    $reduced          = $count+($weight*$stock);
+ 
+    if($reduced > $heavy_max){
+      $session->msg('d',"You Do Not Have Enough Storage Space !");
+      redirect('product.php', false);
+    }
 
+        $id_warehouse = $user['id_warehouse'];
         $query  = "UPDATE item SET ";
         $query .= "nm_item = '{$nm_item}',colour = '{$colour}',id_subcategories = '{$id_subcategories}',width = '{$width}',height = '{$height}',length = '{$length}',weight = '{$weight}',stock = '{$stock}',id_package = '{$id_package}',id_location = '{$id_location}', id_item = '{$id_item}' ";
         $query .= "WHERE id_item = '{$id_item}'";
 
+        $query2  = "UPDATE warehouse SET ";
+        $query2 .= "heavy_consumed='{$reduced}' ";
+        $query2 .= "WHERE id_warehouse = '{$id_warehouse}'";
+
         $result = $db->query($query);
          if($result && $db->affected_rows() === 1){
           //sucess
+          $db->query($query2);
           $session->msg('s',"Product Has Been Updated! ");
           redirect('product.php', false);
         } else {
@@ -100,14 +149,33 @@
 ?>
 <!-- END PRODUCT -->
 
-<!-- DELETE POSITION -->
+<!-- DELETE PRODUCT -->
 <?php
   if(isset($_POST['delete_item'])){
+    
+    $weight  = remove_junk($db->escape($_POST['weight']));
+    $stock   = remove_junk($db->escape($_POST['stock'])); 
     $id_item = remove_junk($db->escape($_POST['id_item']));
+
+    //reduce area consumed
+    $consumed     = $all_warehouse_id['heavy_consumed']; 
+    $heavy_max    = $all_warehouse_id['heavy_max'];
+    $id_warehouse = $all_warehouse_id['id_warehouse']; 
+    $reduced      = $consumed-($weight*$stock);
+
+    if($reduced < 0){
+      $session->msg("d","Can Not Delete The Product.");
+      redirect('product.php');
+    }
+
+    $query  = "UPDATE warehouse SET ";
+    $query .= "heavy_consumed='{$reduced}'";
+    $query .= " WHERE id_warehouse = '{$id_warehouse}'";
 
     //delete function
     $delete_id   = delete('id_item','item',$id_item);
     if($delete_id){
+      $db->query($query);
       $session->msg("s","Product Has Been Deleted.");
       redirect('product.php');
     } else {
@@ -116,7 +184,7 @@
     }  
   }
 ?>
-<!-- END DELETE POSITION -->
+<!-- END DELETE PRODUCT -->
 
 
 <?php include_once('layouts/header.php'); ?>
@@ -128,7 +196,7 @@
   <div class="col-md-13">
     <div class="panel panel-default">
       <div class="panel-heading clearfix">
-        <div class="col-md-6">
+        <!-- <div class="col-md-6">
           <form method="get" action="product.php">
             <select class="form-control" name="id">
               <option value=""> Select Location Warehouse</option>
@@ -145,7 +213,13 @@
          <div class="pull-right">
            <button data-target="#add_product" class="btn btn-md btn-info" data-toggle="modal" title="Remove"><i class="glyphicon glyphicon-plus"></i> Add New
             </button>
-         </div>
+         </div> -->
+          <strong>
+            <span class="glyphicon glyphicon-th"></span>
+            <span>Products</span>
+          </strong>
+          <button data-target="#add_product" class="btn btn-md btn-info pull-right" data-toggle="modal" title="Remove"><i class="glyphicon glyphicon-plus"></i> Add New
+            </button>
         </div>
         
         <div class="panel-body">
@@ -163,15 +237,15 @@
               </tr>
             </thead>
             <tbody>
-              <?php foreach ($all_item as $items):?>
+              <?php foreach ($get_product as $items):?>
               <tr>
                 <td class="text-center"><?php echo count_id().".";?></td>
-                <td class="text-center"><a href="#detilItem<?php echo $items['id_item'];?>" data-toggle="modal" title="Detail"> <?php echo remove_junk($items['nm_item']); ?></a></td>
-                <td class="text-center"> <?php echo remove_junk($items['colour']); ?></td>
-                <td class="text-center"> <?php echo remove_junk($items['stock']); ?></td>
-        				<td class="text-center"> <?php echo remove_junk($items['nm_package']); ?></td>
-        				<td class="text-center"> <?php echo remove_junk($items['nm_subcategories']); ?></td>
-        				<td class="text-center"> <?php echo remove_junk($items['id_location']); ?></td>
+                <td class="text-center"><a href="#detilItem<?php echo $items['id_item'];?>" data-toggle="modal" title="Detail"> <?php echo remove_junk(ucfirst($items['nm_item'])); ?></a></td>
+                <td class="text-center"> <?php echo remove_junk(ucfirst($items['colour'])); ?></td>
+                <td class="text-center"> <?php echo remove_junk(ucfirst($items['stock'])); ?></td>
+        				<td class="text-center"> <?php echo remove_junk(ucfirst($items['nm_package'])); ?></td>
+        				<td class="text-center"> <?php echo remove_junk(ucfirst($items['nm_subcategories'])); ?></td>
+        				<td class="text-center"> <?php echo remove_junk(ucfirst($items['unit'])); ?></td>
                 <td class="text-center">
                   <button data-target="#updateItem<?php echo $items['id_item'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Update">
                     <i class="glyphicon glyphicon-edit"></i>
@@ -199,7 +273,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-th"></span>  Add New Product</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-cubes"></i>  Add New Product</h4>
         
       </div>
       <div class="modal-body">
@@ -247,10 +321,13 @@
                     <div class="col-md-3">
                       <label for="name" class="control-label">Location Warehouse</label>
                       <select class="form-control" name="id_location">
-                        <option value="">Select Location Warehouse</option>
-                        <option value="2">A</option>
-                        <option value="3">B</option>
-                        <option value="4">C</option>
+                        <?php if($all_location == null) { ?>
+                          <option value="">-</option>
+                          <?php } else { ?>
+                            <?php foreach($all_location as $row){ ?>
+                              <option value="<?php echo remove_junk($row['id_location']); ?>"><?php echo remove_junk(ucwords($row['unit'])); ?></option>
+                          <?php } ?>  
+                        <?php } ?>
                       </select>
                     </div>
                 </div>
@@ -344,7 +421,7 @@
 <!-- END ADD NEW PRODUCT -->
 
 <!-- Update Data Product -->
-<?php foreach($all_item as $item) { ?>
+<?php foreach($all_product as $item) { ?>
 <div class="modal fade" id="updateItem<?php echo $item['id_item'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -352,7 +429,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-th"></span>  Update Product</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-cubes"></i>  Update Product</h4>
         
       </div>
 
@@ -394,7 +471,7 @@
                           <option value="">-</option>
                             <?php } else { ?>
                               <?php foreach ($all_package as $row5) : ?>
-                                <option value="<?php echo $row5['id_categories']; ?>" <?php if($item['id_package'] === $row5['id_package']): echo "selected"; endif; ?> ><?php echo remove_junk($row5['nm_package']); ?></option>
+                                <option value="<?php echo $row5['id_package']; ?>" <?php if($item['id_package'] === $row5['id_package']): echo "selected"; endif; ?> ><?php echo remove_junk($row5['nm_package']); ?></option>
                               <?php endforeach; ?> 
                           <?php } ?>
                       </select>
@@ -402,10 +479,13 @@
                     <div class="col-md-3">
                       <label for="name" class="control-label">Location Warehouse</label>
                       <select class="form-control" name="id_location">
-                        <option value="">Select Location Warehouse</option>
-                        <option value="2">A</option>
-                        <option value="3">B</option>
-                        <option value="4">C</option>
+                        <?php if($all_location == null) { ?>
+                          <option value="">-</option>
+                          <?php } else { ?>
+                            <?php foreach($all_location as $row){ ?>
+                              <option value="<?php echo remove_junk($row['id_location']); ?>" <?php if($item['id_location'] === $row['id_location']): echo "selected"; endif; ?>><?php echo remove_junk(ucwords($row['unit'])); ?></option>
+                          <?php } ?>  
+                        <?php } ?>
                       </select>
                     </div>
                 </div>
@@ -500,7 +580,7 @@
 <!-- END Update Data Product -->
 
 <!-- Delete Modal -->
-<?php foreach($all_item as $item) : ?>
+<?php foreach($all_product as $item) : ?>
   <div class="modal fade" id="deleteItem<?php echo $item['id_item'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
@@ -515,6 +595,8 @@
         <form method="post" action="product.php" class="clearfix">
           <div class="form-group">
             <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($item['id_item'])); ?>" name="id_item">
+            <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($item['stock'])); ?>" name="stock">
+            <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($item['weight'])); ?>" name="weight">
           </div>    
         </div>
         <div class="modal-footer">
@@ -529,7 +611,7 @@
 <!-- DELETE MODAL -->
 
 <!-- DETIL PRODUCT -->
-<?php foreach($all_item as $item) : ?>
+<?php foreach($all_product as $item) : ?>
   <div class="modal fade" id="detilItem<?php echo $item['id_item'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -537,7 +619,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-th"></span> Detail Product</h4>
+          <h4 class="modal-title" id="myModalLabel"><i class="fa fa-cubes"></i> Detail Product</h4>
         </div>
         <div class="modal-body">
           <table class="table table-bordered" border="0">

@@ -9,6 +9,16 @@
            echo ucfirst($user['name']);
             else echo "Simple inventory System";?>
     </title>
+    <style type="text/css">
+      .btn-circle.btn-lg {
+          width: 40px;
+          height: 40px;
+          padding: 5px 10px;
+          font-size: 18px;
+          line-height: 1.0;
+          border-radius: 25px;
+        }
+    </style>
     <!-- <link rel="icon" href="img/icon.png" type="image/ico"> -->
     <link rel="icon" type="image/ico" href="img/icon.ico" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
@@ -16,6 +26,9 @@
     <link rel="stylesheet" href="libs/css/main.css" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Sweet Alert -->
+    <link rel="stylesheet" href="libs/css/sweetalert.css">
 
     <!-- DATATABLES -->
     <link rel="stylesheet" href="libs/datatables/dataTables.bootstrap.css">
@@ -27,13 +40,55 @@
   <body>
   <?php  if ($session->isUserLoggedIn(true)): ?>
     <header id="header">
-      <div class="logo pull-left"> DATA WAREHOUSE </div>
+      <div class="logo pull-left"> INVENTORY IKEA </div>
       <div class="header-content">
       <div class="header-date pull-left">
         <strong><?php echo date("F j, Y, g:i a");?></strong>
       </div>
       <div class="pull-right clearfix">
         <ul class="info-menu list-inline list-unstyled">
+
+          <?php $offer_admin   = find_all_PO_destination_admin_notif($user['id_warehouse']); ?>
+          <?php $approve_admin = find_all_PO_admin_notif($user['id_warehouse']); ?>
+
+
+          <?php $approve2 = find_all_PO_destination_notif($user['id_warehouse']);  ?>
+          <?php $warehouse = find_by_id_warehouse('warehouse',$user['id_warehouse']); ?>
+          <?php if($warehouse['status'] != 0) { ?>
+
+          <li class="profile">
+            <span class="label label-danger"><?php  if ($user['id_warehouse'] =='0001') {$total = $offer_admin+$approve_admin; if($total != null) {echo $total;} } else { if($approve2 != null) { echo $total = $approve2;}}?></span>
+            <a href="#" data-toggle="dropdown" class="toggle" aria-expanded="false">
+              <span class="fa fa-envelope-o"><i class="caret"></i></span> 
+            </a>
+          
+            <ul class="dropdown-menu">
+              <li>
+                  <?php if ($user['id_warehouse'] =='0001'){ ?>
+                    
+                    <a href="offer_po.php">
+                      <i class="fa fa-envelope-o"></i> Offer PO
+                      <span class="label label-danger"><?php if($offer_admin != null) { echo $offer_admin; }  ?></span>
+                    </a>
+
+                    <a href="approve1_po.php">
+                      <i class="fa fa-envelope-o"></i> Approve PO
+                      <span class="label label-danger"><?php if($approve_admin != null) {echo $approve_admin;} ?></span>
+                    </a>
+                  <?php } else { ?>   
+                    <a href="approve2_po.php">
+                      <i class="fa fa-envelope-o"></i> Offer PO
+                          <span class="label label-danger"><?php if($approve2 != null)  {echo $approve2;} ?></span>
+                      <?php } ?>
+                    </a>
+              </li>
+           </ul>
+          </li>
+
+        <?php } ?>
+
+          
+
           <li class="profile">
             <a href="#" data-toggle="dropdown" class="toggle" aria-expanded="false">
               <img src="uploads/users/<?php echo $user['image'];?>" alt=" " class="img-circle img-inline">

@@ -2,14 +2,14 @@
   $page_title = 'Add Location';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
-  page_require_level(1);
+  page_require_level(2);
   
+  $user = current_user();
   $all_categories = find_all1('location');
-    $all_warehouse = find_all1('warehouse');
-    $user = current_user() ;
-    // echo json_encode($user['id_warehouse']); die();
-    // select * from location where id_warehouse = id_warehouse
-    ?>
+  $all_warehouse = find_all1('warehouse');
+  // $all_warehouse = find_warehouse_id($user['id_warehouse']);
+?>
+
 <!-- INSERT WAREHOUSE -->
 <?php
  if(isset($_POST['add_location'])){
@@ -17,9 +17,9 @@
    validate_fields($req_field);
    $id_loc   = autonumber('id_location','location');
    $cat_unit = remove_junk($db->escape($_POST['unit']));
-   $floor = remove_junk($db->escape($_POST['floor']));
-   $room = remove_junk($db->escape($_POST['room']));
-   $id_wh = remove_junk($db->escape($_POST['location_add']));
+   $floor    = remove_junk($db->escape($_POST['floor']));
+   $room     = remove_junk($db->escape($_POST['room']));
+   $id_wh    = remove_junk($db->escape($_POST['location_add']));
    if(empty($errors)){
       $sql  = "INSERT INTO location (id_location,unit,floor,room,id_warehouse)";
       $sql .= " VALUES ('{$id_loc}','{$cat_unit}','{$floor}','{$room}','{$id_wh}')";
@@ -66,9 +66,9 @@ if(isset($_POST['update_location'])){
   $req_field = array('unit','floor','room','id_location');
   validate_fields($req_field);
   $cat_unit = remove_junk($db->escape($_POST['unit']));
-  $floor = remove_junk($db->escape($_POST['floor']));
-  $room = remove_junk($db->escape($_POST['room']));
-  $id_wh = remove_junk($db->escape($_POST['location_add']));
+  $floor    = remove_junk($db->escape($_POST['floor']));
+  $room     = remove_junk($db->escape($_POST['room']));
+  $id_wh    = remove_junk($db->escape($_POST['location_add']));
   $idlocation = remove_junk($db->escape($_POST['id_location']));
   if(empty($errors)){
         $sql = "UPDATE location SET unit='{$cat_unit}',floor='{$floor}',room='{$room}',id_warehouse='{$id_wh}'";
@@ -95,8 +95,6 @@ if(isset($_POST['update_location'])){
   $req_field = array('idlocation');
   validate_fields($req_field);
   $id_location = remove_junk($db->escape($_POST['idlocation']));
-
-
 
   if(empty($errors)){
         $sql = "DELETE FROM location WHERE id_location='{$id_location}'";
@@ -206,10 +204,7 @@ if(isset($_POST['update_location'])){
       </div>
       <div class="modal-body">
       <form method="post" action="add_location.php" class="clearfix">
-        <div class="form-group">
-          <!--<label class="control-label">Location Unit</label>-->
           <input type="hidden" class="form-control" name="location">
-        </div>
         <div class="form-group">
           <label class="control-label">Location Unit</label>
           <input type="name" class="form-control" name="unit">
@@ -221,26 +216,19 @@ if(isset($_POST['update_location'])){
         <div class="form-group">
           <label class="control-label">Room</label>
           <input type="name" class="form-control" name="room">
-          
         </div>
         <div class="form-group">
           <label class="control-label">Select Warehouse</label>
-           <select class="form-control" name="location_add">
-             <option>select a warehouse</option>
-            <?php  foreach ($all_warehouse as $ware): ?>
-
-            <option  value="<?php echo $ware['id_warehouse']; ?>"> <?php echo remove_junk($ware['nm_warehouse']); ?> </option>
-            <?php endforeach; ?>
-                 </select>
-          <!--<input type="name" class="form-control" name="id_warehouse">-->
+          <input type="name" class="form-control" value="<?php echo $all_warehouse['nm_warehouse']; ?>" readonly>
+          <input type="hidden" value="<?php echo $all_warehouse['id_warehouse']; ?>" name="location_add">
         </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" name="add_location" class="btn btn-primary">Save</button>
       </div>
-    </form>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" title="Close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+      <button type="submit" name="add_location" title="Save" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
     </div>
   </div>
+  </form>
 </div>
 </div>
 </div>

@@ -8,8 +8,10 @@
   $user            = current_user();
   $all_categories  = find_all1('warehouse');
   $getWarehouse    = find_po_warehouse($user['id_warehouse']);
-  $getAllWarehouse = find_all1('warehouse');
-  $getItem         = find_all_item_po($user['id_warehouse']);
+  $getAllWarehouse = find_warehouse_po($user['id_warehouse']);
+  $all_warehouse_id    = find_warehouse_id($user['id_warehouse']);
+
+  $getItem         = find_all1('item');
   
 ?>
 <?php
@@ -29,12 +31,24 @@
     $send_date      = remove_junk($db->escape($_POST['send_date']));
     $total_weight   = remove_junk($db->escape($_POST['total_weightDP']));
     $from_warehouse = remove_junk($db->escape($_POST['from_id_warehouse']));
-    $status         = "On Process";
+    $total_sum      = remove_junk($db->escape($_POST['total_sum']));
+    
+    if($from_warehouse == '0001'){
+      $status         = "Approved";
+    } else {
+      $status         = "On Process";
+    }
 
     if($send_date < $date_po){
       $session->msg("d", "Send Date Invalid");
         redirect('po.php',false);
     }
+
+     $heavy_max    = $all_warehouse_id['heavy_max'];
+    if($heavy_max < $total_sum){
+      $session->msg('d',"You Do Not Have Enough Storage Space !");
+      redirect('po.php',false);
+    } 
 
     if(empty($errors)){
       $sql  = "INSERT INTO po (id_po,date_po,id_warehouse)";
@@ -51,8 +65,11 @@
 
             $cart = unserialize(serialize($_SESSION['cart']));
             for($i=0; $i<count($cart);$i++) {
+
+              $cart[$i]->total_weight = $cart[$i]->weight * $cart[$i]->qty;
+
               $sql2  = "INSERT INTO detil_po (id_po, date_po, qty, status, id_warehouse ,total_weight ,id_item)";
-              $sql2 .= " VALUES ('{$id_po}','{$send_date}','{$cart[$i]->qty}','{$status}','{$from_warehouse}','{$total_weight}', '{$cart[$i]->id_item}')";
+              $sql2 .= " VALUES ('{$id_po}','{$send_date}','{$cart[$i]->qty}','{$status}','{$from_warehouse}','{$cart[$i]->total_weight}', '{$cart[$i]->id_item}')";
                 $ada=$db->query($sql2);
             }
             unset($_SESSION['cart']);
@@ -111,6 +128,7 @@ class POrder{
  var $id_subcategories;
  var $id_location;
  var $qty;
+ var $total_weight;
 
 }
 
@@ -133,15 +151,9 @@ if(isset($_GET['add_item']) && !isset($_POST['update']))  {
   $po->id_package       = $product->id_package;
   $po->id_subcategories = $product->id_subcategories;
   $po->id_location      = $product->id_location;
-  $iteminstock            = $product->stock;
+  $po->total_weight     = $product->total_weight;
+  $iteminstock          = $product->stock;
   $po->qty = $qty;
-
-
-  if($po->stock < $qty) {
-    $session->msg("d", "Sorry! QTY > Stock");
-    redirect('po.php',false);
-  }
-
 
   // Check product is existing in cart
   $index = -1;
@@ -182,9 +194,14 @@ if(isset($_POST['update'])) {
   $cart = unserialize(serialize($_SESSION['cart']));
   for($i=0; $i<count($cart);$i++) {
      $cart[$i]->qty = $arrQuantity[$i];
-     
-     if($cart[$i]->stock < $arrQuantity[$i]) {
-      $session->msg("d", "Sorry! QTY > Stock");
+
+     $consumed     = $all_warehouse_id['heavy_consumed'];
+     $heavy_max    = $all_warehouse_id['heavy_max'];
+     $id_warehouse = $all_warehouse_id['id_warehouse']; 
+     $reduced      = ($cart[$i]->weight*$cart[$i]->qty);
+
+     if($reduced > $heavy_max) {
+      $session->msg("d", "Total Weight Greater Than Area Warehouse");
       redirect('po.php',false);
     }
 
@@ -279,7 +296,7 @@ if(isset($_POST['update'])) {
           <table class="table table-bordered">
             <thead>
               <tr>
-                <th><center>ID Item</center></th>
+                <th><center>ID Item </center></th>
                 <th><center>Item Name</center></th>
                 <th><center>Colour</center></th>
                 <th><center>Weight</center></th>
@@ -298,6 +315,7 @@ if(isset($_POST['update'])) {
                 $index = 0;
                 for($i=0; $i<count($cart); $i++){
                 $s += $cart[$i]->weight * $cart[$i]->qty;
+                $cart[$i]->total_weight = $cart[$i]->weight * $cart[$i]->qty
 
               ?> 
                <tr>
@@ -305,7 +323,7 @@ if(isset($_POST['update'])) {
                   <td align="center"> <?php echo $cart[$i]->nm_item; ?> </td>
                   <td align="center"> <?php echo $cart[$i]->colour; ?> </td>
                   <td align="center"> <?php echo $cart[$i]->weight; ?> </td>
-                  <td align="center"> <?php echo $cart[$i]->stock-$cart[$i]->qty; ?> </td>
+                  <td align="center"> <?php echo $cart[$i]->stock ?> </td>
                   <td align="center"> <?php echo $cart[$i]->id_package; ?> </td>
                   <td align="center"> <?php echo $cart[$i]->id_location; ?> </td>
                   <td align="center">
@@ -317,10 +335,8 @@ if(isset($_POST['update'])) {
                   <!-- hidden input to detil_po -->
                   <input type="hidden" value="<?php echo $cart[$i]->id_item; ?>" name="id_itemDP">
                   <input type="hidden" value="<?php echo $cart[$i]->qty; ?>" name="qtyDP">
-                  <input type="hidden" value="<?php echo $cart[$i]->weight * $cart[$i]->qty; ?>" name="total_weightDP">
+                  <input type="hidden" value="<?php echo $cart[$i]->total_weight; ?>" name="total_weightDP">
                   <!-- hidden input to detil_po -->
-
-
                </tr>
                 <?php 
                   $index++;
@@ -331,6 +347,7 @@ if(isset($_POST['update'])) {
                        <span>SUM WEIGHT</span>
                   </td>
                   <td style="border-right-style:hidden;" align="center"><b><?php echo $s; ?></b> </td>
+                  <input type="hidden" name="total_sum" value="<?php echo $s; ?>">
                   <td></td>
                 </tr>  
             </tbody>
@@ -368,7 +385,7 @@ if(isset($_POST['update'])) {
             </div>
             <div class="form-group">
               <label class="control-label">QTY</label>
-              <input type="number" class="form-control" name="qty">
+              <input type="number" min="1" class="form-control" name="qty">
             </div> 
           </div>
           <div class="modal-footer">
@@ -384,140 +401,6 @@ if(isset($_POST['update'])) {
   </div>
 </div>
 
-<!-- Update Modal -->
-<?php foreach($all_categories as $a_warehouse): ?> 
-<div class="modal fade" id="updateWarehouse<?php echo (int)$a_warehouse['id_warehouse'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title" id="exampleModalLabel">Update Data Warehouse</h4>
-      </div>
-      <div class="modal-body">
-      <form method="post" action="add_warehouse.php" class="clearfix">
-        <div class="form-group">
-          <label class="control-label">Warehouse</label>
-          <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_warehouse['id_warehouse'])); ?>" name="idwarehouse">
-          <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_warehouse['nm_warehouse'])); ?>" name="warehousename">
-        </div>
-        <div class="form-group">
-          <label class="control-label">Country</label>
-          <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_warehouse['country'])); ?>" name="country">
-        </div>  
-        <div class="form-group">
-          <label class="control-label">Address</label>
-          <textarea type="name" class="form-control" name="address"><?php echo remove_junk(ucwords($a_warehouse['address'])); ?>"</textarea>
-        </div>  
-        <div class="form-group">
-          <label for="status">Status</label>
-            <select class="form-control" name="status">
-                <option <?php if($a_warehouse['status'] === '1') echo 'selected="selected"';?> value="1"> Produce </option>
-                <option <?php if($a_warehouse['status'] === '0') echo 'selected="selected"';?> value="0"> Not Produce</option>
-              </select>
-        </div>
-        <div class="form-group">
-          <label class="control-label">Heavy Max</label>
-          <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_warehouse['heavy_max'])); ?>" name="heavymax">
-        </div>  
-        <div class="form-group">
-          <label class="control-label">Area Consumed</label>
-          <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_warehouse['heavy_consumed'])); ?>" name="consumed">
-        </div>    
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" name="update_warehouse" class="btn btn-primary">Update</button>
-      </div>
-    </form>
-    </div>
-  </div>
-</div>
-</div>
-<?php endforeach;?>
 
-<!-- Modal -->
-<?php foreach($all_categories as $a_warehouse): ?> 
-<div class="modal fade" id="deleteWarehouse" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content modal-sm">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title" id="exampleModalLabel">Delete Warehouse</h4>
-      </div>
-      <div class="modal-body">
-      <form method="post" action="add_warehouse.php" class="clearfix">
-        <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_warehouse['id_warehouse'])); ?>" name="idwarehouse">
-        <p>Are you sure to delete this warehouse?</p>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" name="delete_warehouse" class="btn btn-danger">Delete</button>
-      </div>
-    </form>
-    </div>
-  </div>
-</div>
-</div>
-<?php endforeach;?>
-
-
-
-
-
-<!-- <form method="POST" action="po.php">
-<table border="1">
-<tr>
-  <th>DELETE</th>
-  <th>id_item</th>
-  <th>nm_item</th>
-  <th>colour</th>
-  <th>width</th>
-  <th>length</th>
-  <th>weight</th>
-  <th>stock</th>
-  <th>id_package</th>
-  <th>id_subcategories</th>
-  <th>id_location</th>
-   <th>QTY</th>
-  <th>Sub Total (CAD)</th>
-</tr>
-<?php 
-     $cart = unserialize(serialize($_SESSION['cart']));
-   $s = 0;
-   $index = 0;
-  for($i=0; $i<count($cart); $i++){
-    $s += $cart[$i]->weight * $cart[$i]->qty;
-
- ?> 
-   <tr>
-      <td><a href="po.php?index=<?php echo $index; ?>" onclick="return confirm('Are you sure?')" >Delete</a> </td>
-      <td> <?php echo $cart[$i]->id_item; ?> </td>
-      <td> <?php echo $cart[$i]->nm_item; ?> </td>
-      <td> <?php echo $cart[$i]->colour; ?> </td>
-      <td> <?php echo $cart[$i]->width; ?> </td>
-      <td> <?php echo $cart[$i]->length; ?> </td>
-      <td> <?php echo $cart[$i]->weight; ?> </td>
-      <td> <?php echo $cart[$i]->stock; ?> </td>
-      <td> <?php echo $cart[$i]->id_package; ?> </td>
-      <td> <?php echo $cart[$i]->id_subcategories; ?> </td>
-      <td> <?php echo $cart[$i]->id_location; ?> </td>
-
-        <td> <input type="number" min="0" value="<?php echo $cart[$i]->qty; ?>" name="qty[]"> </td>  
-        <td> <?php echo $cart[$i]->weight * $cart[$i]->qty; ?> </td> 
-   </tr>
-  <?php 
-    $index++;
-  } ?>
-  <tr>
-    <td colspan="5" style="text-align:right; font-weight:bold">Sum 
-         <input id="saveimg" type="image" src="images/save.png" name="update" alt="Save Button">
-         <button type="submit" name="update">Simpan</button>
-    </td>
-    <td> <?php echo $s; ?> </td>
-  </tr>
-</table>
-</form> -->
 <?php include_once('layouts/footer.php'); ?>
+

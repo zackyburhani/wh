@@ -122,7 +122,7 @@
         <span class="glyphicon glyphicon-th"></span>
         <span>Position</span>
      </strong>
-       <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#addPosition"><span class="glyphicon glyphicon-plus"></span> Add New Positiion
+       <button title="Add New Position" type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#addPosition"><span class="glyphicon glyphicon-plus"></span> Add New Positiion
         </button>
     </div>
      <div class="panel-body">
@@ -185,8 +185,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
-        <button type="submit" name="add_position" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+        <button type="button" class="btn btn-secondary" title="Close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+        <button type="submit" name="add_position" title="Save" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
       </div>
     </form>
   </div>
@@ -228,8 +228,8 @@
         </div>     
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
-          <button type="submit" name="update_position" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Update</button>
+          <button type="button" class="btn btn-secondary" title="Close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+          <button type="submit" name="update_position" title="Update" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Update</button>
         </div>
       </form>
     </div>
@@ -256,8 +256,8 @@
           </div>    
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
-          <button type="submit" name="delete_position" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+          <button type="button" title="Close" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+          <button type="submit" name="delete_position" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</button>
         </div>
       </form>
     </div>

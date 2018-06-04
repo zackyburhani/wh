@@ -15,7 +15,7 @@ function autonumber($id, $table){
   return $new_code;
 }
 
-
+ 
 /*--------------------------------------------------------------*/
 /* Function for find all database table rows by table name
 /*--------------------------------------------------------------*/
@@ -67,6 +67,11 @@ function find_po($table) {
   {
     return find_by_sql("SELECT * FROM ".$db->escape($table)." where id_po='$_GET[no_po]'");
   }
+
+//find all position (zacky)
+function find_all_PO($id) { 
+  return find_by_sql("SELECT * FROM po WHERE id_warehouse = '$id'");
+
 }
 
 function find_prod_warehouse($table) {
@@ -103,6 +108,16 @@ function update($id) {
   }
 
 
+function find_warehouse_po($id_warehouse) {
+  return find_by_sql("SELECT * FROM warehouse WHERE id_warehouse != '$id_warehouse' and status != 0");
+}
+
+function find_warehouse_id($id_warehouse) {
+  global $db;
+  $sql = $db->query("SELECT * FROM warehouse WHERE id_warehouse = '$id_warehouse'");
+  return $db->fetch_assoc($sql);
+}
+
 function find_all1_ware($table) {
    global $db;
    if(tableExists($table))
@@ -119,12 +134,70 @@ function find_all_categories($table,$id) {
    }
 }
 
+function find_all_location($table,$id) {
+   global $db;
+   if(tableExists($table))
+   {
+     return find_by_sql("SELECT unit,floor,room,id_location FROM {$db->escape($table)} WHERE id_warehouse = '{$db->escape($id)}'");
+   }
+}
+
+//note on oracle
+function find_all_package($table,$id) {
+   global $db;
+   if(tableExists($table))
+   {
+     return find_by_sql("SELECT * FROM {$db->escape($table)} WHERE id_warehouse = '$id'");
+   }
+}
+
+function find_all_bpack($id_warehouse) {
+  global $db;
+  return find_by_sql("SELECT * FROM bpack,package WHERE package.id_warehouse = '$id_warehouse'");
+}
+
+
+//note on oracle
+function find_weight_item($id_item) {
+  global $db;
+     $sql = $db->query("SELECT item.weight as w_item from item where id_item = '$id_item'");
+     return $db->fetch_assoc($sql);
+}
+
+function find_weight_package($id_package) {
+  global $db;
+     $sql = $db->query("SELECT package.weight as w_package from package where package.id_package = '$id_package'");
+     return $db->fetch_assoc($sql);
+}
+
+
 function find_all_subcategories($table,$id) {
    global $db;
    if(tableExists($table))
    {
      return find_by_sql("SELECT *FROM {$db->escape($table)},categories WHERE {$db->escape($table)}.id_categories = categories.id_categories and id_warehouse = '{$db->escape($id)}' ORDER BY nm_subcategories");
    }
+}
+
+function find_all_product($id) {
+   global $db;
+     return find_by_sql("SELECT * FROM item,location,sub_categories,categories WHERE categories.id_categories = sub_categories.id_categories and item.id_subcategories = sub_categories.id_subcategories and item.id_location = location.id_location AND location.id_warehouse = '$id'");
+}
+
+function get_product($table,$id){
+  global $db;
+    return find_by_sql("SELECT id_item,nm_item,colour,stock,nm_package,nm_subcategories,unit FROM item,package,sub_categories,location,warehouse WHERE item.id_package = package.id_package AND item.id_subcategories = sub_categories.id_subcategories AND item.id_location = location.id_location AND location.id_warehouse = warehouse.id_warehouse AND location.id_warehouse = '{$db->escape($id)}'");
+}
+
+function get_item_condition($id_warehouse){
+  global $db;
+    return find_by_sql("SELECT * FROM item,location,warehouse where item.id_location = location.id_location and location.id_warehouse = warehouse.id_warehouse and stock < 1000 and warehouse.id_warehouse = '$id_warehouse'");
+}
+
+//note on oracle
+function get_package_condition($id_warehouse){
+  global $db;
+    return find_by_sql("SELECT * FROM package,warehouse where package.id_warehouse = warehouse.id_warehouse and jml_stock < 1000 and warehouse.id_warehouse = '$id_warehouse'");
 }
 
 
@@ -155,6 +228,30 @@ function find_warehouse($table) {
 function find_po_warehouse($id_warehouse) {
    global $db;
      $sql = $db->query("SELECT nm_warehouse FROM employer JOIN warehouse ON employer.id_warehouse = warehouse.id_warehouse WHERE employer.id_warehouse = '{$db->escape($id_warehouse)}'");
+     return $db->fetch_assoc($sql);
+}
+
+function move_stock($id_item) {
+   global $db;
+     $sql = $db->query("SELECT * FROM detil_po where id_item = '{$db->escape($id_item)}' and status = 'Approved'");
+     return $db->fetch_assoc($sql);
+}
+
+function find_product_fetch($id_item) {
+   global $db;
+     $sql = $db->query("SELECT * FROM item  WHERE id_item = '$id_item'");
+     return $db->fetch_assoc($sql);
+}
+
+function find_package_fetch($id_package) {
+   global $db;
+     $sql = $db->query("SELECT * FROM package  WHERE id_package = '$id_package'");
+     return $db->fetch_assoc($sql);
+}
+
+function find_bpack_fetch($id_bpack) {
+   global $db;
+     $sql = $db->query("SELECT * FROM bpack WHERE id_bpack = '$id_bpack'");
      return $db->fetch_assoc($sql);
 }
 
@@ -200,6 +297,118 @@ function find_all_admin(){
       return $result;
   }
 
+  function notification($id_warehouse){
+    global $db;
+    $sql = $db->query("SELECT po.id_po,po.date_po,po.id_warehouse as For_wh,detil_po.date_po,qty,status,detil_po.id_warehouse as From_wh,total_weight,id_item FROM po JOIN detil_po WHERE po.id_po = detil_po.id_po AND po.id_warehouse = '$id_warehouse' and status = 'On Process' GROUP by po.id_po");
+    $result = $db->num_rows($sql);
+    return $result;
+  }
+
+  function find_all_detailPO($id_warehouse,$id_po){
+      global $db;
+      $results = array();
+      $sql = "SELECT po.id_po,po.date_po,po.id_warehouse,status,detil_po.id_item,total_weight,qty,detil_po.id_warehouse as from_wh FROM po JOIN detil_po ON po.id_po = detil_po.id_po WHERE po.id_warehouse = '$id_warehouse' and po.id_po = '$id_po'";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  function find_all_detailPO_admin($id_po){
+      global $db;
+      $results = array();
+      $sql = "SELECT po.id_po,po.date_po,po.id_warehouse,status,detil_po.id_item,total_weight,qty,detil_po.id_warehouse as From_wh FROM po JOIN detil_po ON po.id_po = detil_po.id_po WHERE po.id_po = '$id_po' order by po.id_po desc";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  function find_all_listPO($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = "SELECT po.id_po,po.date_po as date_po,po.id_warehouse as For_wh,detil_po.date_po as date_send,qty,status,detil_po.id_warehouse as From_wh,total_weight,id_item FROM po JOIN detil_po WHERE po.id_po = detil_po.id_po AND po.id_warehouse = '$id_warehouse' and status = 'On Process' GROUP by po.id_po";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  function find_all_PO_destination($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = "SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty,employer.id_employer as id_emp FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'Approved'";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  function find_all_PO_destination_notif($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = $db->query("SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'Approved'");
+      $result = $db->num_rows($sql);
+      return $result;
+  }
+
+  function find_all_PO_destination_admin($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = "SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'Approved'";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  function find_all_PO_destination_admin_notif($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = $db->query("SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'Approved'");
+      $result = $db->num_rows($sql);
+      return $result;
+  }
+
+  function find_all_historyPO($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = "SELECT * FROM po WHERE id_warehouse = '$id_warehouse' order by id_po desc";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+
+  function find_all_PO_approved2($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = "SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'On Destination' order by detil_po.id_po desc";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  function find_all_PO_approved1(){
+      global $db;
+      $results = array();
+      $sql = "SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item as id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and detil_po.status = ('On Destination' or 'Success' or 'Approved') order by detil_po.id_po desc";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  function find_all_PO_admin(){
+      global $db;
+      $results = array();
+      $sql = "SELECT po.id_po,po.date_po as date_po,po.id_warehouse as For_wh,detil_po.date_po as date_send,qty,status,detil_po.id_warehouse as From_wh,total_weight,id_item FROM po JOIN detil_po WHERE po.id_po = detil_po.id_po and status = 'On Process' GROUP by po.id_po";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  function find_all_PO_admin_notif($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = $db->query("SELECT po.id_po,po.date_po as date_po,po.id_warehouse as For_wh,detil_po.date_po as date_send,qty,detil_po.status,detil_po.id_warehouse as From_wh,total_weight,id_item FROM po,detil_po,employer WHERE po.id_po = detil_po.id_po and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'On Process' GROUP by po.id_po");
+      $result = $db->num_rows($sql);
+      return $result;
+  }
+
+  function countDetail($id_po){
+      global $db;
+      $results = array();
+      $sql = $db->query("SELECT sum(total_weight) as total FROM detil_po WHERE id_po = '$id_po' ");
+      $result = $db->fetch_assoc($sql);
+      return $result;
+  }
+
 function find_adminName(){
       global $db;
       $results = array();
@@ -213,6 +422,15 @@ function find_adminName(){
       global $db;
       $results = array();
       $sql = "SELECT id_position FROM employer WHERE id_position = '{$db->escape($field)}'";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  //validation connected foreign key (zacky)
+  function find_all_idPo($field){
+      global $db;
+      $results = array();
+      $sql = "SELECT id_po FROM po WHERE id_po = '{$db->escape($field)}'";
       $result = find_by_sql($sql);
       return $result;
   }
@@ -243,7 +461,7 @@ function find_by_sql($sql)
 function find_by_id_warehouse($table,$idwarehouse)
 {
   global $db;
-  $id = (int)$idwarehouse;
+  $id = $idwarehouse;
     if(tableExists($table)){
           $sql = $db->query("SELECT * FROM {$db->escape($table)} WHERE id_warehouse='{$db->escape($id)}' LIMIT 1");
           if($result = $db->fetch_assoc($sql))
@@ -284,7 +502,7 @@ function find_by_employerPosition($table,$id)
 {
   global $db;
     if(tableExists($table)){
-          $sql = $db->query("SELECT id_employer,username,nm_employer,{$db->escape($table)}.id_position,last_login,status,image,{$db->escape($table)}.id_warehouse,nm_position,level_user FROM {$db->escape($table)} JOIN position WHERE position.id_position = {$db->escape($table)}.id_position and id_employer='{$db->escape($id)}' LIMIT 1");
+          $sql = $db->query("SELECT id_employer,username,nm_employer,{$db->escape($table)}.id_position,last_login,status,image,{$db->escape($table)}.id_warehouse,nm_position,level_user,password,image FROM {$db->escape($table)} JOIN position WHERE position.id_position = {$db->escape($table)}.id_position and id_employer='{$db->escape($id)}' LIMIT 1");
           if($result = $db->fetch_assoc($sql))
             return $result;
           else
@@ -525,12 +743,12 @@ function tableExists($table){
   function find_all_item(){
       global $db;
       $results = array();
-      $sql = "SELECT * FROM item,sub_categories,package WHERE item.id_package = package.id_package and item.id_subcategories = sub_categories.id_subcategories";
+      $sql = "SELECT id_item,nm_item,colour,item.width,item.height,item.length,item.weight,item.stock,item.id_package,item.id_subcategories,sub_categories.nm_subcategories,sub_categories.id_categories,package.id_package,package.nm_package,package.height as p_height,package.lenght as p_lenght,package.weight as p_weight,package.width as p_width,package.jml_stock,item.id_location FROM item,sub_categories,package WHERE item.id_package = package.id_package and item.id_subcategories = sub_categories.id_subcategories";
       $result = find_by_sql($sql);
       return $result;
   }
   
-  function find_all_item_po($id_warehouse){
+  function find_all_item_po(){
       global $db;
       $results = array();
       $sql = "SELECT * FROM item JOIN location ON item.id_location = location.id_location JOIN warehouse ON location.id_warehouse = warehouse.id_warehouse JOIN employer ON employer.id_warehouse=warehouse.id_warehouse AND employer.id_warehouse = '$id_warehouse' ";
@@ -583,7 +801,8 @@ function tableExists($table){
   /*--------------------------------------------------------------*/
   /* Function for cheaking which user level has access to page
   /*--------------------------------------------------------------*/
-   function page_require_level($require_level){
+   function page_require_level($require_level)
+   {
      global $session;
      $current_user = current_user();
      $login_level = find_by_groupLevel($current_user['level_user']);
@@ -593,13 +812,7 @@ function tableExists($table){
             $session->msg('d','Please login...');
             redirect('index.php', false);
       //cheackin log in User level and Require level is Less than or equal to
-     elseif($current_user['id_position'] <= (int)$require_level):
-              return true;
-      else:
-            $session->msg("d", "Sorry! you dont have permission to view the page.");
-            redirect('home.php', false);
         endif;
-
      }
    /*--------------------------------------------------------------*/
    /* Function for Finding all product name

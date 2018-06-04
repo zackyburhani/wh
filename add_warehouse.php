@@ -10,15 +10,15 @@
 <!-- INSERT WAREHOUSE -->
 <?php
  if(isset($_POST['add_warehouse'])){
-   $req_field = array('warehousename');
+   $req_field  = array('warehousename','country','address','status','heavymax');
    validate_fields($req_field);
-   $id_wh   = autonumber('id_warehouse','warehouse');
-   $cat_name = remove_junk($db->escape($_POST['warehousename']));
-   $country = remove_junk($db->escape($_POST['country']));
-   $address = remove_junk($db->escape($_POST['address']));
-   $status = remove_junk($db->escape($_POST['status']));
-   $heavymax = remove_junk($db->escape($_POST['heavymax']));
-   $consumed = remove_junk($db->escape($_POST['consumed']));
+   $id_wh     = autonumber('id_warehouse','warehouse');
+   $cat_name  = remove_junk($db->escape($_POST['warehousename']));
+   $country   = remove_junk($db->escape($_POST['country']));
+   $address   = remove_junk($db->escape($_POST['address']));
+   $status    = remove_junk($db->escape($_POST['status']));
+   $heavymax  = remove_junk($db->escape($_POST['heavymax']));
+   $consumed  = 0;
    if(empty($errors)){
       $sql  = "INSERT INTO warehouse (id_warehouse,nm_warehouse,country,address,status,heavy_max,heavy_consumed)";
       $sql .= " VALUES ('{$id_wh}','{$cat_name}','{$country}','{$address}','{$status}','{$heavymax}','{$consumed}')";
@@ -49,17 +49,16 @@
 <!-- UPDATE WAREHOUSE -->
 <?php
 if(isset($_POST['update_warehouse'])){
-  $req_field = array('warehousename','country','address','status','heavymax','consumed','idwarehouse');
+  $req_field   = array('warehousename','country','address','status','heavymax','idwarehouse');
   validate_fields($req_field);
-  $cat_name = remove_junk($db->escape($_POST['warehousename']));
-  $country = remove_junk($db->escape($_POST['country']));
-  $address = remove_junk($db->escape($_POST['address']));
-  $status = remove_junk($db->escape($_POST['status']));
-  $heavymax = remove_junk($db->escape($_POST['heavymax']));
-  $consumed = remove_junk($db->escape($_POST['consumed']));
+  $cat_name    = remove_junk($db->escape($_POST['warehousename']));
+  $country     = remove_junk($db->escape($_POST['country']));
+  $address     = remove_junk($db->escape($_POST['address']));
+  $status      = remove_junk($db->escape($_POST['status']));
+  $heavymax    = remove_junk($db->escape($_POST['heavymax']));
   $idwarehouse = remove_junk($db->escape($_POST['idwarehouse']));
   if(empty($errors)){
-        $sql = "UPDATE warehouse SET nm_warehouse='{$cat_name}',country='{$country}',address='{$address}',status='{$status}',heavy_max='{$heavymax}',heavy_consumed='{$consumed}'";
+        $sql = "UPDATE warehouse SET nm_warehouse='{$cat_name}',country='{$country}',address='{$address}',status='{$status}',heavy_max='{$heavymax}'";
        $sql .= " WHERE id_warehouse='{$idwarehouse}'";
      $result = $db->query($sql);
      if($result && $db->affected_rows() === 1) {
@@ -83,8 +82,6 @@ if(isset($_POST['update_warehouse'])){
   $req_field = array('idwarehouse');
   validate_fields($req_field);
   $idwarehouse = remove_junk($db->escape($_POST['idwarehouse']));
-
-
 
   if(empty($errors)){
         $sql = "DELETE FROM warehouse WHERE id_warehouse='{$idwarehouse}'";
@@ -118,21 +115,21 @@ if(isset($_POST['update_warehouse'])){
         <span class="glyphicon glyphicon-th"></span>
         <span>WAREHOUSE</span>
      </strong>
-       <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#addWarehouse"><span class="glyphicon glyphicon-plus"></span> Add New Warehouse
+       <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#addWarehouse" title="Add New Warehouse"><span class="glyphicon glyphicon-plus"></span> Add New Warehouse
         </button>
     </div>
      <div class="panel-body">
-      <table class="table table-bordered" id="">
+      <table class="table table-bordered" id="tableWarehouse">
         <thead>
           <tr>
-            <th class="text-center" style="width: 50px;">No</th>
-            <th class="text-center" style="width: 50px;">Warehouse</th>
+            <th class="text-center" style="width: 5px;">No</th>
+            <th class="text-center" style="width: 30px;">Warehouse</th>
             <th class="text-center" style="width: 50px;">Country</th>
             <th class="text-center" style="width: 50px;">Address</th>
             <th class="text-center" style="width: 50px;">Status</th>
             <th class="text-center" style="width: 50px;">Heavy Max</th>
             <th class="text-center" style="width: 50px;">Area Consumed</th>
-            <th class="text-center" style="width: 100px;">Actions</th>
+            <th class="text-center" style="width: 50px;">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -149,15 +146,14 @@ if(isset($_POST['update_warehouse'])){
             <span class="label label-danger"><?php echo "Not Produce"; ?></span>
             <?php endif;?>
            </td>
-           <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['heavy_max']))?></td>
-           <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['heavy_consumed']))?></td>
+           <td class="text-center"><?php echo remove_junk(ucwords(number_format($a_warehouse['heavy_max'])))?></td>
+           <td class="text-center"><?php echo remove_junk(ucwords(number_format($a_warehouse['heavy_consumed'])))?></td>
            <td class="text-center">
                 <button data-target="#updateWarehouse<?php echo (int)$a_warehouse['id_warehouse'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
                 </button>
                 <button type="button" class="btn btn-danger btn-md" data-toggle="modal" data-target="#deleteWarehouse<?php echo (int)$a_warehouse['id_warehouse'];?>" title="Delete"><i class="glyphicon glyphicon-trash"></i>
                 </button>
-
            </td>
           </tr>
         <?php endforeach;?>
@@ -202,15 +198,11 @@ if(isset($_POST['update_warehouse'])){
         <div class="form-group">
           <label class="control-label">Heavy Max</label>
           <input type="name" class="form-control" name="heavymax">
-        </div>  
-        <div class="form-group">
-          <label class="control-label">Area Consumed</label>
-          <input type="name" class="form-control" name="consumed">
         </div>      
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" name="add_warehouse" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" title="Close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+        <button type="submit" name="add_warehouse" title="Save" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
       </div>
     </form>
     </div>
@@ -244,7 +236,7 @@ if(isset($_POST['update_warehouse'])){
         </div>  
         <div class="form-group">
           <label class="control-label">Address</label>
-          <textarea type="name" class="form-control" name="address"><?php echo remove_junk(ucwords($a_warehouse['address'])); ?>"</textarea>
+          <textarea type="name" class="form-control" name="address"><?php echo remove_junk(ucwords($a_warehouse['address'])); ?></textarea>
         </div>  
         <div class="form-group">
           <label for="status">Status</label>
@@ -256,15 +248,11 @@ if(isset($_POST['update_warehouse'])){
         <div class="form-group">
           <label class="control-label">Heavy Max</label>
           <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_warehouse['heavy_max'])); ?>" name="heavymax">
-        </div>  
-        <div class="form-group">
-          <label class="control-label">Area Consumed</label>
-          <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_warehouse['heavy_consumed'])); ?>" name="consumed">
         </div>    
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" name="update_warehouse" class="btn btn-primary">Update</button>
+        <button type="button" class="btn btn-secondary" title="Close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+        <button type="submit" name="update_warehouse" title="Update" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Update</button>
       </div>
     </form>
     </div>
