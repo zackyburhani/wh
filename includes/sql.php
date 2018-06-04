@@ -133,7 +133,7 @@ function find_all_package($table,$id) {
 
 function find_all_bpack($id_warehouse) {
   global $db;
-  return find_by_sql("SELECT * FROM package,item WHERE package.id_package = item.id_package and package.id_warehouse = '$id_warehouse' group by package.id_package");
+  return find_by_sql("SELECT * FROM bpack,package WHERE package.id_warehouse = '$id_warehouse'");
 }
 
 
@@ -211,6 +211,12 @@ function find_po_warehouse($id_warehouse) {
      return $db->fetch_assoc($sql);
 }
 
+function move_stock($id_item) {
+   global $db;
+     $sql = $db->query("SELECT * FROM detil_po where id_item = '{$db->escape($id_item)}' and status = 'Approved'");
+     return $db->fetch_assoc($sql);
+}
+
 function find_product_fetch($id_item) {
    global $db;
      $sql = $db->query("SELECT * FROM item  WHERE id_item = '$id_item'");
@@ -220,6 +226,12 @@ function find_product_fetch($id_item) {
 function find_package_fetch($id_package) {
    global $db;
      $sql = $db->query("SELECT * FROM package  WHERE id_package = '$id_package'");
+     return $db->fetch_assoc($sql);
+}
+
+function find_bpack_fetch($id_bpack) {
+   global $db;
+     $sql = $db->query("SELECT * FROM bpack WHERE id_bpack = '$id_bpack'");
      return $db->fetch_assoc($sql);
 }
 
@@ -299,7 +311,7 @@ function find_all_admin(){
   function find_all_PO_destination($id_warehouse){
       global $db;
       $results = array();
-      $sql = "SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'Approved'";
+      $sql = "SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty,employer.id_employer as id_emp FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'Approved'";
       $result = find_by_sql($sql);
       return $result;
   }
@@ -470,7 +482,7 @@ function find_by_employerPosition($table,$id)
 {
   global $db;
     if(tableExists($table)){
-          $sql = $db->query("SELECT id_employer,username,nm_employer,{$db->escape($table)}.id_position,last_login,status,image,{$db->escape($table)}.id_warehouse,nm_position,level_user FROM {$db->escape($table)} JOIN position WHERE position.id_position = {$db->escape($table)}.id_position and id_employer='{$db->escape($id)}' LIMIT 1");
+          $sql = $db->query("SELECT id_employer,username,nm_employer,{$db->escape($table)}.id_position,last_login,status,image,{$db->escape($table)}.id_warehouse,nm_position,level_user,password,image FROM {$db->escape($table)} JOIN position WHERE position.id_position = {$db->escape($table)}.id_position and id_employer='{$db->escape($id)}' LIMIT 1");
           if($result = $db->fetch_assoc($sql))
             return $result;
           else

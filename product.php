@@ -115,7 +115,7 @@
     $id_warehouse     = $all_warehouse_id['id_warehouse']; 
     $count            = $consumed-($stock_fetch*$weight_fetch);
     $reduced          = $count+($weight*$stock);
-
+ 
     if($reduced > $heavy_max){
       $session->msg('d',"You Do Not Have Enough Storage Space !");
       redirect('product.php', false);
@@ -273,7 +273,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-th"></span>  Add New Product</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-cubes"></i>  Add New Product</h4>
         
       </div>
       <div class="modal-body">
@@ -429,7 +429,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-th"></span>  Update Product</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-cubes"></i>  Update Product</h4>
         
       </div>
 
@@ -619,7 +619,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-th"></span> Detail Product</h4>
+          <h4 class="modal-title" id="myModalLabel"><i class="fa fa-cubes"></i> Detail Product</h4>
         </div>
         <div class="modal-body">
           <table class="table table-bordered" border="0">

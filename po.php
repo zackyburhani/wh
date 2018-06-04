@@ -31,6 +31,7 @@
     $send_date      = remove_junk($db->escape($_POST['send_date']));
     $total_weight   = remove_junk($db->escape($_POST['total_weightDP']));
     $from_warehouse = remove_junk($db->escape($_POST['from_id_warehouse']));
+    $total_sum      = remove_junk($db->escape($_POST['total_sum']));
     
     if($from_warehouse == '0001'){
       $status         = "Approved";
@@ -42,6 +43,12 @@
       $session->msg("d", "Send Date Invalid");
         redirect('po.php',false);
     }
+
+     $heavy_max    = $all_warehouse_id['heavy_max'];
+    if($heavy_max < $total_sum){
+      $session->msg('d',"You Do Not Have Enough Storage Space !");
+      redirect('po.php',false);
+    } 
 
     if(empty($errors)){
       $sql  = "INSERT INTO po (id_po,date_po,id_warehouse)";
@@ -147,13 +154,6 @@ if(isset($_GET['add_item']) && !isset($_POST['update']))  {
   $po->total_weight     = $product->total_weight;
   $iteminstock          = $product->stock;
   $po->qty = $qty;
-
-
-  if($po->stock < $qty) {
-    $session->msg("d", "Sorry! QTY > Stock");
-    redirect('po.php',false);
-  }
-
 
   // Check product is existing in cart
   $index = -1;
@@ -347,6 +347,7 @@ if(isset($_POST['update'])) {
                        <span>SUM WEIGHT</span>
                   </td>
                   <td style="border-right-style:hidden;" align="center"><b><?php echo $s; ?></b> </td>
+                  <input type="hidden" name="total_sum" value="<?php echo $s; ?>">
                   <td></td>
                 </tr>  
             </tbody>
@@ -384,7 +385,7 @@ if(isset($_POST['update'])) {
             </div>
             <div class="form-group">
               <label class="control-label">QTY</label>
-              <input type="number" class="form-control" name="qty">
+              <input type="number" min="1" class="form-control" name="qty">
             </div> 
           </div>
           <div class="modal-footer">

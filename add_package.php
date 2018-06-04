@@ -240,7 +240,7 @@ if(isset($_POST['update_package'])){
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel">Entry New Package</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-archive"></i> Entry New Package</h4>
       </div>
       <div class="modal-body">
       <form method="post" action="add_package.php" class="clearfix">
@@ -250,23 +250,23 @@ if(isset($_POST['update_package'])){
         </div>
         <div class="form-group">
           <label class="control-label">Height</label>
-          <input type="number" class="form-control" name="height">
+          <input type="number" min="1" class="form-control" name="height">
         </div>  
         <div class="form-group">
           <label class="control-label">Weight</label>
-          <input type="number" class="form-control" name="weight">
+          <input type="number" min="1" class="form-control" name="weight">
         </div>  
         <div class="form-group">
           <label class="control-label">Lenght</label>
-          <input type="number" class="form-control" name="lenght">
+          <input type="number" min="1" class="form-control" name="lenght">
         </div>
         <div class="form-group">
           <label class="control-label">Width</label>
-          <input type="number" class="form-control" name="width">
+          <input type="number" min="1" class="form-control" name="width">
         </div>  
         <div class="form-group">
           <label class="control-label">Stock</label>
-          <input type="number" class="form-control" name="stock">
+          <input type="number" min="1" class="form-control" name="stock">
         </div>      
       </div>
       <div class="modal-footer">
@@ -290,7 +290,7 @@ if(isset($_POST['update_package'])){
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel">Update Package</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-archive"></i> Update Package</h4>
       </div>
       <div class="modal-body">
       <form method="post" action="add_package.php" class="clearfix">
@@ -301,23 +301,23 @@ if(isset($_POST['update_package'])){
         </div>
         <div class="form-group">
           <label class="control-label">Height</label>
-          <input type="number" class="form-control" value="<?php echo remove_junk(ucwords($a_package['height'])); ?>" name="height">
+          <input type="number" min="1" class="form-control" value="<?php echo remove_junk(ucwords($a_package['height'])); ?>" name="height">
         </div>  
         <div class="form-group">
           <label class="control-label">Weight</label>
-          <input type="number" class="form-control" name="weight" value="<?php echo remove_junk(ucwords($a_package['weight'])); ?>">
+          <input type="number" min="1" class="form-control" name="weight" value="<?php echo remove_junk(ucwords($a_package['weight'])); ?>">
         </div>  
         <div class="form-group">
           <label class="control-label">Lenght</label>
-          <input type="number" class="form-control" name="lenght" value="<?php echo remove_junk(ucwords($a_package['lenght'])); ?>">
+          <input type="number" min="1" class="form-control" name="lenght" value="<?php echo remove_junk(ucwords($a_package['lenght'])); ?>">
         </div>
         <div class="form-group">
           <label class="control-label">Width</label>
-          <input type="number" class="form-control" value="<?php echo remove_junk(ucwords($a_package['width'])); ?>" name="width">
+          <input type="number" min="1" class="form-control" value="<?php echo remove_junk(ucwords($a_package['width'])); ?>" name="width">
         </div>  
         <div class="form-group">
           <label class="control-label">Stock</label>
-          <input type="number" class="form-control" value="<?php echo remove_junk(ucwords($a_package['jml_stock'])); ?>" name="stock">
+          <input type="number" min="1" class="form-control" value="<?php echo remove_junk(ucwords($a_package['jml_stock'])); ?>" name="stock">
         </div>    
       </div>
       <div class="modal-footer">
@@ -341,7 +341,7 @@ if(isset($_POST['update_package'])){
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel">Delete Package</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-trash"></i> Delete Package</h4>
       </div>
       <div class="modal-body">
       <form method="post" action="add_package.php" class="clearfix">
