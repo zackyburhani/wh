@@ -11,8 +11,9 @@
       <span>User Management</span>
     </a>
     <ul class="nav submenu">
-      <li><a href="position.php">Manage Groups</a> </li>
-      <li><a href="users.php">Manage Users</a> </li>
+      <li><a href="position.php">Manage Position</a> </li>
+      <li><a href="users.php">Manage Employee</a> </li>
+      <li><a href="superusers.php">Administrator Inter IKEA</a> </li>
    </ul>
   </li>
   <li>
@@ -54,10 +55,4 @@
       </a>
   </li>
 
-  <li>
-    <a href="add_menu.php" >
-      <i class="glyphicon glyphicon-list-alt"></i>
-      <span>Add New Menu</span>
-    </a>
-  </li>
 </ul>

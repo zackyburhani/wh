@@ -1,14 +1,16 @@
 <?php
-error_reporting(0);
   $page_title = 'All Product';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
    page_require_level(2);
 	$all_item = find_all_item();
   // $all_categories = find_all1('categories');
-  $join_subcategories  = find_allSubcategories();
-  $all_subcategories  = find_all_order('sub_categories','nm_subcategories');
-  $all_categories  = find_all_order('categories','nm_categories');
+  $user = $user = current_user();
+  $id = $user['id_warehouse'];
+  $join_subcategories  = find_allSubcategories($id);
+  $all_categories      = find_all_order('categories','nm_categories',$id);
+  $all_package         = find_all_Position('package');
+
 ?> 
 
 
@@ -130,10 +132,10 @@ error_reporting(0);
           <form method="get" action="product.php">
             <select class="form-control" name="id">
               <option value=""> Select Location Warehouse</option>
-                <?php  //foreach ($all_warehouse as $ware): ?>
-                  <option value="<?php //echo (int)$ware['id']; ?>" <?php //if($_GET['id'] === $ware['id']): echo "selected"; endif; ?> >
-                  <?php //echo remove_junk($ware['name_warehouse']); ?></option>
-                <?php //endforeach; ?>
+                <?php  foreach ($all_warehouse as $ware): ?>
+                  <option value="<?php echo (int)$ware['id']; ?>" <?php if($_GET['id'] === $ware['id']): echo "selected"; endif; ?> >
+                  <?php echo remove_junk($ware['name_warehouse']); ?></option>
+                <?php endforeach; ?>
             </select>
           </div>
           <div class="col-md-1">
@@ -167,7 +169,7 @@ error_reporting(0);
                 <td class="text-center"><a href="#detilItem<?php echo $items['id_item'];?>" data-toggle="modal" title="Detail"> <?php echo remove_junk($items['nm_item']); ?></a></td>
                 <td class="text-center"> <?php echo remove_junk($items['colour']); ?></td>
                 <td class="text-center"> <?php echo remove_junk($items['stock']); ?></td>
-        				<td class="text-center"> <?php echo remove_junk($items['id_package']); ?></td>
+        				<td class="text-center"> <?php echo remove_junk($items['nm_package']); ?></td>
         				<td class="text-center"> <?php echo remove_junk($items['nm_subcategories']); ?></td>
         				<td class="text-center"> <?php echo remove_junk($items['id_location']); ?></td>
                 <td class="text-center">
@@ -233,10 +235,13 @@ error_reporting(0);
                     <div class="col-md-3">
                       <label for="name" class="control-label">Package</label>
                       <select class="form-control" name="id_package">
-                        <option value="">Select Package Product</option>
-                        <option value="1">A</option>
-                        <option value="2">B</option>
-                        <option value="3">C</option>
+                        <?php if($all_package == null) { ?>
+                          <option value="">-</option>
+                        <?php } else { ?>
+                        <?php foreach($all_package as $row3){ ?>
+                            <option value="<?php echo remove_junk($row3['id_package']); ?>"><?php echo remove_junk(ucwords($row3['nm_package'])); ?></option>
+                          <?php } ?> 
+                        <?php } ?> 
                       </select>
                     </div>
                     <div class="col-md-3">
@@ -284,7 +289,7 @@ error_reporting(0);
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                      <input type="text" class="form-control" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
+                      <input type="number" class="form-control" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
                     </div>
                   </div>
                   <div class="col-md-3">
@@ -293,7 +298,7 @@ error_reporting(0);
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                     <input type="text" class="form-control" name="height" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
+                     <input type="number" class="form-control" name="height" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
                     </div>
                   </div>
                   <div class="col-md-3">
@@ -302,7 +307,7 @@ error_reporting(0);
                       <span class="input-group-addon">
                          <i class="glyphicon glyphicon-tasks"></i>
                      </span>
-                     <input type="text" class="form-control" name="length" onkeypress="return hanyaAngka(event)" placeholder="Length Product">
+                     <input type="number" class="form-control" name="length" onkeypress="return hanyaAngka(event)" placeholder="Length Product">
                    </div>
                   </div>
                   <div class="col-md-3">
@@ -311,7 +316,7 @@ error_reporting(0);
                       <span class="input-group-addon">
                          <i class="glyphicon glyphicon-tasks"></i>
                      </span>
-                     <input type="text" class="form-control" name="weight" onkeypress="return hanyaAngka(event)" placeholder="Weight Product">
+                     <input type="number" class="form-control" name="weight" onkeypress="return hanyaAngka(event)" placeholder="Weight Product">
                    </div>
                   </div>
                 </div>
@@ -324,7 +329,7 @@ error_reporting(0);
                 <span class="input-group-addon">
                   <i class="glyphicon glyphicon-equalizer"></i>
                 </span>
-                <input type="text" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
+                <input type="number" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
               </div>
             
           </div>
@@ -350,7 +355,9 @@ error_reporting(0);
         <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-th"></span>  Update Product</h4>
         
       </div>
+
       <div class="modal-body">
+
         <div class="form-group">
           <div class="row">
             <div class="col-md-3">
@@ -360,7 +367,7 @@ error_reporting(0);
                     <option value="">-</option>
                       <?php } else { ?>
                         <?php foreach ($all_categories as $cat) : ?>
-                          <option value="<?php echo $cat['id_categories']; ?>" <?php if($item['id_subcategories'] === $cat['id_categories']): echo "selected"; endif; ?> ><?php echo remove_junk($cat['nm_categories']); ?></option>
+                          <option value="<?php echo $cat['id_categories']; ?>" <?php if($item['id_categories'] === $cat['id_categories']): echo "selected"; endif; ?> ><?php echo remove_junk($cat['nm_categories']); ?></option>
                         <?php endforeach; ?> 
                     <?php } ?>
                   </select>
@@ -375,7 +382,7 @@ error_reporting(0);
                           <option value="">-</option>
                         <?php } else { ?>
                           <?php foreach ($join_subcategories as $subcat): ?>
-                            <option value="<?php echo $subcat['id_subcategories']; ?>" <?php if($item['id_subcategories'] === $subcat['id_categories']): echo "selected"; endif; ?> class="<?php echo $item['id_categories']; ?>"><?php echo remove_junk($subcat['nm_subcategories']); ?></option>
+                            <option value="<?php echo $subcat['id_subcategories']; ?>" <?php if($item['id_subcategories'] === $subcat['id_subcategories']): echo "selected"; endif; ?> class="<?php echo $item['id_categories']; ?>"><?php echo remove_junk($subcat['nm_subcategories']); ?></option>
                           <?php endforeach; ?>
                       <?php } ?>  
                     </select>
@@ -383,10 +390,13 @@ error_reporting(0);
                     <div class="col-md-3">
                       <label for="name" class="control-label">Package</label>
                       <select class="form-control" name="id_package">
-                        <option value="">Select Package Product</option>
-                        <option value="1">A</option>
-                        <option value="2">B</option>
-                        <option value="3">C</option>
+                        <?php if($all_package == null) { ?>
+                          <option value="">-</option>
+                            <?php } else { ?>
+                              <?php foreach ($all_package as $row5) : ?>
+                                <option value="<?php echo $row5['id_categories']; ?>" <?php if($item['id_package'] === $row5['id_package']): echo "selected"; endif; ?> ><?php echo remove_junk($row5['nm_package']); ?></option>
+                              <?php endforeach; ?> 
+                          <?php } ?>
                       </select>
                     </div>
                     <div class="col-md-3">
@@ -434,7 +444,7 @@ error_reporting(0);
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                      <input type="text" class="form-control" value="<?php echo remove_junk($item['width']);?>" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
+                      <input type="number" class="form-control" value="<?php echo remove_junk($item['width']);?>" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
                     </div>
                   </div>
                   <div class="col-md-3">
@@ -443,7 +453,7 @@ error_reporting(0);
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                     <input type="text" class="form-control" name="height" value="<?php echo remove_junk($item['height']);?>" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
+                     <input type="number" class="form-control" name="height" value="<?php echo remove_junk($item['height']);?>" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
                     </div>
                   </div>
                   <div class="col-md-3">
@@ -452,7 +462,7 @@ error_reporting(0);
                       <span class="input-group-addon">
                          <i class="glyphicon glyphicon-tasks"></i>
                      </span>
-                     <input type="text" class="form-control" name="length" onkeypress="return hanyaAngka(event)" value="<?php echo remove_junk($item['length']);?>" placeholder="Length Product">
+                     <input type="number" class="form-control" name="length" onkeypress="return hanyaAngka(event)" value="<?php echo remove_junk($item['length']);?>" placeholder="Length Product">
                    </div>
                   </div>
                   <div class="col-md-3">
@@ -461,7 +471,7 @@ error_reporting(0);
                       <span class="input-group-addon">
                          <i class="glyphicon glyphicon-tasks"></i>
                      </span>
-                     <input type="text" class="form-control" name="weight" value="<?php echo remove_junk($item['weight']);?>" onkeypress="return hanyaAngka(event)" placeholder="Weight Product">
+                     <input type="number" class="form-control" name="weight" value="<?php echo remove_junk($item['weight']);?>" onkeypress="return hanyaAngka(event)" placeholder="Weight Product">
                    </div>
                   </div>
                 </div>
@@ -474,7 +484,7 @@ error_reporting(0);
                 <span class="input-group-addon">
                   <i class="glyphicon glyphicon-equalizer"></i>
                 </span>
-                <input type="text" value="<?php echo remove_junk($item['stock']);?>" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
+                <input type="number" value="<?php echo remove_junk($item['stock']);?>" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
               </div>
             
           </div>

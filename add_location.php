@@ -5,18 +5,21 @@
   page_require_level(1);
   
   $all_categories = find_all1('location');
-?>
-
+    $all_warehouse = find_all1('warehouse');
+    $user = current_user() ;
+    // echo json_encode($user['id_warehouse']); die();
+    // select * from location where id_warehouse = id_warehouse
+    ?>
 <!-- INSERT WAREHOUSE -->
 <?php
  if(isset($_POST['add_location'])){
-   $req_field = array('unit','floor','room','id_warehouse');
+   $req_field = array('unit','floor','room','location_add');
    validate_fields($req_field);
    $id_loc   = autonumber('id_location','location');
    $cat_unit = remove_junk($db->escape($_POST['unit']));
    $floor = remove_junk($db->escape($_POST['floor']));
    $room = remove_junk($db->escape($_POST['room']));
-   $id_wh = remove_junk($db->escape($_POST['id_warehouse']));
+   $id_wh = remove_junk($db->escape($_POST['location_add']));
    if(empty($errors)){
       $sql  = "INSERT INTO location (id_location,unit,floor,room,id_warehouse)";
       $sql .= " VALUES ('{$id_loc}','{$cat_unit}','{$floor}','{$room}','{$id_wh}')";
@@ -65,7 +68,7 @@ if(isset($_POST['update_location'])){
   $cat_unit = remove_junk($db->escape($_POST['unit']));
   $floor = remove_junk($db->escape($_POST['floor']));
   $room = remove_junk($db->escape($_POST['room']));
-  $id_wh = remove_junk($db->escape($_POST['id_warehouse']));
+  $id_wh = remove_junk($db->escape($_POST['location_add']));
   $idlocation = remove_junk($db->escape($_POST['id_location']));
   if(empty($errors)){
         $sql = "UPDATE location SET unit='{$cat_unit}',floor='{$floor}',room='{$room}',id_warehouse='{$id_wh}'";
@@ -119,6 +122,29 @@ if(isset($_POST['update_location'])){
      <?php echo display_msg($msg); ?>
    </div>
 </div>
+<div class="col-md-13">
+    <div class="panel panel-default">
+      <div class="panel-heading clearfix">
+        <div class="col-md-6">
+           <?php
+            if(isset($_GET['show_product'])){
+              $id = $_GET["pro_warehouse"];
+            }else{
+              $id = 0;
+            }
+            ?>
+              <select class="form-control" name="pro_warehouse">
+                    <option value=""> Select a Warehouse</option>
+                   <?php  foreach ($all_warehouse as $ware): ?>
+                     <option value="<?php echo $ware['id_warehouse']; ?>" <?php if($id === $ware['id_warehouse']): echo "selected"; endif; ?>>
+                       <?php echo remove_junk($ware['nm_warehouse']); ?></option>
+                   <?php endforeach; ?>
+                 </select>
+           </div>
+           <button type="submit" name="show_product" class="btn btn-danger" value="Tampil"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;&nbsp;&nbsp;Show</button>
+       </div>
+       </div>
+     
 <div class="row">
   <div class="col-md-12">
     <div class="panel panel-default">
@@ -146,15 +172,15 @@ if(isset($_POST['update_location'])){
         <?php foreach($all_categories as $a_location): ?>
           <tr>
            <td class="text-center"><?php echo count_id();?></td>
-           <td class="text-center"><a href="#detilItem<?php echo $a_location['id_location'];?>" data-toggle="modal" title="Detail"><?php echo remove_junk(ucwords($a_location['unit']))?></a></td>
+           <td class="text-center"><a href="product.php ?> echo $a_location['id_location'];?>" data-toggle="modal" title="Detail"><?php echo remove_junk(ucwords($a_location['unit']))?></a></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_location['floor']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_location['room']))?></td>
             <td class="text-center"><?php echo remove_junk(ucwords($a_location['id_warehouse']))?></td>
            <td class="text-center">
-                <button data-target="#updateLocation<?php echo (int)$a_location['id_location'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
+                <button data-target="#updateLocation<?php echo $a_location['id_location'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
                 </button>
-                <button type="button" class="btn btn-danger btn-md" data-toggle="modal" data-target="#deletelocation<?php echo (int)$a_location['id_location'];?>" title="Delete"><i class="glyphicon glyphicon-trash"></i>
+                <button type="button" class="btn btn-danger btn-md" data-toggle="modal" data-target="#deletelocation<?php echo $a_location['id_location'];?>" title="Delete"><i class="glyphicon glyphicon-trash"></i>
                 </button>
 
            </td>
@@ -168,6 +194,7 @@ if(isset($_POST['update_location'])){
 </div>
 
 <!-- MODAL ADD NEW WAREHOUSE -->
+<br>
 <div class="modal fade" id="addLocation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -197,8 +224,15 @@ if(isset($_POST['update_location'])){
           
         </div>
         <div class="form-group">
-          <label class="control-label">Warehouse</label>
-          <input type="name" class="form-control" name="id_warehouse">
+          <label class="control-label">Select Warehouse</label>
+           <select class="form-control" name="location_add">
+             <option>select a warehouse</option>
+            <?php  foreach ($all_warehouse as $ware): ?>
+
+            <option  value="<?php echo $ware['id_warehouse']; ?>"> <?php echo remove_junk($ware['nm_warehouse']); ?> </option>
+            <?php endforeach; ?>
+                 </select>
+          <!--<input type="name" class="form-control" name="id_warehouse">-->
         </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -208,13 +242,13 @@ if(isset($_POST['update_location'])){
     </div>
   </div>
 </div>
-  </div>
+</div>
 </div>
 <!-- END MODAL ADD NEW WAREHOUSE -->
 
 <!-- MODAL UPDATE WAREHOUSE -->
 <?php foreach($all_categories as $a_location): ?> 
-<div class="modal fade" id="updateLocation<?php echo (int)$a_location['id_location'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="updateLocation<?php echo $a_location['id_location'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -258,7 +292,7 @@ if(isset($_POST['update_location'])){
 
 <!-- MODAL DELETE WAREHOUSE -->
 <?php foreach($all_categories as $a_location): ?>
-<div class="modal fade" id="deletelocation<?php echo (int)$a_location['id_location'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="deletelocation<?php echo $a_location['id_location'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm" role="document">
     <div class="modal-content">
       <div class="modal-header">
