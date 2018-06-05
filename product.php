@@ -18,7 +18,14 @@
   $all_package         = find_all_package('package',$id);
   $all_location        = find_all_location('location',$id);
 
-  $warehouse = find_by_id_warehouse('warehouse',$user['id_warehouse']);
+  $warehouse    = find_by_id_warehouse('warehouse',$user['id_warehouse']);
+ 
+  if($get_product == null){
+    $query2  = "UPDATE warehouse SET ";
+    $query2 .= "heavy_consumed = 0.00";
+    $query2 .= " WHERE id_warehouse = '{$id}'";
+    $db->query($query2);
+  } 
 
 ?> 
 
@@ -187,21 +194,21 @@
     $stock   = remove_junk($db->escape($_POST['stock'])); 
     $id_item = remove_junk($db->escape($_POST['id_item']));
 
-    //validation connected foreign key
-    $item = find_all_idItem($id_item);
-    foreach ($item as $data) {
-      $id_item2 = $data['id_item'];  
-    }
+    // //validation connected foreign key
+    // $item = find_all_idItem($id_item);
+    // foreach ($item as $data) {
+    //   $id_item2 = $data['id_item'];  
+    // }
 
-    $itemP = find_all_idItemPackage($id_item);
-    foreach ($itemP as $data) {
-      $id_itemPackage = $data['id_item'];  
-    }
+    // $itemP = find_all_idItemPackage($id_item);
+    // foreach ($itemP as $data) {
+    //   $id_itemPackage = $data['id_item'];  
+    // }
 
-    if($id_item == $id_item2 || $id_item == $id_itemPackage){
-      $session->msg("d","The Field Connected To Other Key.");
-      redirect('product.php');
-    }
+    // if($id_item == $id_item2 || $id_item == $id_itemPackage){
+    //   $session->msg("d","The Field Connected To Other Key.");
+    //   redirect('product.php');
+    // }
 
     //reduce area consumed
     $consumed     = $all_warehouse_id['heavy_consumed']; 
@@ -209,28 +216,22 @@
     $id_warehouse = $all_warehouse_id['id_warehouse']; 
     $reduced      = $consumed-($weight*$stock);
 
-    if($reduced < 0){
-      $session->msg("d","Can Not Delete The Product.");
-      redirect('product.php');
-    }
-
     $query  = "UPDATE warehouse SET ";
     $query .= "heavy_consumed='{$reduced}'";
     $query .= " WHERE id_warehouse = '{$id_warehouse}'";
 
     //delete function
-
     $delete_id   = delete('id_item','item',$id_item);
-    $product_fetch    = find_product_fetch($id_item);
-    if($product_fetch['id_item'] == null){
-      $query2  = "UPDATE warehouse SET ";
-      $query2 .= "heavy_consumed=0.00";
-      $query2 .= " WHERE id_warehouse = '{$id_warehouse}'";      
-      $db->query($query2);
-    }
+
+    $query2  = "UPDATE warehouse SET ";
+    $query2 .= "heavy_consumed = 0.00";
+    $query2 .= " WHERE id_warehouse = '{$id_warehouse}'";      
 
     if($delete_id){
       $db->query($query);
+        if($reduced < 0){
+          $db->query($query2);
+        }
       $session->msg("s","Product Has Been Deleted.");
       redirect('product.php');
     } else {
@@ -425,7 +426,7 @@
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                      <input type="number" class="form-control" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
+                      <input type="number" min="0" class="form-control" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
                     </div>
                   </div>
 
@@ -435,7 +436,7 @@
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                     <input type="number" class="form-control" name="height" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
+                     <input type="number" min="0" class="form-control" name="height" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
                     </div>
                   </div>
 
@@ -445,7 +446,7 @@
                       <span class="input-group-addon">
                           <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                      <input type="number" class="form-control" name="length" onkeypress="return hanyaAngka(event)" placeholder="Length Product">
+                      <input type="number" min="0" class="form-control" name="length" onkeypress="return hanyaAngka(event)" placeholder="Length Product">
                     </div>
                   </div>
                 </div>
@@ -461,7 +462,7 @@
                       <span class="input-group-addon">
                          <i class="glyphicon glyphicon-tasks"></i>
                      </span>
-                     <input type="number" class="form-control" name="weight" onkeypress="return hanyaAngka(event)"placeholder="Weight Product">
+                     <input type="number" min="0" class="form-control" name="weight" onkeypress="return hanyaAngka(event)"placeholder="Weight Product">
                     </div>
                   </div>
 
@@ -485,7 +486,7 @@
                     <span class="input-group-addon">
                       <i class="glyphicon glyphicon-equalizer"></i>
                     </span>
-                    <input type="number" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
+                    <input type="number" min="0" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
                   </div>
                </div>
              </div>
@@ -606,7 +607,7 @@
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                      <input type="number" class="form-control" value="<?php echo remove_junk($item['width']);?>" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
+                      <input type="number" min="0" class="form-control" value="<?php echo remove_junk($item['width']);?>" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
                     </div>
                   </div>
 
@@ -616,7 +617,7 @@
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                     <input type="number" class="form-control" name="height" value="<?php echo remove_junk($item['height']);?>" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
+                     <input type="number" min="0" class="form-control" name="height" value="<?php echo remove_junk($item['height']);?>" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
                     </div>
                   </div>
 
@@ -626,7 +627,7 @@
                       <span class="input-group-addon">
                           <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                      <input type="number" class="form-control" name="length" onkeypress="return hanyaAngka(event)" value="<?php echo remove_junk($item['length']);?>" placeholder="Length Product">
+                      <input type="number" min="0" class="form-control" name="length" onkeypress="return hanyaAngka(event)" value="<?php echo remove_junk($item['length']);?>" placeholder="Length Product">
                     </div>
                   </div>
                 </div>
@@ -642,7 +643,7 @@
                       <span class="input-group-addon">
                          <i class="glyphicon glyphicon-tasks"></i>
                      </span>
-                     <input type="number" class="form-control" name="weight" value="<?php echo remove_junk($item['weight']);?>" placeholder="Weight Product">
+                     <input type="number" min="0" class="form-control" min="0" name="weight" value="<?php echo remove_junk(round($item['weight']));?>" placeholder="Weight Product">
                     </div>
                   </div>
 
@@ -666,7 +667,7 @@
                     <span class="input-group-addon">
                       <i class="glyphicon glyphicon-equalizer"></i>
                     </span>
-                    <input type="number" value="<?php echo remove_junk($item['stock']);?>" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
+                    <input type="number" min="0" value="<?php echo remove_junk($item['stock']);?>" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
                   </div>
                </div>
              </div>
