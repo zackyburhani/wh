@@ -7,22 +7,45 @@
   $id = $user['id_warehouse'];
   $all_package = find_all_package('package',$id);
   $all_warehouse_id = find_warehouse_id($user['id_warehouse']);
+
+  //set heavy_consumed to 0
+  // if($all_package == null){
+  //   $query2  = "UPDATE warehouse SET ";
+  //   $query2 .= "heavy_consumed = 0.00";
+  //   $query2 .= " WHERE id_warehouse = '{$id}'";
+  //   $db->query($query2);
+  // } 
 ?>
 
 <!-- INSERT PACKAGE -->
 <?php
- if(isset($_POST['add_package'])){
-   $req_field   = array('packagename');
-   validate_fields($req_field);
-   $id_package  = autonumber('id_package','package');
-   $id          = $user['id_warehouse'];
-   $packagename = remove_junk($db->escape($_POST['packagename']));
-   $height      = remove_junk($db->escape($_POST['height']));
-   $weight      = remove_junk($db->escape($_POST['weight']));
-   $lenght      = remove_junk($db->escape($_POST['lenght']));
-   $width       = remove_junk($db->escape($_POST['width']));
-   $stock       = remove_junk($db->escape($_POST['stock']));
+  if(isset($_POST['add_package'])){
+    $req_field   = array('packagename');
+    validate_fields($req_field);
+    $id_package  = autonumber('id_package','package');
+    $id          = $user['id_warehouse'];
+    $packagename = remove_junk($db->escape($_POST['packagename']));
+    $height      = remove_junk($db->escape($_POST['height']));
+    $weight      = remove_junk($db->escape($_POST['weight']));
+    $lenght      = remove_junk($db->escape($_POST['lenght']));
+    $width       = remove_junk($db->escape($_POST['width']));
+    $stock       = remove_junk($db->escape($_POST['stock']));
    
+    //convert
+    $convert_weight   = remove_junk($db->escape($_POST['convert_weight']));
+    $convert_stock    = remove_junk($db->escape($_POST['convert_stock']));
+
+    //convert weight
+    if($convert_weight == "weight_kilograms"){
+      $weight = $weight;
+    } else if($convert_weight == "weight_pounds") {
+      $weight = $weight/2.2046;
+    } else if($convert_weight == "weight_ons"){
+      $weight = $weight/35.274;
+    } else if($convert_weight == "weight_grams"){
+      $weight = $weight/1000;
+    }
+
    //reduce area consumed 
    $consumed     = $all_warehouse_id['heavy_consumed'];
    $heavy_max    = $all_warehouse_id['heavy_max'];
@@ -95,7 +118,6 @@ if(isset($_POST['update_package'])){
     redirect('add_package.php', false);
   }
 
-
   if(empty($errors)){
         $sql = "UPDATE package SET nm_package='{$packagename}',height='{$height}',weight='{$weight}',lenght='{$lenght}',width='{$width}',jml_stock='{$stock}'";
        $sql .= " WHERE id_package='{$idpackage}'";
@@ -158,7 +180,7 @@ if(isset($_POST['update_package'])){
   if(empty($errors)){
         $sql = "DELETE FROM package WHERE id_package = '{$idpackage}'";
      $result = $db->query($sql);
-     if($result && $db->affected_rows() === 1) {
+     if($result) {
        $db->query($query);
        $session->msg("s", "Successfully delete Package");
        redirect('add_package.php',false);
@@ -198,9 +220,9 @@ if(isset($_POST['update_package'])){
             <th class="text-center" style="width: 50px;">No</th>
             <th class="text-center" style="width: 50px;">Package Name</th>
             <th class="text-center" style="width: 50px;">Height</th>
-            <th class="text-center" style="width: 50px;">Weight</th>
-            <th class="text-center" style="width: 50px;">Lenght</th>
             <th class="text-center" style="width: 50px;">Width</th>
+            <th class="text-center" style="width: 50px;">Lenght</th>
+            <th class="text-center" style="width: 50px;">Weight</th>
             <th class="text-center" style="width: 50px;">Stock</th>
             <th class="text-center" style="width: 100px;">Actions</th>
           </tr>
@@ -211,9 +233,9 @@ if(isset($_POST['update_package'])){
            <td class="text-center"><?php echo count_id();?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_package['nm_package']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_package['height']))?></td>
-           <td class="text-center"><?php echo remove_junk(ucwords($a_package['weight']))?></td>
-           <td class="text-center"><?php echo remove_junk(ucwords($a_package['lenght']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_package['width']))?></td>
+           <td class="text-center"><?php echo remove_junk(ucwords($a_package['lenght']))?></td>
+           <td class="text-center"><?php echo remove_junk(round($a_package['weight']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_package['jml_stock']))?></td>
            <td class="text-center">
                 <button data-target="#updatePackage<?php echo (int)$a_package['id_package'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
@@ -250,24 +272,44 @@ if(isset($_POST['update_package'])){
         </div>
         <div class="form-group">
           <label class="control-label">Height</label>
-          <input type="number" min="1" class="form-control" name="height">
-        </div>  
-        <div class="form-group">
-          <label class="control-label">Weight</label>
-          <input type="number" min="1" class="form-control" name="weight">
-        </div>  
-        <div class="form-group">
-          <label class="control-label">Lenght</label>
-          <input type="number" min="1" class="form-control" name="lenght">
+          <input type="number" min="0" class="form-control" name="height">
         </div>
         <div class="form-group">
           <label class="control-label">Width</label>
-          <input type="number" min="1" class="form-control" name="width">
+          <input type="number" min="0" class="form-control" name="width">
+        </div>      
+        <div class="form-group">
+          <label class="control-label">Lenght</label>
+          <input type="number" min="0" class="form-control" name="lenght">
+        </div>
+      
+        <hr>
+
+        <div class="form-group">
+          <div class="row">
+            <div class="col-md-6">
+              <label class="control-label">Weight</label>    
+              <input type="number" min="0" class="form-control" name="weight">
+            </div>
+            <div class="col-md-6">
+              <label for="name" class="control-label">Convert Weight</label>
+                <select class="form-control" name="convert_weight">
+                  <option value="weight_kilograms">Kilograms</option>
+                  <option value="weight_pounds">Pounds</option>
+                  <option value="weight_ons">Ons</option>
+                  <option value="weight_grams">Grams</option>
+              </select>
+            </div>
+          </div>
         </div>  
+
+        <hr>
+
         <div class="form-group">
           <label class="control-label">Stock</label>
-          <input type="number" min="1" class="form-control" name="stock">
-        </div>      
+          <input type="number" min="0" class="form-control" name="stock">
+        </div>
+
       </div>
       <div class="modal-footer">
         <button type="button" title="Close" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
@@ -301,23 +343,42 @@ if(isset($_POST['update_package'])){
         </div>
         <div class="form-group">
           <label class="control-label">Height</label>
-          <input type="number" min="1" class="form-control" value="<?php echo remove_junk(ucwords($a_package['height'])); ?>" name="height">
+          <input type="number" min="0" class="form-control" value="<?php echo remove_junk(ucwords($a_package['height'])); ?>" name="height">
         </div>  
-        <div class="form-group">
-          <label class="control-label">Weight</label>
-          <input type="number" min="1" class="form-control" name="weight" value="<?php echo remove_junk(ucwords($a_package['weight'])); ?>">
-        </div>  
-        <div class="form-group">
-          <label class="control-label">Lenght</label>
-          <input type="number" min="1" class="form-control" name="lenght" value="<?php echo remove_junk(ucwords($a_package['lenght'])); ?>">
-        </div>
         <div class="form-group">
           <label class="control-label">Width</label>
-          <input type="number" min="1" class="form-control" value="<?php echo remove_junk(ucwords($a_package['width'])); ?>" name="width">
-        </div>  
+          <input type="number" min="0" class="form-control" value="<?php echo remove_junk(ucwords($a_package['width'])); ?>" name="width">
+        </div>   
+        <div class="form-group">
+          <label class="control-label">Lenght</label>
+          <input type="number" min="0" class="form-control" name="lenght" value="<?php echo remove_junk(ucwords($a_package['lenght'])); ?>">
+        </div> 
+
+        <hr>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Weight</label>
+              <input type="number" min="0" class="form-control" name="weight" value="<?php echo remove_junk(round($a_package['weight'])); ?>">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="name" class="control-label">Convert Weight</label>
+              <select class="form-control" name="convert_weight">
+                <option value="weight_kilograms">Kilograms</option>
+                <option value="weight_pounds">Pounds</option>
+                <option value="weight_ons">Ons</option>
+                <option value="weight_grams">Grams</option>
+            </select>
+          </div>
+        </div>
+
+        <hr>
+
         <div class="form-group">
           <label class="control-label">Stock</label>
-          <input type="number" min="1" class="form-control" value="<?php echo remove_junk(ucwords($a_package['jml_stock'])); ?>" name="stock">
+          <input type="number" min="0" class="form-control" value="<?php echo remove_junk(ucwords($a_package['jml_stock'])); ?>" name="stock">
         </div>    
       </div>
       <div class="modal-footer">

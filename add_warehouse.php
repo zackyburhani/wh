@@ -18,6 +18,16 @@
    $address   = remove_junk($db->escape($_POST['address']));
    $status    = remove_junk($db->escape($_POST['status']));
    $heavymax  = remove_junk($db->escape($_POST['heavymax']));
+
+   $convert_max    = remove_junk($db->escape($_POST['convert_max']));
+
+  //convert weight
+  if($convert_max == "max_kilograms"){
+    $heavymax = $heavymax;
+  } else if($convert_max == "max_ton") {
+    $heavymax = $heavymax*1000;
+  } 
+
    $consumed  = 0;
    if(empty($errors)){
       $sql  = "INSERT INTO warehouse (id_warehouse,nm_warehouse,country,address,status,heavy_max,heavy_consumed)";
@@ -195,9 +205,20 @@ if(isset($_POST['update_warehouse'])){
               <option value="0">Not Produce</option>
             </select>
         </div>
-        <div class="form-group">
-          <label class="control-label">Heavy Max</label>
-          <input type="name" class="form-control" name="heavymax">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Heavy Max</label>
+              <input type="name" class="form-control" name="heavymax">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="name" class="control-label">Convert Heavy Max</label>
+              <select class="form-control" name="convert_max">
+                <option value="max_kilograms">Kilograms</option>
+                <option value="max_ton">Tons</option>
+              </select>
+          </div>
         </div>      
       </div>
       <div class="modal-footer">

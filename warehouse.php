@@ -53,7 +53,7 @@
           <div class="form-group">
             <div class="row">
               <div class="col-md-2">
-                <label class="control-label">Heavy Maximum</label>
+                <label class="control-label">Heavy Maximum /Kg</label>
               </div>
               <div class="col-md-4">
                 <input type="text" value="<?php echo number_format($warehouse['heavy_max']) ?>" class="form-control" name="id_po" readonly>
@@ -63,7 +63,7 @@
                 <label class="control-label">Heavy Consumed</label>
               </div>
               <div class="col-md-4">
-                <input type="text" value="<?php echo number_format($warehouse['heavy_consumed']) ?>" class="form-control" name="id_po" readonly>
+                <input type="text" value="<?php echo $warehouse['heavy_consumed'] ?>" class="form-control" name="id_po" readonly>
               </div>
 
             </div>

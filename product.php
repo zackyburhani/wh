@@ -20,12 +20,12 @@
 
   $warehouse    = find_by_id_warehouse('warehouse',$user['id_warehouse']);
  
-  if($get_product == null){
-    $query2  = "UPDATE warehouse SET ";
-    $query2 .= "heavy_consumed = 0.00";
-    $query2 .= " WHERE id_warehouse = '{$id}'";
-    $db->query($query2);
-  } 
+  // if($get_product == null){
+  //   $query2  = "UPDATE warehouse SET ";
+  //   $query2 .= "heavy_consumed = 0.00";
+  //   $query2 .= " WHERE id_warehouse = '{$id}'";
+  //   $db->query($query2);
+  // } 
 
 ?> 
 
@@ -194,21 +194,21 @@
     $stock   = remove_junk($db->escape($_POST['stock'])); 
     $id_item = remove_junk($db->escape($_POST['id_item']));
 
-    // //validation connected foreign key
-    // $item = find_all_idItem($id_item);
-    // foreach ($item as $data) {
-    //   $id_item2 = $data['id_item'];  
-    // }
+    //validation connected foreign key
+    $item = find_all_idItem($id_item);
+    foreach ($item as $data) {
+      $id_item2 = $data['id_item'];  
+    }
 
-    // $itemP = find_all_idItemPackage($id_item);
-    // foreach ($itemP as $data) {
-    //   $id_itemPackage = $data['id_item'];  
-    // }
+    $itemP = find_all_idItemPackage($id_item);
+    foreach ($itemP as $data) {
+      $id_itemPackage = $data['id_item'];  
+    }
 
-    // if($id_item == $id_item2 || $id_item == $id_itemPackage){
-    //   $session->msg("d","The Field Connected To Other Key.");
-    //   redirect('product.php');
-    // }
+    if($id_item == $id_item2 || $id_item == $id_itemPackage){
+      $session->msg("d","The Field Connected To Other Key.");
+      redirect('product.php');
+    }
 
     //reduce area consumed
     $consumed     = $all_warehouse_id['heavy_consumed']; 
@@ -420,15 +420,6 @@
         
               <div class="form-group">
                 <div class="row">
-                  <div class="col-md-4">
-                    <label for="name" class="control-label">Width / Centimeters</label>
-                    <div class="input-group">
-                      <span class="input-group-addon">
-                        <i class="glyphicon glyphicon-tasks"></i>
-                      </span>
-                      <input type="number" min="0" class="form-control" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
-                    </div>
-                  </div>
 
                   <div class="col-md-4">
                     <label for="name" class="control-label">Height / Centimeters</label>
@@ -437,6 +428,16 @@
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
                      <input type="number" min="0" class="form-control" name="height" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <label for="name" class="control-label">Width / Centimeters</label>
+                    <div class="input-group">
+                      <span class="input-group-addon">
+                        <i class="glyphicon glyphicon-tasks"></i>
+                      </span>
+                      <input type="number" min="0" class="form-control" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
                     </div>
                   </div>
 
@@ -601,15 +602,6 @@
 
               <div class="form-group">
                 <div class="row">
-                  <div class="col-md-4">
-                    <label for="name" class="control-label">Width / Centimeters</label>
-                    <div class="input-group">
-                      <span class="input-group-addon">
-                        <i class="glyphicon glyphicon-tasks"></i>
-                      </span>
-                      <input type="number" min="0" class="form-control" value="<?php echo remove_junk($item['width']);?>" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
-                    </div>
-                  </div>
 
                   <div class="col-md-4">
                     <label for="name" class="control-label">Height / Centimeters</label>
@@ -618,6 +610,16 @@
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
                      <input type="number" min="0" class="form-control" name="height" value="<?php echo remove_junk($item['height']);?>" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-4">
+                    <label for="name" class="control-label">Width / Centimeters</label>
+                    <div class="input-group">
+                      <span class="input-group-addon">
+                        <i class="glyphicon glyphicon-tasks"></i>
+                      </span>
+                      <input type="number" min="0" class="form-control" value="<?php echo remove_junk($item['width']);?>" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
                     </div>
                   </div>
 
