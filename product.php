@@ -4,23 +4,18 @@
   // Checkin What level user has permission to view this page
    page_require_level(2);
   // $all_categories = find_all1('categories');
-  $user = current_user();
+  $user = $user = current_user();
   $id = $user['id_warehouse'];
-
-  $join_subcategories  = find_allSubcategories($id);
-  $all_categories      = find_all_order('categories','nm_categories',$id);
-  $all_package         = find_all_Position('package'); 
-  $all_warehouse_id    = find_warehouse_id($user['id_warehouse']);
-
-  $all_product         = find_all_product($id);
-  $get_product         = get_product('item',$id);
-  $all_categories      = find_all_categories('categories',$id);
-  $all_subcategories   = find_all_subcategories('sub_categories',$id);
-  $join_subcategories  = find_allSubcategories($id);
-  $all_package         = find_all_package('package',$id);
-  $all_location        = find_all_location('location',$id);
+  $all_product = find_all_product($id);
+  $get_product = get_product('item',$id);
+  $all_categories    = find_all_categories('categories',$id);
+  $all_subcategories = find_all_subcategories('sub_categories',$id);
+  $join_subcategories   = find_allSubcategories($id);
+  $all_package = find_all_package('package',$id);
+  $all_location = find_all_location('location',$id);
 
 ?> 
+
 
 <!-- ADD PRODUCT -->
 <?php
@@ -42,34 +37,15 @@
       $id_subcategories = remove_junk($db->escape($_POST['id_subcategories']));
       $id_location      = remove_junk($db->escape($_POST['id_location']));
     
-      //reduce area consumed
-      $consumed     = $all_warehouse_id['heavy_consumed']; 
-      $heavy_max    = $all_warehouse_id['heavy_max'];
-      $id_warehouse = $all_warehouse_id['id_warehouse']; 
-      $reduced      = ($weight*$stock)+$consumed;
-      
-      if($reduced > $heavy_max){
-        $session->msg('d',"You Do Not Have Enough Storage Space !");
-        redirect('product.php', false);
-      }
-
-        $query  = "UPDATE warehouse SET ";
-        $query .= "heavy_consumed='{$reduced}' ";
-        $query .= "WHERE id_warehouse = '{$id_warehouse}'";
+      $query  = "INSERT INTO item (";
+      $query .=" id_item,nm_item,colour,width,height,length,weight,stock,id_package,id_subcategories,id_location";
+      $query .=") VALUES (";
+      $query .=" '{$id_item}', '{$nm_item}', '{$colour}', '{$width}', '{$height}', '{$length}', '{$weight}', '{$stock}', '{$id_package}', '{$id_subcategories}', '{$id_location}'";
+      $query .=")";
 
       if($db->query($query)){
-        
-        //insert item
-        $query2  = "INSERT INTO item (";
-        $query2 .=" id_item,nm_item,colour,width,height,length,weight,stock,id_package,id_subcategories,id_location";
-        $query2 .=") VALUES (";
-        $query2 .=" '{$id_item}', '{$nm_item}', '{$colour}', '{$width}', '{$height}', '{$length}', '{$weight}', '{$stock}', '{$id_package}', '{$id_subcategories}', '{$id_location}'";
-        $query2 .=")";
-
-        if($db->query($query2)) {
-          $session->msg('s',"Product added ");
-          redirect('product.php', false);  
-        } 
+        $session->msg('s',"Product added ");
+        redirect('product.php', false);
       } else {
         $session->msg('d',' Sorry failed to added!');
         redirect('product.php', false);
@@ -104,7 +80,6 @@
     $id_package       = remove_junk($db->escape($_POST['id_package']));
     $id_subcategories = remove_junk($db->escape($_POST['id_subcategories']));
     $id_location      = remove_junk($db->escape($_POST['id_location']));
-    $id_categories    = remove_junk($db->escape($_POST['id_categories']));
 
         $id_warehouse = $user['id_warehouse'];
         $query  = "UPDATE item SET ";
@@ -129,29 +104,14 @@
 ?>
 <!-- END PRODUCT -->
 
-<!-- DELETE PRODUCT -->
+<!-- DELETE POSITION -->
 <?php
   if(isset($_POST['delete_item'])){
-    
-    $weight  = remove_junk($db->escape($_POST['weight']));
-    $stock   = remove_junk($db->escape($_POST['stock'])); 
     $id_item = remove_junk($db->escape($_POST['id_item']));
 
     //delete function
     $delete_id   = delete('id_item','item',$id_item);
-
-    //reduce area consumed
-    $consumed     = $all_warehouse_id['heavy_consumed']; 
-    $heavy_max    = $all_warehouse_id['heavy_max'];
-    $id_warehouse = $all_warehouse_id['id_warehouse']; 
-    $reduced      = $consumed-($weight*$stock);
-
-    $query  = "UPDATE warehouse SET ";
-    $query .= "heavy_consumed='{$reduced}'";
-    $query .= " WHERE id_warehouse = '{$id_warehouse}'";
-
     if($delete_id){
-      $db->query($query);
       $session->msg("s","Product Has Been Deleted.");
       redirect('product.php');
     } else {
@@ -160,7 +120,7 @@
     }  
   }
 ?>
-<!-- END DELETE PRODUCT -->
+<!-- END DELETE POSITION -->
 
 
 <?php include_once('layouts/header.php'); ?>
@@ -562,8 +522,6 @@
         <form method="post" action="product.php" class="clearfix">
           <div class="form-group">
             <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($item['id_item'])); ?>" name="id_item">
-            <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($item['stock'])); ?>" name="stock">
-            <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($item['weight'])); ?>" name="weight">
           </div>    
         </div>
         <div class="modal-footer">
