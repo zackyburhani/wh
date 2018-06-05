@@ -28,7 +28,7 @@
       <span>Products</span>
     </a>
   </li>
- 
+  
   <li>
     <a href="#" class="submenu-toggle">
       <i class="fa fa-university"></i>
@@ -37,7 +37,6 @@
       <ul class="nav submenu">
         <li><a href="add_warehouse.php">Add Inventory</a></li>
           <li><a href="add_location.php">Add Location</a></li>
-        <li><a href="move_product.php">Move Quantity Warehouse</a></li>
         <li><a href="warehouse.php">Warehouse Condition</a></li>
       </ul>
   </li>

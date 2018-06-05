@@ -169,6 +169,7 @@ function get_product($table,$id){
     return find_by_sql("SELECT id_item,nm_item,colour,stock,nm_package,nm_subcategories,unit FROM item,package,sub_categories,location,warehouse WHERE item.id_package = package.id_package AND item.id_subcategories = sub_categories.id_subcategories AND item.id_location = location.id_location AND location.id_warehouse = warehouse.id_warehouse AND location.id_warehouse = '{$db->escape($id)}'");
 }
 
+
 function get_item_condition($id_warehouse){
   global $db;
     return find_by_sql("SELECT * FROM item,location,warehouse where item.id_location = location.id_location and location.id_warehouse = warehouse.id_warehouse and stock < 1000 and warehouse.id_warehouse = '$id_warehouse'");
@@ -402,6 +403,24 @@ function find_adminName(){
       global $db;
       $results = array();
       $sql = "SELECT id_position FROM employer WHERE id_position = '{$db->escape($field)}'";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  //validation connected foreign key (zacky)
+  function find_all_idItem($field){
+      global $db;
+      $results = array();
+      $sql = "SELECT id_item FROM detil_po WHERE id_item = '{$db->escape($field)}'";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  //validation connected foreign key (zacky)
+  function find_all_idItemPackage($field){
+      global $db;
+      $results = array();
+      $sql = "SELECT id_item FROM bpack WHERE id_item = '{$db->escape($field)}'";
       $result = find_by_sql($sql);
       return $result;
   }

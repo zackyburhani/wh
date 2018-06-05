@@ -8,7 +8,6 @@
   $id = $user['id_warehouse'];
 
   $join_subcategories  = find_allSubcategories($id);
-  // $all_categories      = find_all_order('categories','nm_categories',$id);
   $all_package         = find_all_Position('package'); 
   $all_warehouse_id    = find_warehouse_id($user['id_warehouse']);
 
@@ -16,10 +15,11 @@
   $get_product         = get_product('item',$id);
   $all_categories      = find_all_categories('categories',$id);
   $all_subcategories   = find_all_subcategories('sub_categories',$id);
-  // $join_subcategories  = find_allSubcategories($id);
   $all_package         = find_all_package('package',$id);
   $all_location        = find_all_location('location',$id);
-  
+
+  $warehouse = find_by_id_warehouse('warehouse',$user['id_warehouse']);
+
 ?> 
 
 <!-- ADD PRODUCT -->
@@ -41,7 +41,22 @@
       $id_package       = remove_junk($db->escape($_POST['id_package']));
       $id_subcategories = remove_junk($db->escape($_POST['id_subcategories']));
       $id_location      = remove_junk($db->escape($_POST['id_location']));
-    
+
+      //convert
+      $convert_weight   = remove_junk($db->escape($_POST['convert_weight']));
+      $convert_stock    = remove_junk($db->escape($_POST['convert_stock']));
+
+      //convert weight
+      if($convert_weight == "weight_kilograms"){
+        $weight = $weight;
+      } else if($convert_weight == "weight_pounds") {
+        $weight = $weight/2.2046;
+      } else if($convert_weight == "weight_ons"){
+        $weight = $weight/35.274;
+      } else if($convert_weight == "weight_grams"){
+        $weight = $weight/1000;
+      }
+
       //reduce area consumed 
       $consumed     = $all_warehouse_id['heavy_consumed'];
       $heavy_max    = $all_warehouse_id['heavy_max'];
@@ -106,6 +121,21 @@
     $id_location      = remove_junk($db->escape($_POST['id_location']));
     $id_categories    = remove_junk($db->escape($_POST['id_categories']));
 
+    //convert
+    $convert_weight   = remove_junk($db->escape($_POST['convert_weight']));
+    $convert_stock    = remove_junk($db->escape($_POST['convert_stock']));
+
+    //convert weight
+    if($convert_weight == "weight_kilograms"){
+      $weight = $weight;
+    } else if($convert_weight == "weight_pounds") {
+      $weight = $weight/2.2046;
+    } else if($convert_weight == "weight_ons"){
+      $weight = $weight/35.274;
+    } else if($convert_weight == "weight_grams"){
+      $weight = $weight/1000;
+    }
+
     $product_fetch    = find_product_fetch($id_item);
     //reduce area consumed
     $stock_fetch      = $product_fetch['stock'];
@@ -157,6 +187,22 @@
     $stock   = remove_junk($db->escape($_POST['stock'])); 
     $id_item = remove_junk($db->escape($_POST['id_item']));
 
+    //validation connected foreign key
+    $item = find_all_idItem($id_item);
+    foreach ($item as $data) {
+      $id_item2 = $data['id_item'];  
+    }
+
+    $itemP = find_all_idItemPackage($id_item);
+    foreach ($itemP as $data) {
+      $id_itemPackage = $data['id_item'];  
+    }
+
+    if($id_item == $id_item2 || $id_item == $id_itemPackage){
+      $session->msg("d","The Field Connected To Other Key.");
+      redirect('product.php');
+    }
+
     //reduce area consumed
     $consumed     = $all_warehouse_id['heavy_consumed']; 
     $heavy_max    = $all_warehouse_id['heavy_max'];
@@ -173,7 +219,16 @@
     $query .= " WHERE id_warehouse = '{$id_warehouse}'";
 
     //delete function
+
     $delete_id   = delete('id_item','item',$id_item);
+    $product_fetch    = find_product_fetch($id_item);
+    if($product_fetch['id_item'] == null){
+      $query2  = "UPDATE warehouse SET ";
+      $query2 .= "heavy_consumed=0.00";
+      $query2 .= " WHERE id_warehouse = '{$id_warehouse}'";      
+      $db->query($query2);
+    }
+
     if($delete_id){
       $db->query($query);
       $session->msg("s","Product Has Been Deleted.");
@@ -218,8 +273,10 @@
             <span class="glyphicon glyphicon-th"></span>
             <span>Products</span>
           </strong>
+          <?php if($warehouse['status'] != 0) { ?>
           <button data-target="#add_product" class="btn btn-md btn-info pull-right" data-toggle="modal" title="Remove"><i class="glyphicon glyphicon-plus"></i> Add New
             </button>
+          <?php } ?>
         </div>
         
         <div class="panel-body">
@@ -357,11 +414,13 @@
                     </div>
                  </div>
                 </div>
+
+              <hr>
         
               <div class="form-group">
                 <div class="row">
-                  <div class="col-md-3">
-                    <label for="name" class="control-label">Width</label>
+                  <div class="col-md-4">
+                    <label for="name" class="control-label">Width / Centimeters</label>
                     <div class="input-group">
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
@@ -369,8 +428,9 @@
                       <input type="number" class="form-control" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
                     </div>
                   </div>
-                  <div class="col-md-3">
-                    <label for="name" class="control-label">Height</label>
+
+                  <div class="col-md-4">
+                    <label for="name" class="control-label">Height / Centimeters</label>
                     <div class="input-group">
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
@@ -378,36 +438,57 @@
                      <input type="number" class="form-control" name="height" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
                     </div>
                   </div>
-                  <div class="col-md-3">
-                    <label for="name" class="control-label">Length</label>
+
+                  <div class="col-md-4">
+                    <label for="name" class="control-label">Length / Centimeters</label>
                     <div class="input-group">
                       <span class="input-group-addon">
-                         <i class="glyphicon glyphicon-tasks"></i>
-                     </span>
-                     <input type="number" class="form-control" name="length" onkeypress="return hanyaAngka(event)" placeholder="Length Product">
-                   </div>
-                  </div>
-                  <div class="col-md-3">
-                    <label for="name" class="control-label">Weight</label>
-                    <div class="input-group">
-                      <span class="input-group-addon">
-                         <i class="glyphicon glyphicon-tasks"></i>
-                     </span>
-                     <input type="number" class="form-control" name="weight" onkeypress="return hanyaAngka(event)" placeholder="Weight Product">
-                   </div>
+                          <i class="glyphicon glyphicon-tasks"></i>
+                      </span>
+                      <input type="number" class="form-control" name="length" onkeypress="return hanyaAngka(event)" placeholder="Length Product">
+                    </div>
                   </div>
                 </div>
               </div>
 
               <hr>
 
-             <label for="name" class="control-label">Stock</label>
-              <div class="input-group">
-                <span class="input-group-addon">
-                  <i class="glyphicon glyphicon-equalizer"></i>
-                </span>
-                <input type="number" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-md-6">
+                    <label for="name" class="control-label">Weight</label>
+                    <div class="input-group">
+                      <span class="input-group-addon">
+                         <i class="glyphicon glyphicon-tasks"></i>
+                     </span>
+                     <input type="number" class="form-control" name="weight" onkeypress="return hanyaAngka(event)"placeholder="Weight Product">
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="name" class="control-label">Convert Weight</label>
+                      <select class="form-control" name="convert_weight">
+                        <option value="weight_kilograms">Kilograms</option>
+                        <option value="weight_pounds">Pounds</option>
+                        <option value="weight_ons">Ons</option>
+                        <option value="weight_grams">Grams</option>
+                      </select>
+                  </div>
+                </div>
               </div>
+              <hr>
+
+             <div class="row">
+               <div class="col-md-12">
+                 <label for="name" class="control-label">Stock</label>
+                  <div class="input-group">
+                    <span class="input-group-addon">
+                      <i class="glyphicon glyphicon-equalizer"></i>
+                    </span>
+                    <input type="number" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
+                  </div>
+               </div>
+             </div>
             
           </div>
           <div class="modal-footer">
@@ -516,10 +597,11 @@
                  </div>
                 </div>
         
+
               <div class="form-group">
                 <div class="row">
-                  <div class="col-md-3">
-                    <label for="name" class="control-label">Width</label>
+                  <div class="col-md-4">
+                    <label for="name" class="control-label">Width / Centimeters</label>
                     <div class="input-group">
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
@@ -527,8 +609,9 @@
                       <input type="number" class="form-control" value="<?php echo remove_junk($item['width']);?>" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
                     </div>
                   </div>
-                  <div class="col-md-3">
-                    <label for="name" class="control-label">Height</label>
+
+                  <div class="col-md-4">
+                    <label for="name" class="control-label">Height / Centimeters</label>
                     <div class="input-group">
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
@@ -536,36 +619,57 @@
                      <input type="number" class="form-control" name="height" value="<?php echo remove_junk($item['height']);?>" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
                     </div>
                   </div>
-                  <div class="col-md-3">
-                    <label for="name" class="control-label">Length</label>
+
+                  <div class="col-md-4">
+                    <label for="name" class="control-label">Length / Centimeters</label>
                     <div class="input-group">
                       <span class="input-group-addon">
-                         <i class="glyphicon glyphicon-tasks"></i>
-                     </span>
-                     <input type="number" class="form-control" name="length" onkeypress="return hanyaAngka(event)" value="<?php echo remove_junk($item['length']);?>" placeholder="Length Product">
-                   </div>
-                  </div>
-                  <div class="col-md-3">
-                    <label for="name" class="control-label">Weight</label>
-                    <div class="input-group">
-                      <span class="input-group-addon">
-                         <i class="glyphicon glyphicon-tasks"></i>
-                     </span>
-                     <input type="number" class="form-control" name="weight" value="<?php echo remove_junk($item['weight']);?>" onkeypress="return hanyaAngka(event)" placeholder="Weight Product">
-                   </div>
+                          <i class="glyphicon glyphicon-tasks"></i>
+                      </span>
+                      <input type="number" class="form-control" name="length" onkeypress="return hanyaAngka(event)" value="<?php echo remove_junk($item['length']);?>" placeholder="Length Product">
+                    </div>
                   </div>
                 </div>
               </div>
 
               <hr>
 
-             <label for="name" class="control-label">Stock</label>
-              <div class="input-group">
-                <span class="input-group-addon">
-                  <i class="glyphicon glyphicon-equalizer"></i>
-                </span>
-                <input type="number" value="<?php echo remove_junk($item['stock']);?>" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-md-6">
+                    <label for="name" class="control-label">Weight</label>
+                    <div class="input-group">
+                      <span class="input-group-addon">
+                         <i class="glyphicon glyphicon-tasks"></i>
+                     </span>
+                     <input type="number" class="form-control" name="weight" value="<?php echo remove_junk($item['weight']);?>" placeholder="Weight Product">
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="name" class="control-label">Convert Weight</label>
+                      <select class="form-control" name="convert_weight">
+                        <option value="weight_kilograms">Kilograms</option>
+                        <option value="weight_pounds">Pounds</option>
+                        <option value="weight_ons">Ons</option>
+                        <option value="weight_grams">Grams</option>
+                      </select>
+                  </div>
+                </div>
               </div>
+              <hr>
+
+             <div class="row">
+               <div class="col-md-12">
+                 <label for="name" class="control-label">Stock</label>
+                  <div class="input-group">
+                    <span class="input-group-addon">
+                      <i class="glyphicon glyphicon-equalizer"></i>
+                    </span>
+                    <input type="number" value="<?php echo remove_junk($item['stock']);?>" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
+                  </div>
+               </div>
+             </div>
             
           </div>
           <div class="modal-footer">
