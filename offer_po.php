@@ -46,14 +46,16 @@
         $consumed     = $all_warehouse_id['heavy_consumed'];
         $max          = $all_warehouse_id['heavy_max'];
         $count        = $consumed-$move_stock['total_weight'];
+        $id_wh        = $user['id_warehouse'];
 
         $query3  = "UPDATE warehouse SET ";
         $query3 .= "heavy_consumed = '{$count}' ";
-        $query3 .= "WHERE id_warehouse = '{$id_warehouse}'";
+        $query3 .= "WHERE id_warehouse = '{$id_wh}'";
 
         $result = $db->query($query);
          if($result){
           //sucess
+          $db->query($query3);
           $session->msg('s',"Purchase Order Has Been Approved ! ");
           redirect('offer_po.php', false);
         } else {
@@ -117,7 +119,7 @@
                <td align="center"><?php echo remove_junk(ucwords($list['qty']))?></td>
                </td>
                <td align="center">
-                 <button data-target="#approvePO<?php echo $list['id_po'];?>" class="btn btn-md btn-success" data-toggle="modal" title="Detail">
+                 <button data-target="#approvePO<?php echo $list['id_po'];?>" class="btn btn-md btn-success" data-toggle="modal" title="Approve">
                     <i class="glyphicon glyphicon-ok"></i>
                   </button>
                </td>
@@ -210,8 +212,8 @@
           </div>    
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
-          <button type="submit" name="approve_po" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Approve</button>
+          <button type="button" title="Close" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+          <button type="submit" title="Approve" name="approve_po" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Approve</button>
         </div>
       </form>
     </div>

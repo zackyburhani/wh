@@ -333,7 +333,7 @@ function find_all_admin(){
   function find_all_PO_destination_admin($id_warehouse){
       global $db;
       $results = array();
-      $sql = "SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'Approved' GROUP by detil_po.id_item ";
+      $sql = "SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty,employer.id_employer as id_emp  FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'Approved' GROUP by detil_po.id_item ";
       $result = find_by_sql($sql);
       return $result;
   }

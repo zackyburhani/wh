@@ -75,7 +75,7 @@
 </div>
 
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-12">
     <div class="panel panel-default">
       <div class="panel-heading clearfix">
         <strong>
@@ -117,49 +117,6 @@
        </div>
       </div>
     </div>
-
-
-    <div class="col-md-6">
-    <div class="panel panel-default">
-      <div class="panel-heading clearfix">
-        <strong>
-          <span class="glyphicon glyphicon-th"></span>
-          <span>Warehouse Condition</span>
-       </strong>
-      </div>
-       <div class="panel-body">
-         <table class="table table-bordered table-striped" id="tablePackage">
-        <thead>
-          <tr>
-            <th class="text-center" style="width: 5%;">No.</th>
-            <th class="text-center" style="width: 10%;">Package </th>
-            <th class="text-center" style="width: 10%;">Stock</th>
-            <th class="text-center" style="width: 10%;">Consumed Area</th>
-            <th class="text-center" style="width: 5%;">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-        <?php $no=1; ?>
-        <?php foreach($get_package as $package): ?>
-          <tr>
-           <td class="text-center"><?php echo $no++;?>.</td>
-           <td><?php echo remove_junk(ucwords($package['nm_package']))?></td>
-           <td><?php echo remove_junk($package['jml_stock'])?></td>
-           <td class="text-center"><?php echo remove_junk(ucwords($package['heavy_consumed']))?></td>
-           <td class="text-center"> 
-              <button type="submit" class="btn btn-md btn-success" name="add_item">
-                  <i class="glyphicon glyphicon-new-window"></i>
-              </button>
-           </td>
-          </tr>
-        <?php endforeach;?>
-       </tbody>
-     </table>
-       </div>
-      </div>
-    </div>
-  </div>
-
 
 <?php include_once('layouts/footer.php'); ?>
 
