@@ -212,7 +212,7 @@
         <div class="panel panel-default">
           <div class="panel-heading">
             <strong>
-              <span class="glyphicon glyphicon-th"></span>
+              <i class="fa fa-tag"></i>
               <span>Add New Category</span>
             </strong>
           </div>
@@ -233,8 +233,8 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               <strong>
-                <span class="glyphicon glyphicon-th"></span>
-                <span>Add New Sub Category</span>
+                <i class="fa fa-tags"></i>
+                <span>Add New Subcategory</span>
              </strong>
             </div>
             <div class="panel-body">
@@ -273,14 +273,14 @@
               <ul class="nav nav-tabs" role="tablist">
                 <li class="active col-md-6"><a href="#category" role="tab" data-toggle="tab">
                   <strong>
-                    <span class="glyphicon glyphicon-th"></span>
+                    <i class="fa fa-tag"></i>
                     <span>All Categories</span>
                   </strong>
                 </a></li>
                 <li class="col-md-6"><a href="#sub_category" role="tab" data-toggle="tab">
                   <strong>
-                    <span class="glyphicon glyphicon-th"></span>
-                    <span>All Sub Categories</span>
+                    <i class="fa fa-tags"></i>
+                    <span>All Subcategories</span>
                   </strong>
                 </a></li>
               </ul>
@@ -308,9 +308,9 @@
                         <td class="text-center"><?php echo count_id();?></td>
                         <td><?php echo remove_junk(ucfirst($cat['nm_categories'])); ?></td>
                         <td class="text-center">
-                          <button data-target="#updateCategory<?php echo (int)$cat['id_categories'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit"><i class="glyphicon glyphicon-edit"></i>
+                          <button data-target="#updateCategory<?php echo $cat['id_categories'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit"><i class="glyphicon glyphicon-edit"></i>
                           </button>
-                          <button data-target="#deleteCategory<?php echo (int)$cat['id_categories'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete"><i class="glyphicon glyphicon-trash"></i>
+                          <button data-target="#deleteCategory<?php echo $cat['id_categories'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete"><i class="glyphicon glyphicon-trash"></i>
                           </button>
                         </td>
                       </tr>
@@ -359,14 +359,14 @@
 
 <!-- Update Entry Data Categories -->
 <?php foreach($all_categories as $a_category): ?>
-<div class="modal fade" id="updateCategory<?php echo (int)$a_category['id_categories'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="updateCategory<?php echo $a_category['id_categories'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-user"></span> Update Data Category</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-tag"></i> Update Data Category</h4>
         
       </div>
       <div class="modal-body">
@@ -378,8 +378,8 @@
             </div>
       </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
-          <button type="submit" name="update_category" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span>  Update</button>
+          <button type="button" title="Close" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+          <button type="submit" name="update_category" title="Update" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span>  Update</button>
         </div>
       </form>
     </div>
@@ -390,7 +390,7 @@
 
 <!-- Delete Modal Category -->
 <?php foreach($all_categories as $a_category): ?> 
-  <div class="modal fade" id="deleteCategory<?php echo (int)$a_category['id_categories'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="deleteCategory<?php echo $a_category['id_categories'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -407,8 +407,8 @@
           </div>    
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
-          <button type="submit" name="delete_categories" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+          <button type="button" class="btn btn-secondary" title="Close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+          <button type="submit" name="delete_categories" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</button>
         </div>
       </form>
     </div>
@@ -417,7 +417,7 @@
 <?php endforeach;?>
 <!-- DELETE MODAL CATEGORY -->
 
-<!-- Update Entry Data SubCategories -->
+<!-- Update Data SubCategories -->
 <?php foreach($all_subcategories as $a_subcategory): ?>
 <div class="modal fade" id="updateSubcategory<?php echo $a_subcategory['id_subcategories'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -426,7 +426,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-user"></span> Update Data Subategory</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-tags"></i> Update Data Subcategory</h4>
         
       </div>
       <div class="modal-body">
@@ -452,8 +452,8 @@
       </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
-          <button type="submit" name="update_Subcategory" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span>  Update</button>
+          <button type="button" class="btn btn-secondary" title="Close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+          <button type="submit" name="update_Subcategory" title="Update" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Update</button>
         </div>
       </form>
     </div>
@@ -481,8 +481,8 @@
           </div>    
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
-          <button type="submit" name="delete_Subcategories" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+          <button type="button" class="btn btn-secondary" title="Close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+          <button type="submit" name="delete_Subcategories" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</button>
         </div>
       </form>
     </div>
@@ -491,7 +491,7 @@
 <?php endforeach;?>
 <!-- DELETE MODAL SUBCATEGORY -->
 
-<!-- DETAIL MODAL SUBCATEGORR -->
+<!-- DETAIL MODAL SUBCATEGORY -->
 <?php foreach($join_categories as $a_subcategory): ?>
   <div class="modal fade" id="detailSubcategory<?php echo $a_subcategory['id_subcategories'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
@@ -500,7 +500,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-th"></span> Detail Category</h4>
+          <h4 class="modal-title" id="myModalLabel"><i class="fa fa-tags"></i> Detail Category</h4>
         </div>
         <div class="modal-body">
           <table border="0">
@@ -508,7 +508,7 @@
                 <tr>
                   <td width="90px">Category</td>
                   <td width="20px">:</td>
-                  <td><b><?php echo $a_subcategory['nm_categories'];?></b></td>
+                  <td><b><?php echo ucwords($a_subcategory['nm_categories']);?></b></td>
                 </tr>
               </tbody>
             </table>

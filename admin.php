@@ -79,23 +79,11 @@
     </div>
    
 </div>
-  <!-- <div class="row">
-   <div class="col-md-12">
-      <div class="panel">
-        <div class="jumbotron text-center">
-           <h1>Welcome to Warehouse....!</h1>
-           <p> <strong>Warehouse-Budi Luhur v2</strong> 
-           </br>Happy Browser in Our Website.</p>
 
-        </div>
-      </div>
-   </div> -->
-  <!-- </div> -->
-  
   <div class="row">
     <div class="col-md-3">
        <div class="panel panel-box clearfix">
-         <div class="panel-icon pull-left bg-primary">
+         <div class="panel-icon pull-left bg-yellow">
           <i class="fa fa-tag"></i>
         </div>
         <div class="panel-value pull-right">
@@ -107,7 +95,7 @@
 
     <div class="col-md-3">
        <div class="panel panel-box clearfix">
-         <div class="panel-icon pull-left bg-primary">
+         <div class="panel-icon pull-left bg-yellow">
           <i class="fa fa-tags"></i>
         </div>
         <div class="panel-value pull-right">
@@ -119,7 +107,7 @@
 
     <div class="col-md-3">
        <div class="panel panel-box clearfix">
-         <div class="panel-icon pull-left bg-primary">
+         <div class="panel-icon pull-left bg-yellow">
           <i class="fa fa-archive"></i>
         </div>
         <div class="panel-value pull-right">
@@ -131,7 +119,7 @@
 
     <div class="col-md-3">
        <div class="panel panel-box clearfix">
-         <div class="panel-icon pull-left bg-primary">
+         <div class="panel-icon pull-left bg-yellow">
           <i class="fa fa-window-restore"></i>
         </div>
         <div class="panel-value pull-right">

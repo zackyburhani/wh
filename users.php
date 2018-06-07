@@ -124,7 +124,7 @@
           <span class="glyphicon glyphicon-th"></span>
           <span>Users</span>
        </strong>
-         <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#addUser"><span class="glyphicon glyphicon-plus"></span> Add New User
+         <button type="button" title="Add New User" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addUser"><span class="glyphicon glyphicon-plus"></span> Add New User
         </button>
       </div>
      <div class="panel-body">
@@ -156,10 +156,10 @@
            </td>
            <td><?php echo read_date($a_user['last_login'])?></td>
            <td class="text-center"> 
-              <button data-target="#updateUser<?php echo (int)$a_user['id_employer'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
+              <button data-target="#updateUser<?php echo $a_user['id_employer'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
               </button>
-              <button data-target="#deleteUser<?php echo (int)$a_user['id_employer'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Edit">
+              <button data-target="#deleteUser<?php echo $a_user['id_employer'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Hapus">
                   <i class="glyphicon glyphicon-trash"></i>
               </button>
               </a>
@@ -226,7 +226,7 @@
 
 <!-- Update Entry Data User -->
 <?php foreach($all_users as $a_user): ?>
-  <div class="modal fade" id="updateUser<?php echo (int)$a_user['id_employer'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="updateUser<?php echo $a_user['id_employer'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -286,7 +286,7 @@
 
 <!-- Delete Modal -->
 <?php foreach($all_users as $a_user): ?> 
-  <div class="modal fade" id="deleteUser<?php echo (int)$a_user['id_employer'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="deleteUser<?php echo $a_user['id_employer'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
         <div class="modal-header">

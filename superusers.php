@@ -7,6 +7,7 @@
  page_require_level(1);
 //pull out all user form database
  $all_users = find_all_admin();
+ $user = current_user();
 ?>
 
 <!-- ADD NEW ADMINISTRATOR -->
@@ -46,7 +47,7 @@
  }
  $all_warehouse = find_all_position('warehouse');
  $all_position  =  find_all_Position_admin();
- $find_adminName = find_adminName();
+ $find_adminName = find_adminName($user['id_warehouse']);
 ?>
 <!-- END NEW ADMINISTRATOR -->
 
@@ -123,7 +124,7 @@
           <span class="glyphicon glyphicon-th"></span>
           <span>Administrators</span>
        </strong>
-         <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#addUser"><span class="glyphicon glyphicon-plus"></span> Add New Administrator
+         <button type="button" title="Add New Administrator" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addUser"><span class="glyphicon glyphicon-plus"></span> Add New Administrator
         </button>
       </div>
      <div class="panel-body">
@@ -157,10 +158,10 @@
            <td><?php echo read_date($a_user['last_login'])?></td>
            <td><?php echo remove_junk($a_user['nm_warehouse'])?></td>
            <td class="text-center">
-              <button data-target="#updateUser<?php echo (int)$a_user['id_employer'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
+              <button data-target="#updateUser<?php echo $a_user['id_employer'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
               </button>
-              <button data-target="#deleteUser<?php echo (int)$a_user['id_employer'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Edit">
+              <button data-target="#deleteUser<?php echo $a_user['id_employer'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete">
                   <i class="glyphicon glyphicon-trash"></i>
               </button>
               </a>
@@ -205,10 +206,11 @@
             </div>
             <div class="form-group">
               <label for="level">User Role</label>
-                <?php foreach($find_adminName as $name) : ?>
-                  <input type="hidden" class="form-control" name="id_position" value="<?php echo remove_junk($name['id_position']); ?>">
-                  <input type="text" class="form-control" readonly value="<?php echo remove_junk($name['nm_position']); ?>">
-                <?php endforeach;?>
+                <select class="form-control" name="id_position">
+                  <?php foreach($find_adminName as $name) : ?>
+                    <option value="<?php echo ucwords($name['id_position']);?>"><?php echo ucwords($name['nm_position']);?></option>
+                  <?php endforeach;?>
+                  </select>
             </div>
             <div class="form-group">
               <label for="level">Warehouse</label>
@@ -231,7 +233,7 @@
 
 <!-- Update Entry Data ADMINISTRATOR -->
 <?php foreach($all_users as $a_user): ?>
-  <div class="modal fade" id="updateUser<?php echo (int)$a_user['id_employer'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="updateUser<?php echo $a_user['id_employer'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -298,7 +300,7 @@
 
 <!-- Delete Modal -->
 <?php foreach($all_users as $a_user): ?>
-  <div class="modal fade" id="deleteUser<?php echo (int)$a_user['id_employer'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="deleteUser<?php echo $a_user['id_employer'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
         <div class="modal-header">

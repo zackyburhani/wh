@@ -15,10 +15,10 @@
    $req_fields = array('nm_position','level_user');
    validate_fields($req_fields);
 
-   // if(find_by_positionName($_POST['nm_position']) === false ){
-   //   $session->msg('d','<b>Sorry!</b> Entered Position Name Already In Database!');
-   //   redirect('position.php', false);
-   // }
+   if(find_by_positionName($_POST['nm_position'],$user['id_warehouse']) === false ){
+     $session->msg('d','<b>Sorry!</b> Entered Position Name Already In Database!');
+     redirect('position.php', false);
+   }
    if(empty($errors)){
         $level_user   = remove_junk($db->escape($_POST['level_user']));
         $nm_position  = remove_junk($db->escape($_POST['nm_position']));
@@ -142,10 +142,10 @@
            <td><?php echo remove_junk(ucwords($a_position['nm_position']))?></td>
            <td align="center"><?php echo remove_junk(ucwords($a_position['level_user']))?></td>
            <td class="text-center">
-              <button data-target="#updatePosition<?php echo (int)$a_position['id_position'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
+              <button data-target="#updatePosition<?php echo $a_position['id_position'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                 <i class="glyphicon glyphicon-pencil"></i>
               </button>
-              <button data-target="#deletePosition<?php echo (int)$a_position['id_position'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Remove">
+              <button data-target="#deletePosition<?php echo $a_position['id_position'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete">
                 <i class="glyphicon glyphicon-trash"></i>
               </button>
            </td>
@@ -198,7 +198,7 @@
 
 <!-- Update Modal -->
 <?php foreach($all_position as $a_position): ?>
-  <div class="modal fade" id="updatePosition<?php echo (int)$a_position['id_position'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="updatePosition<?php echo $a_position['id_position'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -211,8 +211,8 @@
         <form method="post" action="position.php" class="clearfix">
           <div class="form-group">
             <label for="name" class="control-label">Name Position</label>
-            <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_position['id_position'])); ?>" name="id_position">
-            <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_position['nm_position'])); ?>" name="nm_position" required>
+            <input type="hidden" class="form-control" value="<?php echo remove_junk($a_position['id_position']); ?>" name="id_position">
+            <input type="name" class="form-control" value="<?php echo remove_junk($a_position['nm_position']); ?>" name="nm_position" required>
           </div>
           <div class="form-group">
           <label for="name" class="control-label">Level User</label>
@@ -220,9 +220,9 @@
             <?php if($all_position == null) { ?>
               <option value="">-</option>
                 <?php } else { ?>
-                   <option value="1">1</option>
-                   <option value="2">2</option>
-                   <option value="3">3</option>
+                   <option <?php if($a_position['level_user'] == '1'  ): echo "selected"; endif; ?> value="1">1</option>
+                   <option <?php if($a_position['level_user'] == '2'  ): echo "selected"; endif; ?> value="2">2</option>
+                   <option <?php if($a_position['level_user'] == '3'  ): echo "selected"; endif; ?> value="3">3</option>
                 <?php } ?>
           </select>
         </div>
@@ -239,7 +239,7 @@
 
 <!-- Delete Modal -->
 <?php foreach($all_position as $a_position): ?>
-  <div class="modal fade" id="deletePosition<?php echo (int)$a_position['id_position'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="deletePosition<?php echo $a_position['id_position'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
         <div class="modal-header">

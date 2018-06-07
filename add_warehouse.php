@@ -93,6 +93,16 @@ if(isset($_POST['update_warehouse'])){
   validate_fields($req_field);
   $idwarehouse = remove_junk($db->escape($_POST['idwarehouse']));
 
+  //validation connected foreign key
+  $employer = find_all_id('employer',$idwarehouse,'id_warehouse');
+  foreach ($employer as $data) {
+    $id_wh2 = $data['id_warehouse'];
+  }
+  if($idwarehouse == $id_wh2){
+    $session->msg("d","The Field Connected To Other Key.");
+    redirect('add_warehouse.php');
+  }
+
   if(empty($errors)){
         $sql = "DELETE FROM warehouse WHERE id_warehouse='{$idwarehouse}'";
      $result = $db->query($sql);
@@ -125,7 +135,7 @@ if(isset($_POST['update_warehouse'])){
         <span class="glyphicon glyphicon-th"></span>
         <span>WAREHOUSE</span>
      </strong>
-       <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#addWarehouse" title="Add New Warehouse"><span class="glyphicon glyphicon-plus"></span> Add New Warehouse
+       <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addWarehouse" title="Add New Warehouse"><span class="glyphicon glyphicon-plus"></span> Add New Warehouse
         </button>
     </div>
      <div class="panel-body">
@@ -176,13 +186,13 @@ if(isset($_POST['update_warehouse'])){
 
 <!-- MODAL ADD NEW WAREHOUSE -->
 <div class="modal fade" id="addWarehouse" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog  modal-lg" role="document">
+  <div class="modal-dialog  modal-md" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel">Entry New Warehouse</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-university"></i> Entry New Warehouse</h4>
       </div>
       <div class="modal-body">
       <form method="post" action="add_warehouse.php" class="clearfix">
@@ -213,7 +223,7 @@ if(isset($_POST['update_warehouse'])){
             </div>
           </div>
           <div class="col-md-6">
-            <label for="name" class="control-label">Convert Heavy Max</label>
+            <label for="name" class="control-label">Total Warehouse Weight</label>
               <select class="form-control" name="convert_max">
                 <option value="max_kilograms">Kilograms</option>
                 <option value="max_ton">Tons</option>
@@ -235,7 +245,7 @@ if(isset($_POST['update_warehouse'])){
 
 <!-- MODAL UPDATE WAREHOUSE -->
 <?php foreach($all_categories as $a_warehouse): ?> 
-<div class="modal fade" id="updateWarehouse<?php echo (int)$a_warehouse['id_warehouse'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="updateWarehouse<?php echo $a_warehouse['id_warehouse'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -285,7 +295,7 @@ if(isset($_POST['update_warehouse'])){
 
 <!-- MODAL DELETE WAREHOUSE -->
 <?php foreach($all_categories as $a_warehouse): ?>
-<div class="modal fade" id="deleteWarehouse<?php echo (int)$a_warehouse['id_warehouse'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteWarehouse<?php echo $a_warehouse['id_warehouse'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -310,87 +320,6 @@ if(isset($_POST['update_warehouse'])){
 </div>
 <?php endforeach;?>
 <!-- END MODAL DELETE WAREHOUSE -->
-
-
-
-<script>
-      // This example adds a search box to a map, using the Google Place Autocomplete
-      // feature. People can enter geographical searches. The search box will return a
-      // pick list containing a mix of places and predicted search terms.
-
-      // This example requires the Places library. Include the libraries=places
-      // parameter when you first load the API. For example:
-      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
-
-      function initAutocomplete() {
-        var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: 52.158946, lng: 4.473859},
-          zoom: 13,
-          mapTypeId: 'roadmap'
-        });
-
-        // Create the search box and link it to the UI element.
-        var input = document.getElementById('pac-input');
-        var searchBox = new google.maps.places.SearchBox(input);
-        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-        // Bias the SearchBox results towards current map's viewport.
-        map.addListener('bounds_changed', function() {
-          searchBox.setBounds(map.getBounds());
-        });
-
-        var markers = [];
-        // Listen for the event fired when the user selects a prediction and retrieve
-        // more details for that place.
-        searchBox.addListener('places_changed', function() {
-          var places = searchBox.getPlaces();
-
-          if (places.length == 0) {
-            return;
-          }
-
-          // Clear out the old markers.
-          markers.forEach(function(marker) {
-            marker.setMap(null);
-          });
-          markers = [];
-
-          // For each place, get the icon, name and location.
-          var bounds = new google.maps.LatLngBounds();
-          places.forEach(function(place) {
-            if (!place.geometry) {
-              console.log("Returned place contains no geometry");
-              return;
-            }
-            var icon = {
-              url: place.icon,
-              size: new google.maps.Size(71, 71),
-              origin: new google.maps.Point(0, 0),
-              anchor: new google.maps.Point(17, 34),
-              scaledSize: new google.maps.Size(25, 25)
-            };
-
-            // Create a marker for each place.
-            markers.push(new google.maps.Marker({
-              map: map,
-              icon: icon,
-              title: place.name,
-              position: place.geometry.location
-            }));
-
-            if (place.geometry.viewport) {
-              // Only geocodes have viewport.
-              bounds.union(place.geometry.viewport);
-            } else {
-              bounds.extend(place.geometry.location);
-            }
-          });
-          map.fitBounds(bounds);
-        });
-      }
-
-    </script>
-
 
 
 <?php include_once('layouts/footer.php'); ?>

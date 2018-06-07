@@ -110,7 +110,7 @@ function find_all_categories($table,$id) {
    global $db;
    if(tableExists($table))
    {
-     return find_by_sql("SELECT nm_categories,id_categories FROM {$db->escape($table)} WHERE id_warehouse = '{$db->escape($id)}'");
+     return find_by_sql("SELECT nm_categories,id_categories FROM {$db->escape($table)} WHERE id_warehouse = '{$db->escape($id)}' ORDER BY nm_categories ASC");
    }
 }
 
@@ -155,7 +155,7 @@ function find_all_subcategories($table,$id) {
    global $db;
    if(tableExists($table))
    {
-     return find_by_sql("SELECT *FROM {$db->escape($table)},categories WHERE {$db->escape($table)}.id_categories = categories.id_categories and id_warehouse = '{$db->escape($id)}' ORDER BY nm_subcategories");
+     return find_by_sql("SELECT *FROM {$db->escape($table)},categories WHERE {$db->escape($table)}.id_categories = categories.id_categories and id_warehouse = '{$db->escape($id)}' ORDER BY nm_subcategories ASC");
    }
 }
 
@@ -390,10 +390,10 @@ function find_all_admin(){
       return $result;
   }
 
-function find_adminName(){
+  function find_adminName($id_warehouse){
       global $db;
       $results = array();
-      $sql = "SELECT nm_position,id_position FROM position WHERE level_user = '1' group by nm_position ";
+      $sql = "SELECT nm_position,id_position FROM position WHERE level_user = '1' and id_warehouse = '$id_warehouse' ";
       $result = find_by_sql($sql);
       return $result;
   }
@@ -838,10 +838,10 @@ function tableExists($table){
   /*--------------------------------------------------------------*/
   /* Find all position name (zacky)
   /*--------------------------------------------------------------*/
-  function find_by_positionName($val)
+  function find_by_positionName($val,$id_warehouse)
   {
     global $db;
-    $sql = "SELECT nm_position FROM position WHERE nm_position = '{$db->escape($val)}' LIMIT 1 ";
+    $sql = "SELECT nm_position FROM position WHERE nm_position = '{$db->escape($val)}' AND id_warehouse = '$id_warehouse' LIMIT 1 ";
     $result = $db->query($sql);
     return($db->num_rows($result) === 0 ? true : false);
   }
