@@ -16,8 +16,8 @@ if(empty($errors)){
       //Update Sign in time
       $userKey = $user_id['id_employer'];
       updateLastLogIn($userKey);
-      $session->msg("s", "Welcome to OSWA-INV.");
-      redirect('home.php',false);
+      $session->msg("s", "WELCOME TO IKEA WAREHOUSE.");
+      redirect('admin.php',false);
     } else { 
       $session->msg("d", "Your Account Is Deactive");
       redirect('index.php',false);

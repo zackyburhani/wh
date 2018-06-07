@@ -19,11 +19,14 @@
           border-radius: 25px;
         }
     </style>
+
+
     <!-- <link rel="icon" href="img/icon.png" type="image/ico"> -->
     <link rel="icon" type="image/ico" href="img/icon.ico" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker3.min.css" />
     <link rel="stylesheet" href="libs/css/main.css" />
+    <link rel="stylesheet" href="libs/css/map.css" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -36,6 +39,10 @@
     <link rel="stylesheet" href="libs/datatables/jquery.dataTables.css">
     <link rel="stylesheet" href="libs/datatables/jquery.dataTables.min.css">
     <!-- END DATATABLES -->
+
+     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjdeO9J1CF_PRTS9aOjZ9-Scg8dIlhxGg&libraries=places&callback=initAutocomplete"
+         async defer></script>
+
   </head>
   <body>
   <?php  if ($session->isUserLoggedIn(true)): ?>
@@ -51,14 +58,13 @@
           <?php $offer_admin   = find_all_PO_destination_admin_notif($user['id_warehouse']); ?>
           <?php $approve_admin = find_all_PO_admin_notif($user['id_warehouse']); ?>
 
-
           <?php $approve2 = find_all_PO_destination_notif($user['id_warehouse']);  ?>
           <?php $warehouse = find_by_id_warehouse('warehouse',$user['id_warehouse']); ?>
           <?php if($warehouse['status'] != 0) { ?>
 
           <li class="profile">
             <span class="label label-danger"><?php  if ($user['id_warehouse'] =='0001') {$total = $offer_admin+$approve_admin; if($total != null) {echo $total;} } else { if($approve2 != null) { echo $total = $approve2;}}?></span>
-            <a href="#" data-toggle="dropdown" class="toggle" aria-expanded="false">
+            <a href="#" data-toggle="dropdown" aria-expanded="false">
               <span class="fa fa-envelope-o"><i class="caret"></i></span> 
             </a>
           
@@ -143,3 +149,7 @@
 
 <div class="page">
   <div class="container-fluid">
+
+
+ 
+    

@@ -70,10 +70,10 @@
       $id_warehouse = $all_warehouse_id['id_warehouse']; 
       $reduced      = ($weight*$stock)+$consumed;
 
-      if($reduced > $heavy_max){
-        $session->msg('d',"You Do Not Have Enough Storage Space !");
-        redirect('product.php', false);
-      }
+      // if($reduced > $heavy_max){
+      //   $session->msg('d',"You Do Not Have Enough Storage Space !");
+      //   redirect('product.php', false);
+      // }
 
         $query  = "UPDATE warehouse SET ";
         $query .= "heavy_consumed='{$reduced}' ";
@@ -153,10 +153,10 @@
     $count            = $consumed-($stock_fetch*$weight_fetch);
     $reduced          = $count+($weight*$stock);
  
-    if($reduced > $heavy_max){
-      $session->msg('d',"You Do Not Have Enough Storage Space !");
-      redirect('product.php', false);
-    }
+    // if($reduced > $heavy_max){
+    //   $session->msg('d',"You Do Not Have Enough Storage Space !");
+    //   redirect('product.php', false);
+    // }
 
         $id_warehouse = $user['id_warehouse'];
         $query  = "UPDATE item SET ";

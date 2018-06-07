@@ -66,7 +66,7 @@
       $status       = remove_junk($db->escape($_POST['status']));
       $id_warehouse = remove_junk($db->escape($_POST['id_warehouse']));
 
-      if($password == null){      
+      if($password == null){
         $query  = "UPDATE employer SET id_employer='{$id_employer}',nm_employer='{$nm_employer}',username='{$username}',id_position='{$id_position}',status='{$status}',id_warehouse='{$id_warehouse}' WHERE id_employer='{$id_employer}'";
         $result = $db->query($query);
       } else {
@@ -104,7 +104,7 @@
     } else {
       $session->msg("d","User deletion failed");
       redirect('superusers.php');
-    }  
+    }
   }
 ?>
 <!-- END DELETE DATA ADMINISTRATOR -->
@@ -137,7 +137,7 @@
             <th class="text-center" style="width: 5%;">Status</th>
             <th class="text-center" style="width: 10%;">Last Login</th>
             <th class="text-center" style="width: 9%;">Warehouse</th>
-            <th class="text-center" style="width: 13%;">Actions</th>
+            <th class="text-center" style="width: 7%;">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -156,7 +156,7 @@
            </td>
            <td><?php echo read_date($a_user['last_login'])?></td>
            <td><?php echo remove_junk($a_user['nm_warehouse'])?></td>
-           <td class="text-center"> 
+           <td class="text-center">
               <button data-target="#updateUser<?php echo (int)$a_user['id_employer'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
               </button>
@@ -183,7 +183,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
         <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-user"></span>  Add New Administrator For Inter IKEA</h4>
-        
+
       </div>
       <div class="modal-body">
         <form method="post" action="superusers.php">
@@ -239,7 +239,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
         <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-user"></span> Update Data Administrator</h4>
-        
+
       </div>
       <div class="modal-body">
         <form method="post" action="superusers.php">
@@ -260,7 +260,7 @@
                 <label for="password">Confirm Password</label>
                 <input type="password" class="form-control" name ="password2"  placeholder="Let It Empty If Do Not Want To Update The Password">
             </div>
-            
+
             <div class="form-group">
               <label for="level">User Role</label>
                 <?php foreach($find_adminName as $name) : ?>
@@ -268,7 +268,7 @@
                   <input type="text" class="form-control" readonly value="<?php echo remove_junk($name['nm_position']); ?>">
                 <?php endforeach;?>
             </div>
-            
+
             <div class="form-group">
               <label for="level">Status</label>
                 <select class="form-control" name="status">
@@ -297,7 +297,7 @@
 <!-- END Update Entry Data ADMINISTRATOR -->
 
 <!-- Delete Modal -->
-<?php foreach($all_users as $a_user): ?> 
+<?php foreach($all_users as $a_user): ?>
   <div class="modal fade" id="deleteUser<?php echo (int)$a_user['id_employer'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
@@ -312,7 +312,7 @@
         <form method="post" action="superusers.php" class="clearfix">
           <div class="form-group">
             <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_user['id_employer'])); ?>" name="id_employer">
-          </div>    
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>

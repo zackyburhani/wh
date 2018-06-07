@@ -631,15 +631,17 @@ function count_by_id($table){
      return($db->fetch_assoc($result));
   }
 }
-function count_by_id_cat($table){
-  global $db;
-  if(tableExists($table))
-  {
-    $sql    = "SELECT COUNT(id_categories) AS total FROM ".$db->escape($table);
-    $result = $db->query($sql);
-     return($db->fetch_assoc($result));
-  }
-}
+
+// function count_by_id_cat($table){
+//   global $db;
+//   if(tableExists($table))
+//   {
+//     $sql    = "SELECT COUNT(id_categories) AS total FROM ".$db->escape($table);
+//     $result = $db->query($sql);
+//      return($db->fetch_assoc($result));
+//   }
+// }
+
 function count_by_id_pro($table){
   global $db;
   if(tableExists($table))
@@ -649,6 +651,71 @@ function count_by_id_pro($table){
      return($db->fetch_assoc($result));
   }
 }
+
+function count_by_warehouse($table){
+  global $db;
+  if(tableExists($table))
+  {
+    $sql    = "SELECT COUNT(id_warehouse) AS total FROM ".$db->escape($table);
+    $result = $db->query($sql);
+     return($db->fetch_assoc($result));
+  }
+}
+
+function count_by_all($id,$table,$id_warehouse){
+  global $db;
+    $sql    = "SELECT COUNT($id) AS total FROM $table WHERE id_warehouse = '$id_warehouse'";
+    $result = $db->query($sql);
+     return($db->fetch_assoc($result));
+}
+
+function count_all_admin(){
+  global $db;
+  $sql = "SELECT COUNT(id_employer) as total FROM employer JOIN position WHERE employer.id_position = position.id_position and level_user = '1'";
+  $result = $db->query($sql);
+  return($db->fetch_assoc($result));
+}
+
+function count_by_all_employer($id_warehouse){
+  global $db;
+  $sql    = "SELECT COUNT(id_employer) as total FROM employer join position on position.id_position = employer.id_position and level_user != '0' where employer.id_warehouse = '$id_warehouse'";
+  $result = $db->query($sql);
+  return($db->fetch_assoc($result));
+}
+
+function count_superuser(){
+  global $db;
+  $sql    = "SELECT COUNT(*) FROM employer JOIN position ON employer.id_position = position.id_position WHERE position.level_user = '0'";
+  $result = $db->query($sql);
+  return($db->fetch_assoc($result));
+}
+
+function count_all_item($id_warehouse){
+  global $db;
+  $sql = "SELECT count(id_item) as total FROM item join location on item.id_location = location.id_location WHERE location.id_warehouse = '$id_warehouse'";
+  $result = $db->query($sql);
+  return($db->fetch_assoc($result));
+}
+
+function count_all_subcategories($id_warehouse){
+  global $db;
+  $sql = "SELECT COUNT(id_subcategories) as total FROM sub_categories JOIN categories on categories.id_categories = sub_categories.id_categories WHERE id_warehouse = '$id_warehouse'";
+  $result = $db->query($sql);
+  return($db->fetch_assoc($result));
+}
+
+function count_all_bpack($id_warehouse){
+  global $db;
+  $sql = "SELECT COUNT(id_bpack) as total FROM package JOIN bpack on package.id_package = bpack.id_package join item on item.id_item = bpack.id_item WHERE package.id_warehouse = '$id_warehouse'";
+  $result = $db->query($sql);
+  return($db->fetch_assoc($result));
+}
+
+
+
+
+
+
 /*--------------------------------------------------------------*/
 /* Determine if database table exists
 /*--------------------------------------------------------------*/

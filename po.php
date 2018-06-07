@@ -45,10 +45,10 @@
     }
 
      $heavy_max    = $all_warehouse_id['heavy_max'];
-    if($heavy_max < $total_sum){
-      $session->msg('d',"You Do Not Have Enough Storage Space !");
-      redirect('po.php',false);
-    } 
+    // if($heavy_max < $total_sum){
+    //   $session->msg('d',"You Do Not Have Enough Storage Space !");
+    //   redirect('po.php',false);
+    // } 
 
     if(empty($errors)){
       $sql  = "INSERT INTO po (id_po,date_po,id_warehouse)";
@@ -200,9 +200,9 @@ if(isset($_POST['update'])) {
      $id_warehouse = $all_warehouse_id['id_warehouse']; 
      $reduced      = ($cart[$i]->weight*$cart[$i]->qty);
 
-     if($reduced > $heavy_max) {
-      $session->msg("d", "Total Weight Greater Than Area Warehouse");
-      redirect('po.php',false);
+     // if($reduced > $heavy_max) {
+     //  $session->msg("d", "Total Weight Greater Than Area Warehouse");
+     //  redirect('po.php',false);
     }
 
   }

@@ -503,7 +503,7 @@
           <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-th"></span> Detail Category</h4>
         </div>
         <div class="modal-body">
-          <table class="table table-hover" border="0">
+          <table border="0">
               <tbody>
                 <tr>
                   <td width="90px">Category</td>

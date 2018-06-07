@@ -28,7 +28,7 @@
         $query .="id_position,nm_position,level_user,id_warehouse";
         $query .=") VALUES (";
         $query .=" '{$id_position}','{$nm_position}','{$level_user}','{$id_warehouse}'";
-        $query .=")"; 
+        $query .=")";
         if($db->query($query)){
           //sucess
           $session->msg('s',"Position Has Been Created! ");
@@ -84,11 +84,11 @@
 <?php
   if(isset($_POST['delete_position'])){
     $id_position = remove_junk($db->escape($_POST['id_position']));
-    
+
     //validation connected foreign key
     $employer = find_all_idPosition($id_position);
     foreach ($employer as $data) {
-      $id_position2 = $data['id_position'];  
+      $id_position2 = $data['id_position'];
     }
     if($id_position == $id_position2){
       $session->msg("d","The Field Connected To Other Key.");
@@ -103,7 +103,7 @@
     } else {
       $session->msg("d","Position deletion failed");
       redirect('position.php');
-    }  
+    }
   }
 ?>
 <!-- END DELETE POSITION -->
@@ -122,7 +122,7 @@
         <span class="glyphicon glyphicon-th"></span>
         <span>Position</span>
      </strong>
-       <button title="Add New Position" type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#addPosition"><span class="glyphicon glyphicon-plus"></span> Add New Positiion
+       <button title="Add New Position" type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addPosition"><span class="glyphicon glyphicon-plus"></span> Add New Positiion
         </button>
     </div>
      <div class="panel-body">
@@ -173,7 +173,7 @@
       <form method="post" action="position.php" class="clearfix">
         <div class="form-group">
           <label for="name" class="control-label">Name Position</label>
-          <input type="name" class="form-control" placeholder="New Position" name="nm_position" required> 
+          <input type="name" class="form-control" placeholder="New Position" name="nm_position" required>
         </div>
         <div class="form-group">
           <label for="name" class="control-label">Level User</label>
@@ -181,7 +181,7 @@
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
-          </select>  
+          </select>
         </div>
       </div>
       <div class="modal-footer">
@@ -197,7 +197,7 @@
 </div>
 
 <!-- Update Modal -->
-<?php foreach($all_position as $a_position): ?> 
+<?php foreach($all_position as $a_position): ?>
   <div class="modal fade" id="updatePosition<?php echo (int)$a_position['id_position'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -223,9 +223,9 @@
                    <option value="1">1</option>
                    <option value="2">2</option>
                    <option value="3">3</option>
-                <?php } ?> 
-          </select>  
-        </div>     
+                <?php } ?>
+          </select>
+        </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" title="Close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
@@ -238,7 +238,7 @@
 <?php endforeach;?>
 
 <!-- Delete Modal -->
-<?php foreach($all_position as $a_position): ?> 
+<?php foreach($all_position as $a_position): ?>
   <div class="modal fade" id="deletePosition<?php echo (int)$a_position['id_position'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
@@ -253,7 +253,7 @@
         <form method="post" action="position.php" class="clearfix">
           <div class="form-group">
             <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_position['id_position'])); ?>" name="id_position">
-          </div>    
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" title="Close" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
@@ -264,5 +264,5 @@
   </div>
 </div>
 <?php endforeach;?>
- 
+
 <?php include_once('layouts/footer.php'); ?>

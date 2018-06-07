@@ -52,10 +52,10 @@
    $id_warehouse = $all_warehouse_id['id_warehouse']; 
    $reduced      = ($weight*$stock)+$consumed;
 
-    if($reduced > $heavy_max){
-      $session->msg('d',"You Do Not Have Enough Storage Space !");
-      redirect('add_package.php', false);
-    }
+    // if($reduced > $heavy_max){
+    //   $session->msg('d',"You Do Not Have Enough Storage Space !");
+    //   redirect('add_package.php', false);
+    // }
 
       $query  = "UPDATE warehouse SET ";
       $query .= "heavy_consumed='{$reduced}' ";
@@ -113,10 +113,10 @@ if(isset($_POST['update_package'])){
   $count            = $consumed-($stock_fetch*$weight_fetch);
   $reduced          = $count+($weight*$stock);
 
-  if($reduced > $heavy_max){
-    $session->msg('d',"You Do Not Have Enough Storage Space !");
-    redirect('add_package.php', false);
-  }
+  // if($reduced > $heavy_max){
+  //   $session->msg('d',"You Do Not Have Enough Storage Space !");
+  //   redirect('add_package.php', false);
+  // }
 
   if(empty($errors)){
         $sql = "UPDATE package SET nm_package='{$packagename}',height='{$height}',weight='{$weight}',lenght='{$lenght}',width='{$width}',jml_stock='{$stock}'";

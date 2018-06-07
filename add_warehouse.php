@@ -139,7 +139,7 @@ if(isset($_POST['update_warehouse'])){
             <th class="text-center" style="width: 50px;">Status</th>
             <th class="text-center" style="width: 50px;">Heavy Max</th>
             <th class="text-center" style="width: 50px;">Area Consumed</th>
-            <th class="text-center" style="width: 50px;">Actions</th>
+            <th class="text-center" style="width: 100px;">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -159,10 +159,10 @@ if(isset($_POST['update_warehouse'])){
            <td class="text-center"><?php echo remove_junk(ucwords(number_format($a_warehouse['heavy_max'])))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords(number_format($a_warehouse['heavy_consumed'])))?></td>
            <td class="text-center">
-                <button data-target="#updateWarehouse<?php echo (int)$a_warehouse['id_warehouse'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
+                <button data-target="#updateWarehouse<?php echo $a_warehouse['id_warehouse'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
                 </button>
-                <button type="button" class="btn btn-danger btn-md" data-toggle="modal" data-target="#deleteWarehouse<?php echo (int)$a_warehouse['id_warehouse'];?>" title="Delete"><i class="glyphicon glyphicon-trash"></i>
+                <button type="button" class="btn btn-danger btn-md" data-toggle="modal" data-target="#deleteWarehouse<?php echo $a_warehouse['id_warehouse'];?>" title="Delete"><i class="glyphicon glyphicon-trash"></i>
                 </button>
            </td>
           </tr>
@@ -176,7 +176,7 @@ if(isset($_POST['update_warehouse'])){
 
 <!-- MODAL ADD NEW WAREHOUSE -->
 <div class="modal fade" id="addWarehouse" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog  modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -310,5 +310,87 @@ if(isset($_POST['update_warehouse'])){
 </div>
 <?php endforeach;?>
 <!-- END MODAL DELETE WAREHOUSE -->
+
+
+
+<script>
+      // This example adds a search box to a map, using the Google Place Autocomplete
+      // feature. People can enter geographical searches. The search box will return a
+      // pick list containing a mix of places and predicted search terms.
+
+      // This example requires the Places library. Include the libraries=places
+      // parameter when you first load the API. For example:
+      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+      function initAutocomplete() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 52.158946, lng: 4.473859},
+          zoom: 13,
+          mapTypeId: 'roadmap'
+        });
+
+        // Create the search box and link it to the UI element.
+        var input = document.getElementById('pac-input');
+        var searchBox = new google.maps.places.SearchBox(input);
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+        // Bias the SearchBox results towards current map's viewport.
+        map.addListener('bounds_changed', function() {
+          searchBox.setBounds(map.getBounds());
+        });
+
+        var markers = [];
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+        searchBox.addListener('places_changed', function() {
+          var places = searchBox.getPlaces();
+
+          if (places.length == 0) {
+            return;
+          }
+
+          // Clear out the old markers.
+          markers.forEach(function(marker) {
+            marker.setMap(null);
+          });
+          markers = [];
+
+          // For each place, get the icon, name and location.
+          var bounds = new google.maps.LatLngBounds();
+          places.forEach(function(place) {
+            if (!place.geometry) {
+              console.log("Returned place contains no geometry");
+              return;
+            }
+            var icon = {
+              url: place.icon,
+              size: new google.maps.Size(71, 71),
+              origin: new google.maps.Point(0, 0),
+              anchor: new google.maps.Point(17, 34),
+              scaledSize: new google.maps.Size(25, 25)
+            };
+
+            // Create a marker for each place.
+            markers.push(new google.maps.Marker({
+              map: map,
+              icon: icon,
+              title: place.name,
+              position: place.geometry.location
+            }));
+
+            if (place.geometry.viewport) {
+              // Only geocodes have viewport.
+              bounds.union(place.geometry.viewport);
+            } else {
+              bounds.extend(place.geometry.location);
+            }
+          });
+          map.fitBounds(bounds);
+        });
+      }
+
+    </script>
+
+
 
 <?php include_once('layouts/footer.php'); ?>
