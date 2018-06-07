@@ -169,10 +169,10 @@ if(isset($_POST['update_bpack'])){
     <div class="panel panel-default">
     <div class="panel-heading clearfix">
       <strong>
-        <span class="glyphicon glyphicon-th"></span>
+        <i class="fa fa-archive"></i>
         <span>PACKAGE</span>
      </strong>
-       <button type="button" title="Add New Package" class="btn btn-info pull-right" data-toggle="modal" data-target="#addPackage"><span class="glyphicon glyphicon-plus"></span> Combine Package
+       <button type="button" title="Combine Package" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addPackage"><span class="glyphicon glyphicon-plus"></span> Combine Package
         </button>
     </div>
      <div class="panel-body">

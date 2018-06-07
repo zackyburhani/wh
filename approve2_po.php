@@ -105,7 +105,7 @@
             <th class="text-center" style="width: 10px">For Warehouse </th>
             <th class="text-center">ID Item </th>
             <th class="text-center" style="width: 10px">QTY</th>
-            <th class="text-center" style="width: 10px">Approve</th>
+            <th class="text-center" style="width: 10px">Send Product</th>
             <th class="text-center" style="width: 10px">Print</th>
           </tr>
         </thead>

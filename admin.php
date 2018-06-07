@@ -40,7 +40,8 @@
     </div>
     <?php } ?>
 
-     <div class="col-md-3">
+    <?php if($user['level_user'] == 0){ ?>
+    <div class="col-md-3">
        <div class="panel panel-box clearfix">
          <div class="panel-icon pull-left bg-primary">
           <i class="fa fa-users"></i>
@@ -51,6 +52,19 @@
         </div>
        </div>
     </div>
+    <?php } else { ?>
+      <div class="col-md-6">
+       <div class="panel panel-box clearfix">
+         <div class="panel-icon pull-left bg-primary">
+          <i class="fa fa-users"></i>
+        </div>
+        <div class="panel-value pull-right">
+          <h2 class="margin-top"> <?php  echo $c_employer['total']; ?> </h2>
+          <p class="text-muted"><a href="users.php">Employees</a></p>
+        </div>
+       </div>
+    </div>
+    <?php } ?>
 
     <?php if($user['level_user'] == 0){ ?>
     <div class="col-md-3">
@@ -66,6 +80,7 @@
     </div>
     <?php } ?>
 
+    <?php if($user['level_user'] == 0){ ?>
     <div class="col-md-3">
        <div class="panel panel-box clearfix">
          <div class="panel-icon pull-left bg-primary">
@@ -77,6 +92,19 @@
         </div>
        </div>
     </div>
+    <?php } else { ?>
+    <div class="col-md-6">
+       <div class="panel panel-box clearfix">
+         <div class="panel-icon pull-left bg-primary">
+          <i class="fa fa-cubes"></i>
+        </div>
+        <div class="panel-value pull-right">
+          <h2 class="margin-top"> <?php  echo $c_item['total']; ?> </h2>
+          <p class="text-muted"><a href="product.php">Products</a></p>
+        </div>
+       </div>
+    </div>
+    <?php } ?>
    
 </div>
 

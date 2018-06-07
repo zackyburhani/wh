@@ -203,7 +203,7 @@ if(isset($_POST['update'])) {
      // if($reduced > $heavy_max) {
      //  $session->msg("d", "Total Weight Greater Than Area Warehouse");
      //  redirect('po.php',false);
-    }
+    // }
 
   }
   $_SESSION['cart'] = $cart;

@@ -33,7 +33,7 @@
 <?php
   if(isset($_POST['add_Product'])){
 
-    $req_fields = array('nm_item','colour','stock','id_package','id_subcategories', 'id_location');
+    $req_fields = array('nm_item','colour','stock','id_subcategories','id_package', 'id_location');
     validate_fields($req_fields);
     if(empty($errors)){
       $id_warehouse = $user['id_warehouse'];
@@ -110,7 +110,7 @@
 <?php
   if(isset($_POST['update_Product'])){
 
-    $req_fields = array('nm_item','colour','id_package','stock','id_subcategories','id_location' );
+    $req_fields = array('nm_item','colour','stock','id_subcategories','id_location','id_package');
     validate_fields($req_fields);
 
    if(empty($errors)){
@@ -252,30 +252,12 @@
   <div class="col-md-13">
     <div class="panel panel-default">
       <div class="panel-heading clearfix">
-        <!-- <div class="col-md-6">
-          <form method="get" action="product.php">
-            <select class="form-control" name="id">
-              <option value=""> Select Location Warehouse</option>
-                <?php  foreach ($all_warehouse as $ware): ?>
-                  <option value="<?php echo (int)$ware['id']; ?>" <?php if($_GET['id'] === $ware['id']): echo "selected"; endif; ?> >
-                  <?php echo remove_junk($ware['name_warehouse']); ?></option>
-                <?php endforeach; ?>
-            </select>
-          </div>
-          <div class="col-md-1">
-            <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;&nbsp;Sort</button>
-          </div>
-        </form>
-         <div class="pull-right">
-           <button data-target="#add_product" class="btn btn-md btn-info" data-toggle="modal" title="Remove"><i class="glyphicon glyphicon-plus"></i> Add New
-            </button>
-         </div> -->
           <strong>
-            <span class="glyphicon glyphicon-th"></span>
+            <i class="fa fa-cubes"></i>
             <span>Products</span>
           </strong>
           <?php if($warehouse['status'] != 0) { ?>
-          <button data-target="#add_product" class="btn btn-md btn-info pull-right" data-toggle="modal" title="Remove"><i class="glyphicon glyphicon-plus"></i> Add New
+          <button data-target="#add_product" class="btn btn-md btn-primary pull-right" data-toggle="modal" title="Add New Product"><i class="glyphicon glyphicon-plus"></i> Add New Product
             </button>
           <?php } ?>
         </div>
@@ -305,10 +287,10 @@
         				<td class="text-center"> <?php echo remove_junk(ucfirst($items['nm_subcategories'])); ?></td>
         				<td class="text-center"> <?php echo remove_junk(ucfirst($items['unit'])); ?></td>
                 <td class="text-center">
-                  <button data-target="#updateItem<?php echo $items['id_item'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Update">
+                  <button data-target="#updateItem<?php echo $items['id_item'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                     <i class="glyphicon glyphicon-edit"></i>
                   </button>
-                  <button data-target="#deleteItem<?php echo $items['id_item'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Remove">
+                  <button data-target="#deleteItem<?php echo $items['id_item'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete">
                     <i class="glyphicon glyphicon-trash"></i>
                   </button>
                 </td>
@@ -355,7 +337,7 @@
                     <input type="hidden" name="id_item" value="<?php echo remove_junk($item['id_item']);?>">
                     <select class="form-control" id="sub_category" name="id_subcategories">
                         <?php if($join_subcategories== null) { ?>
-                          <option value="">-</option>
+                          <option value=" ">-</option>
                             <?php } else { ?>
                               <?php foreach($join_subcategories as $row2){ ?>
                                 <option class="<?php echo $row2['id_categories']; ?>" value="<?php echo remove_junk($row2['id_subcategories']); ?>"><?php echo remove_junk(ucwords($row2['nm_subcategories'])); ?>
@@ -408,7 +390,7 @@
                       <label for="name" class="control-label">Colour</label>
                       <div class="input-group">
                         <span class="input-group-addon">
-                           <i class="glyphicon glyphicon-equalizer"></i>
+                           <i class="fa fa-certificate"></i>
                         </span>
                         <input type="text" class="form-control" name="colour"  onkeypress="return hanyaHuruf(event)" placeholder="Color Product"><br>
                      </div>
@@ -461,7 +443,7 @@
                     <label for="name" class="control-label">Weight</label>
                     <div class="input-group">
                       <span class="input-group-addon">
-                         <i class="glyphicon glyphicon-tasks"></i>
+                         <i class="fa fa-tachometer"></i>
                      </span>
                      <input type="number" min="0" class="form-control" name="weight" onkeypress="return hanyaAngka(event)"placeholder="Weight Product">
                     </div>
@@ -482,10 +464,10 @@
 
              <div class="row">
                <div class="col-md-12">
-                 <label for="name" class="control-label">Stock</label>
+                 <label for="name" class="control-label">Stock / Unit</label>
                   <div class="input-group">
                     <span class="input-group-addon">
-                      <i class="glyphicon glyphicon-equalizer"></i>
+                      <i class="fa fa-server"></i>
                     </span>
                     <input type="number" min="0" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
                   </div>
@@ -494,8 +476,8 @@
             
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
-            <button type="submit" name="add_Product" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span>  Save</button>
+            <button type="button" title="Close" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+            <button type="submit" name="add_Product" title="Save" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span>  Save</button>
           </div>
         </form>
     </div>
@@ -591,7 +573,7 @@
                       <label for="name" class="control-label">Colour</label>
                       <div class="input-group">
                         <span class="input-group-addon">
-                           <i class="glyphicon glyphicon-equalizer"></i>
+                           <i class="fa fa-certificate"></i>
                         </span>
                         <input type="text" class="form-control" name="colour" value="<?php echo remove_junk($item['colour']);?>" onkeypress="return hanyaHuruf(event)" placeholder="Color Product"><br>
                      </div>
@@ -643,7 +625,7 @@
                     <label for="name" class="control-label">Weight</label>
                     <div class="input-group">
                       <span class="input-group-addon">
-                         <i class="glyphicon glyphicon-tasks"></i>
+                         <i class="fa fa-tachometer"></i>
                      </span>
                      <input type="number" min="0" class="form-control" min="0" name="weight" value="<?php echo remove_junk(round($item['weight']));?>" placeholder="Weight Product">
                     </div>
@@ -662,12 +644,12 @@
               </div>
               <hr>
 
-             <div class="row">
+            <div class="row">
                <div class="col-md-12">
-                 <label for="name" class="control-label">Stock</label>
+                 <label for="name" class="control-label">Stock / Unit</label>
                   <div class="input-group">
                     <span class="input-group-addon">
-                      <i class="glyphicon glyphicon-equalizer"></i>
+                      <i class="fa fa-server"></i>
                     </span>
                     <input type="number" min="0" value="<?php echo remove_junk($item['stock']);?>" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
                   </div>
@@ -676,8 +658,8 @@
             
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
-            <button type="submit" name="update_Product" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span>  Update</button>
+            <button type="button" class="btn btn-secondary" title="Close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+            <button type="submit" name="update_Product" title="Update" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span>  Update</button>
           </div>
         </form>
     </div>
@@ -707,8 +689,8 @@
           </div>    
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
-          <button type="submit" name="delete_item" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+          <button type="button" class="btn btn-secondary" title="Close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+          <button type="submit" name="delete_item" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</button>
         </div>
       </form>
     </div>

@@ -33,7 +33,6 @@
    
     //convert
     $convert_weight   = remove_junk($db->escape($_POST['convert_weight']));
-    $convert_stock    = remove_junk($db->escape($_POST['convert_stock']));
 
     //convert weight
     if($convert_weight == "weight_kilograms"){
@@ -103,6 +102,21 @@ if(isset($_POST['update_package'])){
   $stock       = remove_junk($db->escape($_POST['stock']));
   $idpackage   = remove_junk($db->escape($_POST['idpackage']));
   
+
+  //convert
+  $convert_weight   = remove_junk($db->escape($_POST['convert_weight']));
+
+  //convert weight
+  if($convert_weight == "weight_kilograms"){
+    $weight = $weight;
+  } else if($convert_weight == "weight_pounds") {
+    $weight = $weight/2.2046;
+  } else if($convert_weight == "weight_ons"){
+    $weight = $weight/35.274;
+  } else if($convert_weight == "weight_grams"){
+    $weight = $weight/1000;
+  }
+
   $product_fetch    = find_package_fetch($idpackage);
   //reduce area consumed
   $stock_fetch      = $product_fetch['jml_stock'];
@@ -207,30 +221,31 @@ if(isset($_POST['update_package'])){
     <div class="panel panel-default">
     <div class="panel-heading clearfix">
       <strong>
-        <span class="glyphicon glyphicon-th"></span>
+        <i class="fa fa-archive"></i>
         <span>PACKAGE</span>
      </strong>
-       <button type="button" title="Add New Package" class="btn btn-info pull-right" data-toggle="modal" data-target="#addPackage"><span class="glyphicon glyphicon-plus"></span> Add New Package
+       <button type="button" title="Add New Package" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addPackage"><span class="glyphicon glyphicon-plus"></span> Add New Package
         </button>
     </div>
      <div class="panel-body">
       <table class="table table-bordered" id="tablePackage">
         <thead>
           <tr>
-            <th class="text-center" style="width: 50px;">No</th>
+            <th class="text-center" style="width: 10px;">No</th>
             <th class="text-center" style="width: 50px;">Package Name</th>
-            <th class="text-center" style="width: 50px;">Height</th>
-            <th class="text-center" style="width: 50px;">Width</th>
-            <th class="text-center" style="width: 50px;">Lenght</th>
-            <th class="text-center" style="width: 50px;">Weight</th>
-            <th class="text-center" style="width: 50px;">Stock</th>
-            <th class="text-center" style="width: 100px;">Actions</th>
+            <th class="text-center" style="width: 50px;">Height / Cm</th>
+            <th class="text-center" style="width: 50px;">Width / Cm</th>
+            <th class="text-center" style="width: 50px;">Lenght / Cm</th>
+            <th class="text-center" style="width: 50px;">Weight / Kg</th>
+            <th class="text-center" style="width: 50px;">Stock / Unit</th>
+            <th class="text-center" style="width: 30px;">Actions</th>
           </tr>
         </thead>
         <tbody>
+        <?php $no=1; ?>
         <?php foreach($all_package as $a_package): ?>
           <tr>
-           <td class="text-center"><?php echo count_id();?></td>
+           <td class="text-center"><?php echo $no++;?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_package['nm_package']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_package['height']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_package['width']))?></td>
@@ -238,10 +253,10 @@ if(isset($_POST['update_package'])){
            <td class="text-center"><?php echo remove_junk(round($a_package['weight']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_package['jml_stock']))?></td>
            <td class="text-center">
-                <button data-target="#updatePackage<?php echo (int)$a_package['id_package'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
+                <button data-target="#updatePackage<?php echo $a_package['id_package'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
                 </button>
-                <button data-target="#deletePackage<?php echo (int)$a_package['id_package'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete">
+                <button data-target="#deletePackage<?php echo $a_package['id_package'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete">
                   <i class="glyphicon glyphicon-trash"></i>
                 </button>
            </td>
@@ -271,15 +286,15 @@ if(isset($_POST['update_package'])){
           <input type="text" class="form-control" name="packagename">
         </div>
         <div class="form-group">
-          <label class="control-label">Height</label>
+          <label class="control-label">Height / Centimeters</label>
           <input type="number" min="0" class="form-control" name="height">
         </div>
         <div class="form-group">
-          <label class="control-label">Width</label>
+          <label class="control-label">Width / Centimeters</label>
           <input type="number" min="0" class="form-control" name="width">
         </div>      
         <div class="form-group">
-          <label class="control-label">Lenght</label>
+          <label class="control-label">Lenght / Centimeters</label>
           <input type="number" min="0" class="form-control" name="lenght">
         </div>
       
@@ -306,7 +321,7 @@ if(isset($_POST['update_package'])){
         <hr>
 
         <div class="form-group">
-          <label class="control-label">Stock</label>
+          <label class="control-label">Stock / Unit</label>
           <input type="number" min="0" class="form-control" name="stock">
         </div>
 
@@ -325,7 +340,7 @@ if(isset($_POST['update_package'])){
 
 <!-- MODAL UPDATE PACKAGE -->
 <?php foreach($all_package as $a_package): ?> 
-<div class="modal fade" id="updatePackage<?php echo (int)$a_package['id_package'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="updatePackage<?php echo $a_package['id_package'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -342,15 +357,15 @@ if(isset($_POST['update_package'])){
           <input type="text" class="form-control" value="<?php echo remove_junk(ucwords($a_package['nm_package'])); ?>" name="packagename">
         </div>
         <div class="form-group">
-          <label class="control-label">Height</label>
+          <label class="control-label">Height / Centimeters</label>
           <input type="number" min="0" class="form-control" value="<?php echo remove_junk(ucwords($a_package['height'])); ?>" name="height">
         </div>  
         <div class="form-group">
-          <label class="control-label">Width</label>
+          <label class="control-label">Width / Centimeters</label>
           <input type="number" min="0" class="form-control" value="<?php echo remove_junk(ucwords($a_package['width'])); ?>" name="width">
         </div>   
         <div class="form-group">
-          <label class="control-label">Lenght</label>
+          <label class="control-label">Lenght / Centimeters</label>
           <input type="number" min="0" class="form-control" name="lenght" value="<?php echo remove_junk(ucwords($a_package['lenght'])); ?>">
         </div> 
 
@@ -377,7 +392,7 @@ if(isset($_POST['update_package'])){
         <hr>
 
         <div class="form-group">
-          <label class="control-label">Stock</label>
+          <label class="control-label">Stock / Unit</label>
           <input type="number" min="0" class="form-control" value="<?php echo remove_junk(ucwords($a_package['jml_stock'])); ?>" name="stock">
         </div>    
       </div>
@@ -395,7 +410,7 @@ if(isset($_POST['update_package'])){
 
 <!-- MODAL DELETE PACKAGE -->
 <?php foreach($all_package as $a_package): ?>
-<div class="modal fade" id="deletePackage<?php echo (int)$a_package['id_package'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="deletePackage<?php echo $a_package['id_package'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm" role="document">
     <div class="modal-content">
       <div class="modal-header">
