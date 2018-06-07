@@ -2,6 +2,7 @@
   $page_title = 'Add Warehouse';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
+  //tes
   page_require_level(1);
   
   $all_categories = find_all1('warehouse')
