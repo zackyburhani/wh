@@ -22,6 +22,11 @@
         $sql = "UPDATE employer SET image ='{$name}' WHERE id_employer='{$id_employer}'";
         $result = $db->query($sql);
         if($result) {
+
+          $name      = current_user()['image']; 
+          $directory = "uploads/users/$name";
+          unlink($directory);
+
           $session->msg('s',"Photo Updated");
             redirect('edit_account.php', false);
         } else {
@@ -39,18 +44,13 @@
   }
 
 
-
-
-
-
-
-
 //update user image
   if(isset($_POST['submit'])) {
   $photo = new Media();
   $user_id = $_POST['id_employer'];
   $photo->upload($_FILES['file_upload']);
   if($photo->process_user($user_id)){
+
     $session->msg('s','photo has been uploaded.');
     redirect('edit_account.php');
     } else{
@@ -145,7 +145,7 @@
               </div>
               <div class="form-group">
                 <input type="hidden" name="id_employer" value="<?php echo $user['id_employer'];?>">
-                 <button type="submit" name="submit" class="btn btn-warning">Change</button>
+                 <button type="submit" name="submit" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span> Change</button>
               </div>
              </form>
             </div>
@@ -167,11 +167,11 @@
             </div>
             <div class="form-group">
                   <label for="username" class="control-label">Username</label>
-                  <input type="text" class="form-control" name="username" value="<?php echo remove_junk(ucwords($user['username'])); ?>">
+                  <input type="text" class="form-control" name="username" value="<?php echo remove_junk($user['username']); ?>">
             </div>
             <div class="form-group clearfix">
-              <button type="button" data-target="#changePassword" data-toggle="modal" title="change password" class="btn btn-danger pull-right">Change Password</button>
-              <button type="submit" name="update" class="btn btn-info">Update</button>
+              <button type="button" data-target="#changePassword" data-toggle="modal" title="change password" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-edit"></span> Change Password</button>
+              <button type="submit" name="update" class="btn btn-info"><span class="glyphicon glyphicon-floppy-disk"></span> Update</button>
             </div>
         </form>
       </div>
@@ -188,7 +188,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-trash"></span> Change Password</h4>
+          <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-edit"></span> Change Password</h4>
         </div>
         <div class="modal-body">
           <form method="post" action="edit_account.php" class="clearfix">
@@ -206,7 +206,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
-          <button type="submit" name="updatePass" class="btn btn-info">Change</button>
+          <button type="submit" name="updatePass" class="btn btn-info"><span class="glyphicon glyphicon-floppy-disk"></span> Change</button>
         </div>
       </form>
     </div>

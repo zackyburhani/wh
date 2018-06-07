@@ -12,7 +12,9 @@
           redirect('home.php', false);
     }
 
-   $list_po =  find_all_PO_destination($user['id_warehouse']); 
+   $list_po          = find_all_PO_destination($user['id_warehouse']); 
+   $all_warehouse_id = find_warehouse_id($user['id_warehouse']);
+
 ?>
 
 <!-- Approve PO -->
@@ -21,7 +23,7 @@
 
     $req_fields = array('id_item');
     validate_fields($req_fields);
-
+ 
       if(empty($errors)){
         $id_item = remove_junk($db->escape($_POST['id_item']));
         $status  = 'On Destination';
@@ -30,9 +32,37 @@
         $query .= "status = '{$status}' ";
         $query .= "WHERE id_item = '{$id_item}'";
 
+        //INSERT INTO SHIPMENT
+        $id_shipment       = autonumber('id_shipment','shipment');
+        $date_shipment     = date('Y-m-d');
+
+        foreach ($list_po as $shipment) {
+          $id_po         = $shipment['id_po'];
+          $id_warehouse  = $shipment['for_wh'];
+          $id_employer   = $shipment['id_emp'];
+          
+          $query2  = "INSERT INTO shipment (";
+          $query2 .=" id_shipment,date_shipment,id_po,id_warehouse,id_employer";
+          $query2 .=") VALUES (";
+          $query2 .=" '{$id_shipment}', '{$date_shipment}', '{$id_po}', '{$id_warehouse}', '{$id_employer}'";
+          $query2 .=")";
+        }
+
+        $move_stock   = move_stock($id_item);
+        $id_warehouse = $user['id_warehouse'];
+        $consumed     = $all_warehouse_id['heavy_consumed'];
+        $max          = $all_warehouse_id['heavy_max'];
+        $count        = $consumed-$move_stock['total_weight'];
+
+        $query3  = "UPDATE warehouse SET ";
+        $query3.= "heavy_consumed = '{$count}' ";
+        $query3 .= "WHERE id_warehouse = '{$id_warehouse}'";
+
         $result = $db->query($query);
          if($result){
           //sucess
+          $db->query($query2);
+          $db->query($query3);
           $session->msg('s',"Purchase Order Has Been Approved ! ");
           redirect('approve2_po.php', false);
         } else {

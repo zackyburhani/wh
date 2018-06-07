@@ -7,6 +7,7 @@
   page_require_level(1);
 
    $list_po =  find_all_PO_destination_admin($user['id_warehouse']); 
+   $all_warehouse_id = find_warehouse_id($user['id_warehouse']);
 ?>
 
 <!-- Approve PO -->
@@ -23,6 +24,32 @@
         $query  = "UPDATE detil_po SET ";
         $query .= "status = '{$status}' ";
         $query .= "WHERE id_item = '{$id_item}'";
+
+        //INSERT INTO SHIPMENT
+        $id_shipment       = autonumber('id_shipment','shipment');
+        $date_shipment     = date('Y-m-d');
+
+        foreach ($list_po as $shipment) {
+          $id_po         = $shipment['id_po'];
+          $id_warehouse  = $shipment['for_wh'];
+          $id_employer   = $shipment['id_emp'];
+          
+          $query2  = "INSERT INTO shipment (";
+          $query2 .=" id_shipment,date_shipment,id_po,id_warehouse,id_employer";
+          $query2 .=") VALUES (";
+          $query2 .=" '{$id_shipment}', '{$date_shipment}', '{$id_po}', '{$id_warehouse}', '{$id_employer}'";
+          $query2 .=")";
+        }
+
+        $move_stock   = move_stock($id_item);
+        $id_warehouse = $user['id_warehouse'];
+        $consumed     = $all_warehouse_id['heavy_consumed'];
+        $max          = $all_warehouse_id['heavy_max'];
+        $count        = $consumed-$move_stock['total_weight'];
+
+        $query3  = "UPDATE warehouse SET ";
+        $query3. = "heavy_consumed = '{$count}' ";
+        $query3 .= "WHERE id_warehouse = '{$id_warehouse}'";
 
         $result = $db->query($query);
          if($result){
@@ -96,9 +123,9 @@
                   </button>
                </td>
                <td align="center">
-                 <button data-target="#detailPO<?php echo $list['id_po'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Detail">
+                 <a href="report_po.php" class="btn btn-danger" role="button" title="print PO">
                     <i class="glyphicon glyphicon-print"></i>
-                  </button>
+                  </a>
                </td>
               </tr>
             <?php endforeach;?>

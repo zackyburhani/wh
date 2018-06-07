@@ -19,7 +19,7 @@
   <div class="row">
     <div class="col-md-3">
        <div class="panel panel-box clearfix">
-         <div class="panel-icon pull-left bg-green">
+         <div class="panel-icon pull-left bg-primary">
           <i class="glyphicon glyphicon-user"></i>
         </div>
         <div class="panel-value pull-right">
@@ -30,7 +30,7 @@
     </div>
     <div class="col-md-3">
        <div class="panel panel-box clearfix">
-         <div class="panel-icon pull-left bg-red">
+         <div class="panel-icon pull-left bg-yellow">
           <i class="glyphicon glyphicon-list"></i>
         </div>
         <div class="panel-value pull-right">
@@ -39,18 +39,33 @@
         </div>
        </div>
     </div>
-    
-    <div class="col-md-3" >
-       <div class="panel panel-box clearfix" >
-         <div class="panel-icon pull-left bg-yellow">
-          <i class="glyphicon glyphicon-usd"></i>
+
+     <div class="col-md-3">
+       <div class="panel panel-box clearfix">
+         <div class="panel-icon pull-left bg-primary">
+          <i class="glyphicon glyphicon-list"></i>
         </div>
         <div class="panel-value pull-right">
-          <h2 class="margin-top"> <?php  echo "0" ?></h2>
-          <p class="text-muted">Sales</p>
+          <h2 class="margin-top"> <?php  echo $c_categorie['total']; ?> </h2>
+          <p class="text-muted"><a href="categories.php">Categories</a></p>
         </div>
        </div>
     </div>
+
+    <div class="col-md-3">
+       <div class="panel panel-box clearfix">
+         <div class="panel-icon pull-left bg-yellow">
+          <i class="glyphicon glyphicon-list"></i>
+        </div>
+        <div class="panel-value pull-right">
+          <h2 class="margin-top"> <?php  echo $c_categorie['total']; ?> </h2>
+          <p class="text-muted"><a href="categories.php">Categories</a></p>
+        </div>
+       </div>
+    </div>
+
+
+    
 </div>
   <div class="row">
    <div class="col-md-12">

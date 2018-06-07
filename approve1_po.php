@@ -4,9 +4,9 @@
 
    page_require_level(1);
    $all_warehouse = find_all1('warehouse');
-   $user = current_user();
-   $list_po = find_all_PO_admin(); 
-
+   $user          = current_user();
+   $list_po       = find_all_PO_admin(); 
+   $list_dest     =  find_all_PO_destination($user['id_warehouse']);
 ?>
 
 <!-- Approve PO -->
@@ -27,13 +27,14 @@
         $result = $db->query($query);
          if($result){
           //sucess
+          $db->query($query2);
           $session->msg('s',"Purchase Order Has Been Approved ! ");
           redirect('approve1_po.php', false);
         } else {
           //failed
           $session->msg('d',' Sorry Failed To Approve Purchase Order !');
           redirect('approve1_po.php', false);
-        }
+          }
    } else {
      $session->msg("d", $errors);
      redirect('approve1_po.php', false);
@@ -176,7 +177,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-th"></span>Approve Purchase Order</h4>
+          <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-th"></span> Approve Purchase Order</h4>
         </div>
         <div class="modal-body">
           Are You Sure Want To Approve Purchase Order <b><u><?php echo remove_junk(ucwords($item['id_po'])); ?></u></b> ?

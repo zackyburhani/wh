@@ -1,4 +1,4 @@
-<?php $user = current_user(); ?>
+<?php $user = current_user();?>
 <!DOCTYPE html>
   <html lang="en">
     <head>
@@ -20,12 +20,15 @@
         }
     </style>
     <!-- <link rel="icon" href="img/icon.png" type="image/ico"> -->
-    <link rel="icon" type="image/ico" href="img/icon.ico" />
+    <link rel="icon" type="image/png" href="img/ikea-icon.png" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker3.min.css" />
     <link rel="stylesheet" href="libs/css/main.css" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Sweet Alert -->
+    <link rel="stylesheet" href="libs/css/sweetalert.css">
 
     <!-- DATATABLES -->
     <link rel="stylesheet" href="libs/datatables/dataTables.bootstrap.css">
@@ -37,7 +40,7 @@
   <body>
   <?php  if ($session->isUserLoggedIn(true)): ?>
     <header id="header">
-      <div class="logo pull-left"> DATA WAREHOUSE </div>
+      <div class="logo pull-left"> INVENTORY IKEA </div>
       <div class="header-content">
       <div class="header-date pull-left">
         <strong><?php echo date("F j, Y, g:i a");?></strong>
