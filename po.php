@@ -5,13 +5,12 @@
   page_require_level(2);
   error_reporting(0);
 
-  $user            = current_user();
-  $all_categories  = find_all1('warehouse');
-  $getWarehouse    = find_po_warehouse($user['id_warehouse']);
-  $getAllWarehouse = find_warehouse_po($user['id_warehouse']);
-  $all_warehouse_id    = find_warehouse_id($user['id_warehouse']);
-
-  $getItem         = find_all1('item');
+  $user              = current_user();
+  $all_warehouse     = find_all1('warehouse');
+  $get_item          = find_all_chained_item();
+  $getWarehouse      = find_po_warehouse($user['id_warehouse']);
+  $getAllWarehouse   = find_warehouse_po($user['id_warehouse']);
+  $all_warehouse_id  = find_warehouse_id($user['id_warehouse']);
   
 ?>
 <?php
@@ -30,7 +29,7 @@
     $qty            = remove_junk($db->escape($_POST['qtyDP']));
     $send_date      = remove_junk($db->escape($_POST['send_date']));
     $total_weight   = remove_junk($db->escape($_POST['total_weightDP']));
-    $from_warehouse = remove_junk($db->escape($_POST['from_id_warehouse']));
+    $from_warehouse = remove_junk($db->escape($_POST['warehouseDP']));
     $total_sum      = remove_junk($db->escape($_POST['total_sum']));
     
     if($from_warehouse == '0001'){
@@ -44,7 +43,7 @@
         redirect('po.php',false);
     }
 
-     $heavy_max    = $all_warehouse_id['heavy_max'];
+     $heavy_max = $all_warehouse_id['heavy_max'];
     // if($heavy_max < $total_sum){
     //   $session->msg('d',"You Do Not Have Enough Storage Space !");
     //   redirect('po.php',false);
@@ -69,7 +68,7 @@
               $cart[$i]->total_weight = $cart[$i]->weight * $cart[$i]->qty;
 
               $sql2  = "INSERT INTO detil_po (id_po, date_po, qty, status, id_warehouse ,total_weight ,id_item)";
-              $sql2 .= " VALUES ('{$id_po}','{$send_date}','{$cart[$i]->qty}','{$status}','{$from_warehouse}','{$cart[$i]->total_weight}', '{$cart[$i]->id_item}')";
+              $sql2 .= " VALUES ('{$id_po}','{$send_date}','{$cart[$i]->qty}','{$status}','{$cart[$i]->id_warehouse}','{$cart[$i]->total_weight}', '{$cart[$i]->id_item}')";
                 $ada=$db->query($sql2);
             }
             unset($_SESSION['cart']);
@@ -89,30 +88,6 @@
 ?>
 
 
-
-<?php
-  if(isset($_POST['delete_warehouse'])){
-  $req_field = array('idwarehouse');
-  validate_fields($req_field);
-  $idwarehouse = remove_junk($db->escape($_POST['idwarehouse']));
-  if(empty($errors)){
-        $sql = "DELETE FROM warehouse WHERE id_warehouse='{$idwarehouse}'";
-     $result = $db->query($sql);
-     if($result && $db->affected_rows() === 1) {
-       $session->msg("s", "Successfully updated Warehouse");
-       redirect('add_warehouse.php',false);
-     } else {
-       $session->msg("d", "Sorry! Failed to Update");
-       redirect('add_warehouse.php',false);
-     }
-  } else {
-    $session->msg("d", $errors);
-    redirect('add_warehouse.php',false);
-  }
-}
-?>
-
-
 <!-- SESSION ADD PO-->
 <?php 
 
@@ -129,13 +104,16 @@ class POrder{
  var $id_location;
  var $qty;
  var $total_weight;
+ var $nm_warehouse;
+ var $id_warehouse;
 
 }
 
 if(isset($_GET['add_item']) && !isset($_POST['update']))  { 
-  $id =$_GET['id_item'];
-  $qty = remove_junk($db->escape($_GET['qty']));
-  $sql     = "SELECT * FROM item WHERE id_item = '$id'";
+  $id    = $_GET['id_item'];
+  $id_wh = remove_junk($db->escape($_GET['warehouse_id']));
+  $qty   = remove_junk($db->escape($_GET['qty']));
+  $sql   = "SELECT item.id_item,item.nm_item,item.colour,item.width,item.height,item.length,item.weight,item.stock,item.id_package,item.id_subcategories,item.id_location,warehouse.nm_warehouse,warehouse.id_warehouse FROM item,location,warehouse WHERE item.id_location = location.id_location and location.id_warehouse = warehouse.id_warehouse and item.id_item = '$id'";
   $result  = $db->query($sql); 
   $product = mysqli_fetch_object($result);
 
@@ -153,7 +131,9 @@ if(isset($_GET['add_item']) && !isset($_POST['update']))  {
   $po->id_location      = $product->id_location;
   $po->total_weight     = $product->total_weight;
   $iteminstock          = $product->stock;
-  $po->qty = $qty;
+  $po->nm_warehouse     = $product->nm_warehouse;
+  $po->id_warehouse     = $id_wh;
+  $po->qty              = $qty;
 
   // Check product is existing in cart
   $index = -1;
@@ -258,21 +238,21 @@ if(isset($_POST['update'])) {
           <label class="control-label">Send Date</label>
           <input type="date" class="form-control" name="send_date">
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label class="control-label">From Warehouse</label>
           <select class="form-control" id="warehouse" name="from_id_warehouse">
             <?php foreach($getAllWarehouse as $wh) { ?>
             <option value="<?php echo remove_junk($wh['id_warehouse']); ?>"><?php echo remove_junk(ucwords($wh['nm_warehouse'])); ?></option>
               <?php } ?>
           </select>
-        </div> 
+        </div> --> 
       <?php } ?>
         <hr>
         <div class="form-group pull-right">
           <?php if($_SESSION['cart'] != null){ ?>
             <button type="submit" class="btn btn-success" name="process"><i class="fa fa-money"></i> Process Purchase Order</button>
           <?php } ?>
-          <button type="button" data-target="#add_product" class="btn btn-md btn-info" data-toggle="modal" title="Add Item"><i class="glyphicon glyphicon-plus"></i> Choose Item
+          <button type="button" data-target="#add_product" class="btn btn-md btn-primary" data-toggle="modal" title="Add Item"><i class="glyphicon glyphicon-plus"></i> Choose Item
             </button>
         </div>   
        </div>
@@ -301,8 +281,8 @@ if(isset($_POST['update'])) {
                 <th><center>Colour</center></th>
                 <th><center>Weight</center></th>
                 <th><center>Stock</center></th>
-                <th><center>ID package</center></th>
-                <th><center>ID location</center></th>
+                <th><center>ID Package</center></th>
+                <th><center>From Warehouse</center></th>
                 <th><center>QTY</center></th>
                 <th><center>Total Weight</center></th>
                 <th><center>Action</center></th>
@@ -315,7 +295,7 @@ if(isset($_POST['update'])) {
                 $index = 0;
                 for($i=0; $i<count($cart); $i++){
                 $s += $cart[$i]->weight * $cart[$i]->qty;
-                $cart[$i]->total_weight = $cart[$i]->weight * $cart[$i]->qty
+                $cart[$i]->total_weight = $cart[$i]->weight * $cart[$i]->qty;
 
               ?> 
                <tr>
@@ -325,7 +305,7 @@ if(isset($_POST['update'])) {
                   <td align="center"> <?php echo $cart[$i]->weight; ?> </td>
                   <td align="center"> <?php echo $cart[$i]->stock ?> </td>
                   <td align="center"> <?php echo $cart[$i]->id_package; ?> </td>
-                  <td align="center"> <?php echo $cart[$i]->id_location; ?> </td>
+                  <td align="center"> <?php echo $cart[$i]->nm_warehouse; ?> </td>
                   <td align="center">
                     <input type="number" min="0" value="<?php echo $cart[$i]->qty; ?>" name="qty[]" style="width: 80px;">
                   </td>
@@ -336,6 +316,7 @@ if(isset($_POST['update'])) {
                   <input type="hidden" value="<?php echo $cart[$i]->id_item; ?>" name="id_itemDP">
                   <input type="hidden" value="<?php echo $cart[$i]->qty; ?>" name="qtyDP">
                   <input type="hidden" value="<?php echo $cart[$i]->total_weight; ?>" name="total_weightDP">
+                  <input type="hidden" value="<?php echo $cart[$i]->id_warehouse; ?>" name="warehouseDP">
                   <!-- hidden input to detil_po -->
                </tr>
                 <?php 
@@ -346,9 +327,9 @@ if(isset($_POST['update'])) {
                        <input type="hidden" name="update">
                        <span>SUM WEIGHT</span>
                   </td>
-                  <td style="border-right-style:hidden;" align="center"><b><?php echo $s; ?></b> </td>
+                  <td align="center"><b><?php echo $s; ?></b> </td>
                   <input type="hidden" name="total_sum" value="<?php echo $s; ?>">
-                  <td></td>
+                  <td align="center"><b>/ KG</b></td>
                 </tr>  
             </tbody>
           </table>
@@ -370,27 +351,40 @@ if(isset($_POST['update'])) {
         <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-th"></span>  Add Item To Purchase</h4>
         
       </div>
-      <div class="modal-body">
-        <form method="GET" action="po.php">
-            <div class="form-group">
-              <label for="level">Name Item</label>
-                <select class="form-control" name="id_item">
-                  <?php if($getItem == null) { ?>
-                   <option value="">-</option> 
+      <form method="GET" action="po.php">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="level">Name Warehouse</label>
+              <select class="form-control" name="warehouse_id" id="warehouse_chained">
+                <?php if($getAllWarehouse  == null) { ?>
+                  <option value="">-</option> 
                   <?php } ?>
-                  <?php foreach ($getItem as $item ):?>
-                   <option value="<?php echo $item['id_item'];?>"><?php echo ucwords($item['nm_item']);?></option>
+                  <?php foreach ($getAllWarehouse  as $wh):?>
+                    <option value="<?php echo $wh['id_warehouse'];?>"><?php echo ucwords($wh['nm_warehouse']);?></option>
                   <?php endforeach;?>
                 </select>
             </div>
+          
+            <div class="form-group">
+              <label for="level">Name Item</label>
+                <select class="form-control" name="id_item" id="item_chained">
+                  <?php if($get_item == null) { ?>
+                   <option value="">-</option> 
+                  <?php } ?>
+                  <?php foreach ($get_item as $item):?>
+                   <option class="<?php echo $item['id_warehouse']; ?>" value="<?php echo $item['id_item'];?>"><?php echo ucwords($item['nm_item']);?></option>
+                  <?php endforeach;?>
+                </select>
+            </div>
+
             <div class="form-group">
               <label class="control-label">QTY</label>
               <input type="number" min="1" class="form-control" name="qty">
             </div> 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
-            <button type="submit" name="add_item" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>  Add</button>
+            <button type="button" title="Close" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+            <button type="submit" name="add_item" title="Add" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>  Add</button>
           </div>
         </form>
     </div>
@@ -401,6 +395,12 @@ if(isset($_POST['update'])) {
   </div>
 </div>
 
+
+<script src="jquery-1.10.2.min.js"></script>
+<script src="jquery.chained.min.js"></script>
+<script>
+  $("#item_chained").chained("#warehouse_chained");
+</script>
 
 <?php include_once('layouts/footer.php'); ?>
 

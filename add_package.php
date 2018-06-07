@@ -65,7 +65,9 @@
       $sql  = "INSERT INTO package (id_package,nm_package,height,weight,lenght,width,jml_stock,id_warehouse)";
       $sql .= " VALUES ('{$id_package}','{$packagename}','{$height}','{$weight}','{$lenght}','{$width}','{$stock}','{$id}')";
 
-      $getAllPackageName = "SELECT nm_package FROM package where nm_package = '$packagename'";
+      $id_wh = $user['id_warehouse'];
+
+      $getAllPackageName = "SELECT nm_package FROM package where nm_package = '$packagename' and package.id_warehouse = '$id_wh'";
       $ada=$db->query($getAllPackageName) or die(mysql_error());
       if(mysqli_num_rows($ada)>0)
       { 

@@ -55,15 +55,15 @@
          if($result){
           //sucess
           $session->msg('s',"Purchase Order Has Been Approved ! ");
-          redirect('approve2_po.php', false);
+          redirect('offer_po.php', false);
         } else {
           //failed
           $session->msg('d',' Sorry Failed To Approve Purchase Order !');
-          redirect('approve2_po.php', false);
+          redirect('offer_po.php', false);
         }
    } else {
      $session->msg("d", $errors);
-     redirect('approve2_po.php', false);
+     redirect('offer_po.php', false);
    }
  }
 ?>
@@ -97,7 +97,6 @@
             <th class="text-center">ID Item </th>
             <th class="text-center" style="width: 10px">QTY</th>
             <th class="text-center" style="width: 10px">Approve</th>
-            <th class="text-center" style="width: 10px">Print</th>
           </tr>
         </thead>
         <tbody>
@@ -121,11 +120,6 @@
                  <button data-target="#approvePO<?php echo $list['id_po'];?>" class="btn btn-md btn-success" data-toggle="modal" title="Detail">
                     <i class="glyphicon glyphicon-ok"></i>
                   </button>
-               </td>
-               <td align="center">
-                 <a href="report_po.php?id=<?php echo $list['id_po'] ?>" class="btn btn-danger" role="button" title="print PO">
-                    <i class="glyphicon glyphicon-print"></i>
-                  </a>
                </td>
               </tr>
             <?php endforeach;?>
@@ -210,7 +204,7 @@
         </div>
         <div class="modal-body">
           Are You Sure Want To Approve Item <b><u><?php echo remove_junk(ucwords($item['id_item'])); ?></u></b> ?
-        <form method="post" action="approve2_po.php" class="clearfix">
+        <form method="post" action="offer_po.php" class="clearfix">
           <div class="form-group">
             <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($item['id_item'])); ?>" name="id_item">
           </div>    

@@ -116,7 +116,9 @@
       $sql  = "INSERT INTO sub_categories (id_subcategories,nm_subcategories,id_categories)";
       $sql .= " VALUES ('{$id_subcategories}','{$nm_subcategories}','{$id_categories}')";
 
-      $getAllSubcategoryName = "SELECT nm_subcategories FROM sub_categories where nm_subcategories = '$nm_subcategories'";
+      $id_wh = $user['id_warehouse'];
+
+      $getAllSubcategoryName = "SELECT nm_subcategories FROM sub_categories,categories where categories.id_categories = sub_categories.id_categories and nm_subcategories = '$nm_subcategories' and categories.id_warehouse = '$id_wh'";
       $exist=$db->query($getAllSubcategoryName) or die(mysql_error());
       if(mysqli_num_rows($exist)>0)
       { 

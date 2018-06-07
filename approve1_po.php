@@ -5,7 +5,7 @@
    page_require_level(1);
    $all_warehouse = find_all1('warehouse');
    $user          = current_user();
-   $list_po       = find_all_PO_admin(); 
+   $list_po       = find_all_PO_admin($user['id_warehouse']); 
    $list_dest     = find_all_PO_destination($user['id_warehouse']);
 ?>
 
@@ -121,7 +121,7 @@
           <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-th"></span> Detail Purchase Order</h4>
         </div>
         <div class="modal-body">
-          <?php $detailPo = find_all_detailPO_admin($a_po['id_po']); ?>
+          <?php $detailPo = find_all_detailPO_admin($a_po['id_po'],$user['id_warehouse']); ?>
           <table class="table table-bordered" id="tablePosition">
             <thead>
               <tr>

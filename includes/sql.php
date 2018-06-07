@@ -88,6 +88,11 @@ function find_all1($table) {
    }
 }
 
+function find_all_chained_item() {
+   global $db;
+     return find_by_sql("SELECT * FROM warehouse, location,item WHERE warehouse.id_warehouse = location.id_warehouse AND item.id_location = location.id_location ORDER BY nm_warehouse");
+}
+
 function find_warehouse_po($id_warehouse) {
   return find_by_sql("SELECT * FROM warehouse WHERE id_warehouse != '$id_warehouse' and status != 0");
 }
