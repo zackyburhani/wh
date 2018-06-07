@@ -4,7 +4,9 @@ error_reporting(0);
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
   page_require_level(1);
- $po = find_all1('detil_po');
+ // $po = find_all1('detil_po');
+ $status= status_shipment();
+ $user = current_user();
  ?>
 <?php
  if (isset($_GET['search_po'])) {
@@ -16,16 +18,31 @@ error_reporting(0);
   
 ?>
 <?php
-if(isset($_POST['update_status'])){
-  $req_field = array('status');
-  validate_fields($req_field);
+if(isset($_POST['update_po'])){
+
   $status = "Success";
   $idpo = remove_junk($db->escape($_POST['id_po']));
+
+  //inserttable shipment 
+  $idshipment = autonumber('id_shipment','shipment');
+  $dateshipment = date("Y-m-d");
+  $idpo = remove_junk($db->escape($_POST['id_po']));
+  $idwarehouse = $user["id_warehouse"];
+  $idemployer = $user["id_employer"];
+
+        $query2  = "INSERT INTO shipment (";
+        $query2 .=" id_shipment,date_shipment,id_po,id_warehouse,id_employer";
+        $query2 .=") VALUES (";
+        $query2 .=" '{$idshipment}', '{$dateshipment}', '{$idpo}', '{$idwarehouse}', '{$idemployer}'";
+        $query2 .=")";
+
+
   if(empty($errors)){
         $sql = "UPDATE detil_po SET status='{$status}'";
        $sql .= " WHERE id_po='{$idpo}'";
      $result = $db->query($sql);
      if($result && $db->affected_rows() === 1) {
+      $db->query($query2);
        $session->msg("s", "Successfully updated Package");
        redirect('move_product.php',false);
      } else {
@@ -83,29 +100,20 @@ if(isset($_POST['update_status'])){
             </thead>
             <tbody>
              
-              <?php foreach ($po as $po1):?>     
-                <input type="text" name="idpo" value="<?php echo remove_junk ($po1["id_po"])?>">
+              <?php foreach ($status as $po1):?>     
+                <input type="hidden" name="idpo" value="<?php echo remove_junk ($po1["id_po"])?>">
                <tr>
                 <td class="text-center"><?php echo count_id();?></td>
                <td class="text-center"> <?php echo remove_junk($po1['id_po']); ?></td>
                 <td> <?php echo remove_junk($po1['date_po']); ?></td>
                 <td class="text-center"> <?php echo remove_junk($po1['qty']); ?></td>
                 <td class="text-center"> <?php echo remove_junk($po1['id_warehouse']); ?></td>
-                 <td class="text-center">
-                    <?php if($po1['status'] == 'Success'): ?>
-                    <span class="label label-success"><?php echo "Success"; ?></span>
-                    <?php else: ?>
-                    <span class="label label-danger"><?php echo "On Destination"; ?></span>
-                    <?php endif;?>
-                </td>
+                <td class="text-center"><span class="label label-danger"> <?php echo remove_junk($po1['status']); ?></span></td>
                 <td class="text-center">
-                  <?php if($po1['status'] == 'On Destination'):?>
-                  <button   class="btn btn-md btn-success" name="update_status" title="Update">
+                    <button   class="btn btn-md btn-success" name="update_status" data-toggle="modal" data-target="#status<?php echo $po1['id_po']?>" title="Update">
                     <i class="glyphicon glyphicon-ok"></i>
                   </button>
-                <?php else: ?>
-
-                  <?php endif;?>
+               
                   
                 </td>
               </tr>
@@ -117,6 +125,30 @@ if(isset($_POST['update_status'])){
     </div>
   </div>
 </table>
+<?php foreach($status as $a_location): ?>
+<div class="modal fade" id="status<?php echo $a_location['id_po'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="exampleModalLabel">Delete Location</h4>
+      </div>
+      <div class="modal-body">
+      <form method="post" action="move_product.php" >
+        <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_location['id_po'])); ?>" name="id_po">
+        <p>Are You Sure to Accept this Purchase? <b>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" name="update_po" class="btn btn-success">Accept</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+</div>
+<?php endforeach;?>
 
 
 

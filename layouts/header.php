@@ -54,6 +54,11 @@
 
           <?php $approve2 = find_all_PO_destination_notif($user['id_warehouse']);  ?>
           <?php $warehouse = find_by_id_warehouse('warehouse',$user['id_warehouse']); ?>
+
+          <?php $shippment1   = find_all_PO_destination_admin_notif($user['id_warehouse']); ?>
+          <?php $shippment2 = find_all_PO_admin_notif($user['id_warehouse']); ?>
+
+
           <?php if($warehouse['status'] != 0) { ?>
 
           <li class="profile">
@@ -80,6 +85,10 @@
                       <i class="fa fa-envelope-o"></i> Offer PO
                           <span class="label label-danger"><?php if($approve2 != null)  {echo $approve2;} ?></span>
                       <?php } ?>
+                    </a>
+                     <a href="shippment.php">
+                      <i class="fa fa-envelope-o"></i> Shippment
+                      <span class="label label-danger"><?php if($shippment1 != null) {echo $shippment1;} ?></span>
                     </a>
               </li>
            </ul>

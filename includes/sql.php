@@ -67,6 +67,7 @@ function find_po($table) {
   {
     return find_by_sql("SELECT * FROM ".$db->escape($table)." where id_po='$_GET[no_po]'");
   }
+}
 
 //find all position (zacky)
 function find_all_PO($id) { 
@@ -107,6 +108,9 @@ function update($id) {
     return ($result && $db->affected_rows() === 1 ? true : false);
   }
 
+function find_warehouse_location($id_warehouse) {
+  return find_by_sql("SELECT * FROM location WHERE id_warehouse = '$id_warehouse'");
+}
 
 function find_warehouse_po($id_warehouse) {
   return find_by_sql("SELECT * FROM warehouse WHERE id_warehouse != '$id_warehouse' and status != 0");
@@ -343,7 +347,20 @@ function find_all_admin(){
       $result = $db->num_rows($sql);
       return $result;
   }
-
+function find_all_shippment($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = "SELECT shippment.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty,employer.id_employer as id_emp FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'Approved'";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+  function find_all_shippment_notif($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = $db->query("SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'Approved'");
+      $result = $db->num_rows($sql);
+      return $result;
+  }
   function find_all_PO_destination_admin($id_warehouse){
       global $db;
       $results = array();
@@ -768,7 +785,11 @@ function tableExists($table){
     $result = $db->query($sql);
     return ($result && $db->affected_rows() === 1 ? true : false);
 	}
-
+function status_shipment()
+{
+  $sql="SELECT * from detil_po WHERE status = 'On Destination'" ;
+  return find_by_sql($sql);
+}
   /*--------------------------------------------------------------*/
   /* Find all position name (zacky)
   /*--------------------------------------------------------------*/

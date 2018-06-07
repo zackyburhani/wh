@@ -5,21 +5,23 @@
   page_require_level(2);
   
   $user = current_user();
-  $all_categories = find_all1('location');
-  $all_warehouse = find_all1('warehouse');
+
+$id = $_GET['id'];
+ $all_categories = find_warehouse_location($id);
+  $all_warehouse = find_all1('location');
   // $all_warehouse = find_warehouse_id($user['id_warehouse']);
 ?>
 
 <!-- INSERT WAREHOUSE -->
 <?php
  if(isset($_POST['add_location'])){
-   $req_field = array('unit','floor','room','location_add');
+   $req_field = array('unit','floor','room');
    validate_fields($req_field);
    $id_loc   = autonumber('id_location','location');
    $cat_unit = remove_junk($db->escape($_POST['unit']));
    $floor    = remove_junk($db->escape($_POST['floor']));
    $room     = remove_junk($db->escape($_POST['room']));
-   $id_wh    = remove_junk($db->escape($_POST['location_add']));
+   $id_wh    =  $user['id_warehouse'];  
    if(empty($errors)){
       $sql  = "INSERT INTO location (id_location,unit,floor,room,id_warehouse)";
       $sql .= " VALUES ('{$id_loc}','{$cat_unit}','{$floor}','{$room}','{$id_wh}')";
@@ -65,11 +67,11 @@
 if(isset($_POST['update_location'])){
   $req_field = array('unit','floor','room','id_location');
   validate_fields($req_field);
-  $cat_unit = remove_junk($db->escape($_POST['unit']));
-  $floor    = remove_junk($db->escape($_POST['floor']));
-  $room     = remove_junk($db->escape($_POST['room']));
-  $id_wh    = remove_junk($db->escape($_POST['location_add']));
-  $idlocation = remove_junk($db->escape($_POST['id_location']));
+   $id_loc   = autonumber('id_location','location');
+   $cat_unit = remove_junk($db->escape($_POST['unit']));
+   $floor    = remove_junk($db->escape($_POST['floor']));
+   $room     = remove_junk($db->escape($_POST['room']));
+   $id_wh1    =  $user['id_warehouse'];  
   if(empty($errors)){
         $sql = "UPDATE location SET unit='{$cat_unit}',floor='{$floor}',room='{$room}',id_warehouse='{$id_wh}'";
        $sql .= " WHERE id_location='{$idlocation}'";
@@ -155,7 +157,7 @@ if(isset($_POST['update_location'])){
         </button>
     </div>
      <div class="panel-body">
-      <table class="table table-bordered" id="">
+      <table class="table table-bordered" id="tablelocation">
         <thead>
           <tr>
             <th class="text-center" style="width: 50px;">No</th>
@@ -168,6 +170,7 @@ if(isset($_POST['update_location'])){
         </thead>
         <tbody>
         <?php foreach($all_categories as $a_location): ?>
+      
           <tr>
            <td class="text-center"><?php echo count_id();?></td>
            <td class="text-center"><a href="product.php ?> echo $a_location['id_location'];?>" data-toggle="modal" title="Detail"><?php echo remove_junk(ucwords($a_location['unit']))?></a></td>
@@ -219,10 +222,8 @@ if(isset($_POST['update_location'])){
         </div>
         <div class="form-group">
           <label class="control-label">Select Warehouse</label>
-          <input type="name" class="form-control" value="<?php echo $all_warehouse['nm_warehouse']; ?>" readonly>
-          <input type="hidden" value="<?php echo $all_warehouse['id_warehouse']; ?>" name="location_add">
-        </div>
-      </div>
+          <input type="name" readonly="" class="form-control" value="<?php echo "$id_wh1" ?>" name="location_add">
+        </div> 
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" title="Close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
       <button type="submit" name="add_location" title="Save" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
