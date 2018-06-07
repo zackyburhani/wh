@@ -6,7 +6,7 @@
    $all_warehouse = find_all1('warehouse');
    $user          = current_user();
    $list_po       = find_all_PO_admin(); 
-   $list_dest     =  find_all_PO_destination($user['id_warehouse']);
+   $list_dest     = find_all_PO_destination($user['id_warehouse']);
 ?>
 
 <!-- Approve PO -->
@@ -92,7 +92,7 @@
                   </button>
                </td>
                <td align="center">
-                 <a href="report_po.php" class="btn btn-danger" role="button" title="print PO">
+                 <a href="report_po.php?id=<?php echo $list['id_po'] ?>" class="btn btn-danger" role="button" title="print PO">
                     <i class="glyphicon glyphicon-print"></i>
                   </a>
                </td>
@@ -145,7 +145,7 @@
                    <td align="center"><?php echo remove_junk(ucwords($detail['qty']))?></td>
                    <?php if($detail['status'] == "On Process") { ?>
                     <td align="center"><span class="label label-danger"><?php echo remove_junk(ucwords($detail['status']))?></span></td>
-                   <?php } else if($detail['status'] == "On Approved") { ?>
+                   <?php } else if($detail['status'] == "Approved") { ?>
                     <td align="center"><span class="label label-warning"><?php echo remove_junk(ucwords($detail['status']))?></span></td>
                    <?php } else { ?>
                      <td align="center"><span class="label label-success"><?php echo remove_junk(ucwords($detail['status']))?></span></td>

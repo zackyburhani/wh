@@ -361,7 +361,7 @@ function find_all_admin(){
   function find_all_PO_approved1(){
       global $db;
       $results = array();
-      $sql = "SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item as id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and detil_po.status = ('On Destination' or 'Success' or 'Approved') order by detil_po.id_po desc";
+      $sql = "SELECT po.id_po,po.date_po as date_po, detil_po.date_po as date_send,status, po.id_warehouse as for_wh, detil_po.id_item,detil_po.qty FROM po,detil_po WHERE detil_po.id_po = po.id_po group by po.id_po order by po.id_po desc";
       $result = find_by_sql($sql);
       return $result;
   }
