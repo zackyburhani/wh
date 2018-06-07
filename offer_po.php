@@ -48,7 +48,7 @@
         $count        = $consumed-$move_stock['total_weight'];
 
         $query3  = "UPDATE warehouse SET ";
-        $query3.= "heavy_consumed = '{$count}' ";
+        $query3. = "heavy_consumed = '{$count}' ";
         $query3 .= "WHERE id_warehouse = '{$id_warehouse}'";
 
         $result = $db->query($query);
@@ -123,9 +123,9 @@
                   </button>
                </td>
                <td align="center">
-                 <button data-target="#detailPO<?php echo $list['id_po'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Detail">
+                 <a href="report_po.php" class="btn btn-danger" role="button" title="print PO">
                     <i class="glyphicon glyphicon-print"></i>
-                  </button>
+                  </a>
                </td>
               </tr>
             <?php endforeach;?>

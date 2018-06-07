@@ -270,9 +270,9 @@
                 <th class="text-center"> Name Product</th>
                 <th class="text-center"> Color Product </th>
                 <th class="text-center" style="width: 5px;"> Stock </th>
-				        <th class="text-center"> Package </th>
+                <th class="text-center"> Package </th>
                 <th class="text-center"> Category </th>
-                <th class="text-center"> Warehouse </th>
+                <th class="text-center"> Unit </th>
                 <th class="text-center"> Actions </th>
               </tr>
             </thead>
@@ -283,9 +283,9 @@
                 <td class="text-center"><a href="#detilItem<?php echo $items['id_item'];?>" data-toggle="modal" title="Detail"> <?php echo remove_junk(ucfirst($items['nm_item'])); ?></a></td>
                 <td class="text-center"> <?php echo remove_junk(ucfirst($items['colour'])); ?></td>
                 <td class="text-center"> <?php echo remove_junk(ucfirst($items['stock'])); ?></td>
-        				<td class="text-center"> <?php echo remove_junk(ucfirst($items['nm_package'])); ?></td>
-        				<td class="text-center"> <?php echo remove_junk(ucfirst($items['nm_subcategories'])); ?></td>
-        				<td class="text-center"> <?php echo remove_junk(ucfirst($items['unit'])); ?></td>
+                <td class="text-center"> <?php echo remove_junk(ucfirst($items['nm_package'])); ?></td>
+                <td class="text-center"> <?php echo remove_junk(ucfirst($items['nm_subcategories'])); ?></td>
+                <td class="text-center"> <?php echo remove_junk(ucfirst($items['unit'])); ?></td>
                 <td class="text-center">
                   <button data-target="#updateItem<?php echo $items['id_item'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                     <i class="glyphicon glyphicon-edit"></i>

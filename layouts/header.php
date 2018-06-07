@@ -22,7 +22,7 @@
 
 
     <!-- <link rel="icon" href="img/icon.png" type="image/ico"> -->
-    <link rel="icon" type="image/ico" href="img/icon.ico" />
+    <link rel="icon" type="image/png" href="img/ikea-icon.png" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker3.min.css" />
     <link rel="stylesheet" href="libs/css/main.css" />
