@@ -439,7 +439,7 @@
                     <option value="">-</option>
                   <?php } else { ?>
                     <?php foreach($all_categories as $row){ ?>
-                      <option <?php if( $row['id_categories']==$a_subcategory['id_categories']){echo "selected"; } ?>  value="<?php echo remove_junk($row['id_categories']); ?>"><?php echo remove_junk($row['nm_categories']); ?></option>
+                      <option <?php if( $row['id_categories']==$a_subcategory['id_categories']){echo "selected"; } ?>  value="<?php echo remove_junk($row['id_categories']); ?>"><?php echo remove_junk(ucwords($row['nm_categories'])); ?></option>
                     <?php } ?>  
                   <?php } ?>
                 </select>
