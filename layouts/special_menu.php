@@ -38,6 +38,7 @@
         <li><a href="shipment.php">Shipment</a></li>
         <li><a href="move_product.php">Move Quantity Warehouse</a></li>
         <li><a href="warehouse.php">Warehouse Condition</a></li>
+        <li><a href="history_shipment.php">History Approve Shipment</a></li>
       </ul>
   </li>
 

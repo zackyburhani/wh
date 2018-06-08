@@ -385,6 +385,14 @@ function find_all_shippment($id_warehouse){
       return $result;
   }
 
+  function find_all_history_shipment($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = "SELECT * FROM shipment where id_warehouse='$id_warehouse'";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
 
   function find_all_PO_approved2($id_warehouse){
       global $db;
