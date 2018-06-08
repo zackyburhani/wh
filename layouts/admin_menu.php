@@ -36,7 +36,8 @@
       </a>
       <ul class="nav submenu">
         <li><a href="add_warehouse.php">Add Inventory</a></li>
-          <li><a href="add_location.php">Add Location</a></li>
+        <li><a href="add_location.php">Add Location</a></li>
+        <li><a href="lead_time.php">Lead Time</a></li>
         <li><a href="warehouse.php">Warehouse Condition</a></li>
       </ul>
   </li>

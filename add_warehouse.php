@@ -135,8 +135,8 @@ if(isset($_POST['update_warehouse'])){
         <span class="glyphicon glyphicon-th"></span>
         <span>WAREHOUSE</span>
      </strong>
-       <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addWarehouse" title="Add New Warehouse"><span class="glyphicon glyphicon-plus"></span> Add New Warehouse
-        </button>
+       <a href="add_warehouse_location.php" class="btn btn-primary pull-right" title="Add New Warehouse"><span class="glyphicon glyphicon-plus"></span> Add New Warehouse
+        </a>
     </div>
      <div class="panel-body">
       <table class="table table-bordered" id="tableWarehouse">
