@@ -7,6 +7,7 @@
    $user = current_user();
    $all_history_shipment  = find_all_history_shipment($user['id_warehouse']);
    // echo json_encode($user);  die();
+   
 ?>
 
 <?php include_once('layouts/header.php'); ?>
