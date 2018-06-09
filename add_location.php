@@ -151,8 +151,11 @@ if(isset($_POST['update_location'])){
         <span class="glyphicon glyphicon-th"></span>
         <span>Location</span>
      </strong>
+     <?php
+      if ($user['level_user']==0 || $user['level_user']==1) { ?>
        <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#addLocation"><span class="glyphicon glyphicon-plus"></span> Add location
         </button>
+      <?php } ?>
     </div>
      <div class="panel-body">
       <table class="table table-bordered" id="">
@@ -178,9 +181,12 @@ if(isset($_POST['update_location'])){
                 <button data-target="#updateLocation<?php echo $a_location['id_location'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
                 </button>
+              <?php
+                if ($user['level_user']==0 || $user['level_user']==1 || $user['level_user']== 2) 
+                  { ?>
                 <button type="button" class="btn btn-danger btn-md" data-toggle="modal" data-target="#deletelocation<?php echo $a_location['id_location'];?>" title="Delete"><i class="glyphicon glyphicon-trash"></i>
                 </button>
-
+              <?php } ?>
            </td>
           </tr>
         <?php endforeach;?>

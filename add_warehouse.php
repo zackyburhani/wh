@@ -115,8 +115,11 @@ if(isset($_POST['update_warehouse'])){
         <span class="glyphicon glyphicon-th"></span>
         <span>WAREHOUSE</span>
      </strong>
+     <?php
+      if ($user['level_user']==0 || $user['level_user']==1) { ?>
        <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#addWarehouse" title="Add New Warehouse"><span class="glyphicon glyphicon-plus"></span> Add New Warehouse
         </button>
+      <?php } ?>
     </div>
      <div class="panel-body">
       <table class="table table-bordered" id="tableWarehouse">
@@ -152,8 +155,12 @@ if(isset($_POST['update_warehouse'])){
                 <button data-target="#updateWarehouse<?php echo (int)$a_warehouse['id_warehouse'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
                 </button>
+              <?php
+                if ($user['level_user']==0 || $user['level_user']==1 || $user['level_user']== 2) 
+                  { ?>
                 <button type="button" class="btn btn-danger btn-md" data-toggle="modal" data-target="#deleteWarehouse<?php echo (int)$a_warehouse['id_warehouse'];?>" title="Delete"><i class="glyphicon glyphicon-trash"></i>
                 </button>
+              <?php } ?>
            </td>
           </tr>
         <?php endforeach;?>

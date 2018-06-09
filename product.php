@@ -275,8 +275,11 @@
             <span>Products</span>
           </strong>
           <?php if($warehouse['status'] != 0) { ?>
+        <?php
+         if ($user['level_user']==0 || $user['level_user']==1) { ?>
           <button data-target="#add_product" class="btn btn-md btn-info pull-right" data-toggle="modal" title="Remove"><i class="glyphicon glyphicon-plus"></i> Add New
             </button>
+        <?php } ?>
           <?php } ?>
         </div>
         
@@ -308,9 +311,12 @@
                   <button data-target="#updateItem<?php echo $items['id_item'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Update">
                     <i class="glyphicon glyphicon-edit"></i>
                   </button>
+                <?php
+                 if ($user['level_user']==0 || $user['level_user']==1 || $user['level_user']== 2) { ?>
                   <button data-target="#deleteItem<?php echo $items['id_item'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Remove">
                     <i class="glyphicon glyphicon-trash"></i>
                   </button>
+                <?php } ?>
                 </td>
               </tr>
              <?php endforeach; ?>

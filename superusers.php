@@ -123,8 +123,11 @@
           <span class="glyphicon glyphicon-th"></span>
           <span>Administrators</span>
        </strong>
+       <?php
+        if ($user['level_user']==0 || $user['level_user']==1) { ?>
          <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#addUser"><span class="glyphicon glyphicon-plus"></span> Add New Administrator
         </button>
+       <?php } ?>
       </div>
      <div class="panel-body">
       <table class="table table-bordered table-striped" id="tableUser">
@@ -160,9 +163,12 @@
               <button data-target="#updateUser<?php echo (int)$a_user['id_employer'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
               </button>
+            <?php
+                if ($user['level_user']==0 || $user['level_user']==1 || $user['level_user']== 2) { ?>
               <button data-target="#deleteUser<?php echo (int)$a_user['id_employer'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-trash"></i>
               </button>
+            <?php } ?>
               </a>
            </td>
           </tr>
