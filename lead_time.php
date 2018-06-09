@@ -7,6 +7,34 @@
    $user = current_user();
 ?>
 
+<?php
+
+function GetDrivingDistance($lat1, $lat2, $long1, $long2)
+    {
+    $distance="";
+    $duration="";
+    $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$lat1.",".$long1."&destinations=".$lat2.",".$long2."&mode=driving&language=en";
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_PROXYPORT, 3128);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $response_a = json_decode($response, true);
+    
+      $time = $response_a['rows'][0]['elements'][0]['duration']['text'];
+      return array('time' => $time);
+    
+}
+
+
+$leadTime   = find_leadtime('0001',$user['id_warehouse']);
+
+?>
+
 <?php include_once('layouts/header.php'); ?>
 <div class="row">
    <div class="col-md-12">
@@ -27,12 +55,55 @@
         <thead>
           <tr>
             <th class="text-center" style="width: 50px;">No. </th>
-            <th class="text-center">ID Purchase Order</th>
-            <th class="text-center">Date Purchase Order</th>
-            <th class="text-center" style="width: 150px;">Details</th>
+            <th class="text-center">From Warehouse</th>
+            <th class="text-center">To Warehouse</th>
+            <th class="text-center" style="width: 150px;">Distance</th>
+            <th class="text-center" style="width: 150px;">Estimated Time</th>
           </tr>
         </thead>
         <tbody>
+          <?php $no=1; ?>
+          <?php foreach($leadTime as $time) { ?>
+          <?php 
+
+            $lat1_long1 = find_lat1_long1($time['id_po']);
+            $lat2_long2 = find_lat2_long2($time['id_po']);
+
+            $latitudeFrom  = $time['latitude1']; 
+            $longitudeFrom = $time['longitude1'];
+            $latitudeTo    = $time['latitude2'];
+            $longitudeTo   = $time['longitude2'];
+
+            //Calculate distance from latitude and longitude
+            $theta = $longitudeFrom - $longitudeTo;
+            $dist = sin(deg2rad($latitudeFrom)) * sin(deg2rad($latitudeTo)) +  cos(deg2rad($latitudeFrom)) * cos(deg2rad($latitudeTo)) * cos(deg2rad($theta));
+            $dist = acos($dist);
+            $dist = rad2deg($dist);
+            $miles = $dist * 60 * 1.1515;
+            $distance = ($miles * 1.609344);
+             
+
+          ?>
+            <tr>
+             <td class="text-center"><?php echo $no++; ?></td>
+             <td class="text-center"><?php echo remove_junk(ucwords($time['from_wh']))?></td>
+             <td class="text-center"><?php echo remove_junk(ucwords($time['for_wh']))?></td>
+             <td class="text-center"><?php echo round($distance,2)." <b>Km</b>" ?></td>
+             <td class="text-center">    
+              <?php 
+
+              $dist = GetDrivingDistance($latitudeFrom,$latitudeTo,$longitudeFrom,$longitudeTo);
+              if($dist) {
+                echo $dist['time']; 
+              } else {
+                  echo "Uncaught Location";
+              }
+
+              ?>
+
+             </td>
+            </tr>
+          <?php } ?>
         </tbody>
       </table>
      </div>

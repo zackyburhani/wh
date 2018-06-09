@@ -2,13 +2,13 @@
   <li>
     <a href="admin.php">
       <i class="glyphicon glyphicon-home"></i>
-      <span> Dashboard</span>
+      <span>Dashboard</span>
     </a> 
   </li>
   <li>
     <a href="#" class="submenu-toggle">
       <i class="glyphicon glyphicon-user"></i>
-      <span> User Management</span>
+      <span>User Management</span>
     </a>
     <ul class="nav submenu">
       <li><a href="position.php">Manage Position</a> </li>
@@ -19,23 +19,24 @@
   <li>
     <a href="categories.php" >
       <i class="fa fa-tag"></i>
-      <span> Categories</span>
+      <span>Categories</span>
     </a>
   </li>
   <li>
     <a href="product.php" class="submenu-toggle">
       <i class="fa fa-cubes"></i>
-      <span> Products</span>
+      <span>Products</span>
     </a>
   </li>
   
   <li>
     <a href="#" class="submenu-toggle">
       <i class="fa fa-university"></i>
-       <span> Warehouse</span>
+       <span>Warehouse</span>
       </a>
       <ul class="nav submenu">
         <li><a href="add_warehouse.php">Add Inventory</a></li>
+        <li><a href="shipment.php">Shipment</a></li>
         <li><a href="add_location.php">Add Location</a></li>
         <li><a href="lead_time.php">Lead Time</a></li>
         <li><a href="warehouse.php">Warehouse Condition</a></li>
@@ -45,7 +46,7 @@
   <li>
     <a href="#" class="submenu-toggle">
       <i class="fa fa-archive"></i>
-       <span> Package</span>
+       <span>Package</span>
       </a>
       <ul class="nav submenu">
         <li><a href="add_package.php">Add Package</a></li>
