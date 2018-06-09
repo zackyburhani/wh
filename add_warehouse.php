@@ -156,7 +156,7 @@ if(isset($_POST['update_warehouse'])){
         <?php foreach($all_categories as $a_warehouse): ?>
           <tr>
            <td class="text-center"><?php echo count_id();?></td>
-           <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['nm_warehouse']))?></td>
+           <td class="text-center"><a href="add_location.php?id=<?php echo $a_warehouse['id_warehouse'];?>"><?php echo remove_junk(ucwords($a_warehouse['nm_warehouse']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['country']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['address']))?></td>
            <td class="text-center">

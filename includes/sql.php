@@ -60,6 +60,15 @@ function find_by_id_position($table,$id)
 }
 
 //find all position 
+function find_po($table) {
+  global $db;
+  if(tableExists($table))
+  {
+    return find_by_sql("SELECT * FROM ".$db->escape($table)." where id_po='$_GET[no_po]'");
+  }
+}
+
+//find all position
 function find_all_PO($id) { 
   return find_by_sql("SELECT * FROM po WHERE id_warehouse = '$id'");
 }
@@ -68,7 +77,11 @@ function find_prod_warehouse($table) {
   global $db;
   if(tableExists($table))
   {
+
+    return find_by_sql("SELECT * FROM ".$db->escape($table)." where id_warehouse='$_GET[item]'");
+
     return find_by_sql("SELECT * FROM ".$db->escape($table)." where id_location='$_GET[location]'");
+
   }
 }
 
@@ -84,6 +97,17 @@ function find_all1($table) {
    {
      return find_by_sql("SELECT * FROM ".$db->escape($table));
    }
+}
+function update($id) {
+    global $db;
+    $date = make_date();
+    $sql = "UPDATE detil_po SET status='success' WHERE id_po ='{$id}' LIMIT 1";
+    $result = $db->query($sql);
+    return ($result && $db->affected_rows() === 1 ? true : false);
+  }
+
+function find_warehouse_location($id_warehouse) {
+  return find_by_sql("SELECT * FROM location WHERE id_warehouse = '$id_warehouse'");
 }
 
 function find_all_chained_item() {
@@ -347,6 +371,28 @@ function find_all_admin(){
       return $result;
   }
 
+ function find_all_PO_shipment_notif($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = $db->query("SELECT po.id_po,po.date_po as date_po,qty,status,po.id_warehouse as for_wh,total_weight,id_item, detil_po.date_po as date_sent, detil_po.id_warehouse as from_wh from detil_po,po WHERE po.id_po = detil_po.id_po and status = 'On Destination' and po.id_warehouse = '$id_warehouse' ORDER by 1 desc");
+      $result = $db->num_rows($sql);
+      return $result;
+  }
+
+function find_all_shippment($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = "SELECT shippment.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty,employer.id_employer as id_emp FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'Approved'";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+  function find_all_shippment_notif($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = $db->query("SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_item,qty FROM detil_po,employer,po WHERE po.id_po = detil_po.id_po and employer.id_warehouse = detil_po.id_warehouse and employer.id_warehouse = '$id_warehouse' and detil_po.status = 'Approved'");
+      $result = $db->num_rows($sql);
+      return $result;
+  }
   function find_all_PO_destination_admin($id_warehouse){
       global $db;
       $results = array();
@@ -367,6 +413,14 @@ function find_all_admin(){
       global $db;
       $results = array();
       $sql = "SELECT * FROM po WHERE id_warehouse = '$id_warehouse' order by id_po desc";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  function find_all_history_shipment($id_warehouse){
+      global $db;
+      $results = array();
+      $sql = "SELECT * FROM shipment where id_warehouse='$id_warehouse'";
       $result = find_by_sql($sql);
       return $result;
   }
@@ -846,7 +900,11 @@ function tableExists($table){
     $result = $db->query($sql);
     return ($result && $db->affected_rows() === 1 ? true : false);
 	}
-
+function status_shipment($id_warehouse)
+{
+  $sql="SELECT po.id_po,po.date_po as date_po,qty,status,po.id_warehouse as for_wh,total_weight,id_item, detil_po.date_po as date_sent, detil_po.id_warehouse as from_wh from detil_po,po WHERE po.id_po = detil_po.id_po and status = 'On Destination' and po.id_warehouse = '$id_warehouse'";
+  return find_by_sql($sql);
+}
   /*--------------------------------------------------------------*/
   /* Find all position name 
   /*--------------------------------------------------------------*/
@@ -902,6 +960,20 @@ function tableExists($table){
     return find_by_sql($sql);
 
    }
+
+  function join_po_table(){
+     global $db;
+    $sql  =" SELECT * from detil_po";
+    return find_by_sql($sql);
+
+   }
+
+   function join_po_table1(){
+    global $db;
+   $sql  =" SELECT * from detil_po WHERE id_po=$_GET[no_po]";
+   return find_by_sql($sql);
+
+  }
 
   function join_product_table1(){
     global $db;

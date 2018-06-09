@@ -1,155 +1,164 @@
 <?php
 error_reporting(0);
-  $page_title = 'Move Product';
+  $page_title = 'Receive Shipment';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
-  page_require_level(2);
-   if (isset($_GET['id_location'])) {
-    $products = join_product_table1();
-   } else {
-    $products = join_product_table();
+  page_require_level(1);
+ // $po = find_all1('detil_po');
+ $user   = current_user();
+$status  = status_shipment($user['id_warehouse']);
+ ?>
+<?php
+ if (isset($_GET['search_po'])) {
+    $no = $_POST['no_po'];
+    
    }
-  
-  $all_warehouse = find_all1('location');
-  
-// if (isset($_POST['submit'])) {
-//   $id_prod = $_POST[''];
-//   $name = $_POST['name'];
-//   $qty = $_POST['quantity'];
-//   $ware = $_POST['warehouse'];
-//   $id_ware = $_POST['id_ware'];
+?>
+<?php
+if(isset($_POST['update_po'])){
 
-//   for($x = 0; $x < count($id_ware); $x++) {
-//     if ($ware[$x] != "" || $ware[$x] != "0") {
-//       $query = "SELECT * FROM warehouse WHERE nm_warehouse ='$name[$x]' AND id_warehouse=$ware[$x]";
-//       $result = $db->query($query);
-//       if ($result->num_rows > 0) {
-//         /*while($row = $result->fetch_assoc()) {
-//           $quantity = $row['quantity'] + $qty[$x];
-//         }*/
-//         $query1="UPDATE item SET stock=stock+$qty[$x] WHERE nm_item='$name[$x]' AND id_warehouse=$ware[$x]";
-//         $db->query($query1);
-//         $query1="UPDATE item SET stock=stock-$qty[$x] WHERE id_item'$id_prod[$x]' AND id_warehouse=$id_ware";
-//         $db->query($query1);
-//       } else {
-//         $query1 = "SELECT * FROM item WHERE id_item=$id_prod[$x] LIMIT 1";
-//         $result1 = $db->query($query1);
-//         if ($result1->num_rows > 0) {
-//           while($row = $result1->fetch_assoc()) {
-//             $date = make_date();
-//             //$query2="INSERT INTO products (name, quantity, buy_price, sale_price, categorie_id, date, warehouse_id) VALUES('$row[name]', $qty[$x], $row[buy_price], $row[sale_price], $row[categorie_id], '$date', $ware[$x])";
-//             //$db->query($query2);
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
-  
+  $status = "Success";
+  $idpo = remove_junk($db->escape($_POST['id_po']));
+  $iditem = remove_junk($db->escape($_POST['id_item']));
+
+  //inserttable shipment 
+  $idshipment = autonumber('id_shipment','shipment');
+  $dateshipment = date("Y-m-d");
+  $idpo = remove_junk($db->escape($_POST['id_po']));
+  $idwarehouse = $user["id_warehouse"];
+  $idemployer = $user["id_employer"];
+
+        $query2  = "INSERT INTO shipment (";
+        $query2 .=" id_shipment,date_shipment,id_po,id_warehouse,id_employer";
+        $query2 .=") VALUES (";
+        $query2 .=" '{$idshipment}', '{$dateshipment}', '{$idpo}', '{$idwarehouse}', '{$idemployer}'";
+        $query2 .=")";
+
+
+  if(empty($errors)){
+        $sql = "UPDATE detil_po SET status='{$status}'";
+       $sql .= " WHERE id_item='{$iditem}'";
+     $result = $db->query($sql);
+     if($result && $db->affected_rows()) {
+      $db->query($query2);
+       $session->msg("s", "Successfully Approved");
+       redirect('move_product.php',false);
+     } else {
+       $session->msg("d", "Sorry! Failed to Approved");
+       redirect('move_product.php',false);
+     }
+  } else {
+    $session->msg("d", $errors);
+    redirect('move_product.php',false);
+  }
+}
 ?>
 
 <?php include_once('layouts/header.php'); ?>
-
   <div class="row">
      <div class="col-md-12">
        <?php echo display_msg($msg); ?>
      </div>
   </div>
-  <div class="row">
-    <div class="col-md-5">
-     <div class="panel panel-default">
-       <div class="panel-heading">
-         <strong>
-           <span class="glyphicon glyphicon-th"></span>
-           <span>Pilih Warehouse</span>
-        </strong>
-       </div>
-       <div class="panel-body">
-         <form method="get" action="move_product.php">
-           <div class="form-group">
-           <?php
-            if(isset($_GET['location'])){
-              $id = $_GET["location"];
-            }else{
-              $id = 0;
-            }
-            ?>
-              <select class="form-control" name="product_warehouse">
-                    <option value=""> Select Warehouse</option>
-                   <?php  foreach ($all_warehouse as $ware): ?>
-                     <option value="<?php echo (int)$ware['id_location']; ?>" <?php if($_GET['id_location'] === $ware['id_location']): echo "selected"; endif; ?> >
-                       <?php echo remove_junk($ware['unit']); ?></option>
-                   <?php endforeach; ?>
-                 </select>
-                 <button type="submit" name="show_product" class="btn btn-danger">Sort</button>
-         </div>
-       </form>
-       </div>
-     </div>
-    </div>
-  </div>
-  <?php
- if(isset($_GET['show_product'])){
-  $warehouse_id = $_GET["product_warehouse"];
-  $prod_warehouse = find_prod_warehouse('location');
-?>
-   <div class="row">
-   <div class="col-md-12">
+  <div class="col-md-13">
     <div class="panel panel-default">
-      <div class="panel-heading">
+      <div class="panel-heading clearfix">
         <strong>
-          <span class="glyphicon glyphicon-th"></span>
-          <span>All Warehouse</span>
-       </strong>
-      </div>
+            <i class="fa fa-truck"></i>
+            <span>Receive Shipment</span>
+          </strong>
+        </div>
+        
         <div class="panel-body">
-        <form method="post" action="move_product.php">
-          <input type="text" name="id_ware" value="<?php echo (int)$warehouse_id; ?>">
-          <table class="table table-bordered table-striped table-hover">
-            <thead>
-                <tr>
-                    <th class="text-center" style="width: 50px;">#</th>
-                    <th>Id Location</th>
-                    <th class="text-center" style="width: 100px;">Unit</th>
-                    <th class="text-center" colspan="2">Actions</th>
-                </tr>
-            </thead>
-           <tbody>
-              <?php foreach ($prod_warehouse as $cat):?>
-                <tr>
-                    <td class="text-center"><input type="hidden" name="id_location[]" value="<?php echo (int)$cat['id_location']; ?>"><input type="hidden" name="Unit[]" value="<?php echo $cat['unit']; ?>"><?php echo count_id();?></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>
-                      <select class="form-control" name="warehouse[]">
-                        <option value="0"> Select a Warehouse</option>
-                        <?php  foreach ($all_warehouse as $ware): 
-                          if ((int)$ware['id_warehouse'] != $warehouse_id) {?>
-                            <option value="<?php echo (int)$ware['id_warehouse']; ?>">
-                            <?php echo remove_junk($ware['nm_warehouse']); ?></option>
-                        <?php
-                          }
-                          
-                        endforeach; ?>
-                    </select>
-                    </td>
-
-                </tr>
-              <?php endforeach; ?>
+          <table class="table table-bordered" id="datatableProduct">
+           <thead>
               <tr>
-                      <td colspan="5"><button type="submit" name="submit" class="btn btn-danger"><span class="glyphicon glyphicon-transfer"></span>&nbsp;&nbsp;&nbsp;Move</button></td>
-                </tr>
+               <th class="text-center" style="width: 1px;">No.</th>
+                <th class="text-center"> Id Purchase Order</th>
+                <th class="text-center"> Date Shipment </th>
+                <th class="text-center"> ID Item </th>
+                <th class="text-center"> Quantity </th>
+                <th class="text-center"> Status </th>
+                <th class="text-center"> Actions </th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php foreach ($status as $po1):?>     
+                <input type="hidden" name="idpo" value="<?php echo remove_junk ($po1["id_po"])?>">
+               <tr>
+                <td class="text-center"><?php echo count_id();?></td>
+                <td class="text-center"> <?php echo remove_junk($po1['id_po']); ?></td>
+                <td class="text-center"> <?php echo remove_junk($po1['date_po']); ?></td>
+                <td class="text-center"> <?php echo remove_junk($po1['id_item']); ?></td>
+                <td class="text-center"> <?php echo remove_junk($po1['qty']); ?></td>
+                <td class="text-center"><span class="label label-danger"> <?php echo remove_junk($po1['status']); ?></span></td>
+                <td class="text-center">
+                    <button   class="btn btn-md btn-success" name="update_status" data-toggle="modal" data-target="#status<?php echo $po1['id_po']?>" title="Update">
+                    <i class="glyphicon glyphicon-ok"></i>
+                  </button>
+                </td>
+              </tr>
+             <?php endforeach; ?>
             </tbody>
           </table>
-          </form>
-       </div>
+        </div>
+      </div>
     </div>
+
+
+<?php foreach($status as $a_location): ?>
+<div class="modal fade" id="status<?php echo $a_location['id_po'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-truck"></i> Approve </h4>
+      </div>
+      <div class="modal-body">
+      <form method="post" action="move_product.php" >
+        <input type="hidden" value="<?php echo $a_location['id_po'];?>" name="id_po">
+         <input type="hidden" value="<?php echo $a_location['id_item'];?>" name="id_item">
+        Are You Sure to Accept this?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+          <button type="submit" name="update_po" class="btn btn-success"><i class="fa fa-check"></i> Accept</button>
+        </div>
+
+        </form>
     </div>
-<?php
-     }
-?>
-    
-   </div>
   </div>
+</div>
+<?php endforeach;?>
+
+
+
+<script src="jquery-1.10.2.min.js"></script>
+<script src="jquery.chained.min.js"></script>
+<script>
+  $("#sub_category").chained("#category");
+</script>
+
+
+  <script>
+    $(".hapus").click(function () {
+        var jawab = confirm("Press a button!");
+        if (jawab === true) {
+            var hapus = false;
+            if (!hapus) {
+                hapus = true;
+                $.post('hapus.php', {id: $(this).attr('data-id')},
+                function (data) {
+                    alert(data);
+                });
+                hapus = false;
+            }
+        } else {
+            return false;
+        }
+    });
+</script>
+
   <?php include_once('layouts/footer.php'); ?>

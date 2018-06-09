@@ -35,10 +35,9 @@
       </a>
       <ul class="nav submenu">
         <li><a href="warehouse.php">Add Location</a></li>
-        <li><a href="shipment.php">Shipment</a></li>
-        <li><a href="move_product.php">Move Quantity Warehouse</a></li>
         <li><a href="lead_time.php">Lead Time</a></li>
         <li><a href="warehouse.php">Warehouse Condition</a></li>
+        <li><a href="history_shipment.php">History Approve Shipment</a></li>
       </ul>
   </li>
 
@@ -66,6 +65,7 @@
           <li><a href="approve2_po.php">Offer Purchase Order <span class="label label-danger" id="jumlah"><?php $notif = find_all_PO_destination_notif($user['id_warehouse']); if($notif != null) {echo $notif;}  ?></span></a></li>
            <li><a href="history_approved2.php">Moved Stock History</a></li>
         <?php } ?>
+         <li><a href="move_product.php">Receive Product</a></li>
       </ul>
   </li>
 </ul>

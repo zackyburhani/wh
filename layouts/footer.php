@@ -28,6 +28,7 @@
       $('#tableUser').DataTable();
       $('#SubcategoriesTable').DataTable();
       $('#tablePackage').DataTable();
+      $('#tablelocation').DataTable();
 
   	});
 </script>

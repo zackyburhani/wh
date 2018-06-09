@@ -36,10 +36,12 @@
       </a>
       <ul class="nav submenu">
         <li><a href="add_warehouse.php">Add Inventory</a></li>
-        <li><a href="shipment.php">Shipment</a></li>
-        <li><a href="add_location.php">Add Location</a></li>
+        <li><a href="add_location.php?id=<?php echo $user['id_warehouse'];?>">Add Location</a></li>
         <li><a href="lead_time.php">Lead Time</a></li>
+        <li><a href="move_product.php">Approvement Moved</a></li>
         <li><a href="warehouse.php">Warehouse Condition</a></li>
+        <li><a href="history_shipment.php">History Approve Shipment</a></li>
+
       </ul>
   </li>
 
