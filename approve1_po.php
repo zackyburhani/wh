@@ -151,13 +151,13 @@
                      <td align="center"><span class="label label-success"><?php echo remove_junk(ucwords($detail['status']))?></span></td>
                    <?php } ?>
                    
-                   <td align="center"><?php echo remove_junk(ucwords($detail['total_weight']))?></td>
+                   <td align="center"><?php echo remove_junk(ucwords($detail['total_weight']))?> / Kg</td>
                   </tr>
                 <?php endforeach;?>
                <?php $data = countDetail($a_po['id_po']); ?>
                <tr>
                   <td colspan="6" align="right"><b>SUM WEIGHT</b></td>
-                  <td colspan="1" align="center"><b><?php echo $data['total']; ?></b></td>
+                  <td colspan="1" align="center"><b><?php echo $data['total']; ?> / Kg</b></td>
                </tr>
             </tbody>
           </table>

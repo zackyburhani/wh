@@ -26,11 +26,12 @@
  
       if(empty($errors)){
         $id_item = remove_junk($db->escape($_POST['id_item']));
+        $id_po   = remove_junk($db->escape($_POST['id_po']));
         $status  = 'On Destination';
 
         $query  = "UPDATE detil_po SET ";
         $query .= "status = '{$status}' ";
-        $query .= "WHERE id_item = '{$id_item}'";
+        $query .= "WHERE id_item = '{$id_item}' and id_po = '{$id_po}'";
 
         //INSERT INTO SHIPMENT
         $id_shipment       = autonumber('id_shipment','shipment');
@@ -48,7 +49,7 @@
           $query2 .=")";
         }
 
-        $move_stock   = move_stock($id_item);
+        $move_stock   = move_stock($id_item,$id_po);
         $id_warehouse = $user['id_warehouse'];
         $consumed     = $all_warehouse_id['heavy_consumed'];
         $max          = $all_warehouse_id['heavy_max'];
@@ -127,7 +128,7 @@
                <td align="center"><?php echo remove_junk(ucwords($list['qty']))?></td>
                </td>
                <td align="center">
-                 <button data-target="#approvePO<?php echo $list['id_po'];?>" class="btn btn-md btn-success" data-toggle="modal" title="Detail">
+                 <button data-target="#approvePO<?php echo $list['id_item'];?>" class="btn btn-md btn-success" data-toggle="modal" title="Detail">
                     <i class="glyphicon glyphicon-ok"></i>
                   </button>
                </td>
@@ -208,7 +209,7 @@
 
 <!-- Approve Modal -->
 <?php foreach($list_po as $item) : ?>
-  <div class="modal fade" id="approvePO<?php echo $item['id_po'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="approvePO<?php echo $item['id_item'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -222,6 +223,7 @@
         <form method="post" action="approve2_po.php" class="clearfix">
           <div class="form-group">
             <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($item['id_item'])); ?>" name="id_item">
+             <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($item['id_po'])); ?>" name="id_po">
           </div>    
         </div>
         <div class="modal-footer">

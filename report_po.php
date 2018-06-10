@@ -62,7 +62,7 @@ while ($row = mysqli_fetch_array($report))
     $pdf->Cell(4,0.5,$row['warehouse_from'],1,0,'C');
     $pdf->Cell(4,0.5,$row['warehouse_to'],1,0,'C');
     $pdf->Cell(2,0.5,$row['qty'],1,0,'C');
-    $pdf->Cell(4,0.5,$row['total_weight'],1,1,'C');
+    $pdf->Cell(4,0.5,$row['total_weight']."/ Kg",1,1,'C');
 }
 
 $query=mysqli_query($connect, "SELECT SUM(total_weight) AS sum_weight FROM detil_po WHERE id_po = '$id'");

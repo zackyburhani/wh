@@ -173,7 +173,7 @@ function find_all_location($table,$id) {
    global $db;
    if(tableExists($table))
    {
-     return find_by_sql("SELECT unit,floor,room,id_location FROM {$db->escape($table)} WHERE id_warehouse = '{$db->escape($id)}'");
+     return find_by_sql("SELECT unit,floor,room,id_location,id_warehouse FROM {$db->escape($table)} WHERE id_warehouse = '{$db->escape($id)}'");
    }
 }
 
@@ -261,15 +261,21 @@ function find_warehouse($table) {
    }
 }
 
+function find_all_product_shipment($id_item) {
+   global $db;
+    $sql = $db->query("SELECT * FROM item,location,sub_categories,categories WHERE categories.id_categories = sub_categories.id_categories and item.id_subcategories = sub_categories.id_subcategories and item.id_location = location.id_location AND item.id_item = '$id_item'");
+    return $db->fetch_assoc($sql);
+}
+
 function find_po_warehouse($id_warehouse) {
    global $db;
      $sql = $db->query("SELECT nm_warehouse FROM employer JOIN warehouse ON employer.id_warehouse = warehouse.id_warehouse WHERE employer.id_warehouse = '{$db->escape($id_warehouse)}'");
      return $db->fetch_assoc($sql);
 }
 
-function move_stock($id_item) {
+function move_stock($id_item,$id_po) {
    global $db;
-     $sql = $db->query("SELECT * FROM detil_po where id_item = '{$db->escape($id_item)}' and status = 'Approved'");
+     $sql = $db->query("SELECT * FROM detil_po where id_item = '{$db->escape($id_item)}' and status = 'Approved' and id_po = '$id_po'");
      return $db->fetch_assoc($sql);
 }
 
@@ -900,11 +906,21 @@ function tableExists($table){
     $result = $db->query($sql);
     return ($result && $db->affected_rows() === 1 ? true : false);
 	}
+
 function status_shipment($id_warehouse)
 {
   $sql="SELECT po.id_po,po.date_po as date_po,qty,status,po.id_warehouse as for_wh,total_weight,id_item, detil_po.date_po as date_sent, detil_po.id_warehouse as from_wh from detil_po,po WHERE po.id_po = detil_po.id_po and status = 'On Destination' and po.id_warehouse = '$id_warehouse'";
   return find_by_sql($sql);
 }
+
+function insert_new_id($id_warehouse)
+{ 
+  global $db;
+     $sql = $db->query("SELECT po.id_po,po.date_po as date_po,qty,status,po.id_warehouse as for_wh,total_weight,id_item, detil_po.date_po as date_sent, detil_po.id_warehouse as from_wh from detil_po,po WHERE po.id_po = detil_po.id_po and status = 'On Destination' and po.id_warehouse = '$id_warehouse'");
+     return $db->fetch_assoc($sql);
+}
+
+
   /*--------------------------------------------------------------*/
   /* Find all position name 
   /*--------------------------------------------------------------*/

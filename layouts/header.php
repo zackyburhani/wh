@@ -105,7 +105,7 @@
             <ul class="dropdown-menu">
               <li>
                 <a href="move_product.php">
-                  <i class="fa fa-envelope-o"></i> Shipment
+                  <i class="fa fa-truck"></i> Shipment
                   <span class="label label-danger"><?php if($shipment != null) { echo $shipment; }  ?></span>
                 </a>
               </li>

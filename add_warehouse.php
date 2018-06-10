@@ -3,8 +3,9 @@
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
   page_require_level(1);
-  
+  $user = current_user();
   $all_categories = find_all1('warehouse');
+ 
 ?>
 
 <!-- INSERT WAREHOUSE -->
@@ -153,10 +154,12 @@ if(isset($_POST['update_warehouse'])){
           </tr>
         </thead>
         <tbody>
+        <?php $no=1; ?>
         <?php foreach($all_categories as $a_warehouse): ?>
           <tr>
-           <td class="text-center"><?php echo count_id();?></td>
-           <td class="text-center"><a href="add_location.php?id=<?php echo $a_warehouse['id_warehouse'];?>"><?php echo remove_junk(ucwords($a_warehouse['nm_warehouse']))?></td>
+           <td class="text-center"><?php echo $no++;?></td>
+           <td class="text-center"><a href="#detailloc<?php echo $a_warehouse['id_warehouse']?>" data-toggle="modal"><?php echo remove_junk(ucwords($a_warehouse['nm_warehouse']))?></a>
+           </td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['country']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['address']))?></td>
            <td class="text-center">
@@ -183,6 +186,49 @@ if(isset($_POST['update_warehouse'])){
     </div>
   </div>
 </div>
+
+<!-- Detail Modal -->
+<?php foreach($all_categories  as $location): ?> 
+  <div class="modal fade" id="detailloc<?php echo $location['id_warehouse']?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-th"></span> Detail Location On Warehouse <?php echo $location['id_warehouse'] ?></h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th class="text-center" style="width: 50px;">No. </th>
+                <th class="text-center">Location Unit</th>
+                <th class="text-center">Floor</th>
+                <th class="text-center">Room</th>
+                <th class="text-center">Warehouse</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php $no=1; ?>
+              <?php  $all_location = find_all_location('location',$location['id_warehouse']); ?>
+              <?php foreach($all_location as $detail) { ?>
+                  <tr>
+                   <td class="text-center"><?php echo $no++."."; ?></td>
+                   <td align="center"><?php echo remove_junk(ucwords($detail['unit']))?></td>
+                   <td align="center"><?php echo remove_junk(ucwords($detail['floor']))?></td>
+                   <td align="center"><?php echo remove_junk(ucwords($detail['room']))?></td>
+                   <td align="center"><?php echo remove_junk(ucwords($detail['id_warehouse']))?></td>
+                  </tr>
+                <?php } ?>
+            </tbody>
+          </table>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<?php endforeach;?>
 
 <!-- MODAL ADD NEW WAREHOUSE -->
 <div class="modal fade" id="addWarehouse" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -320,6 +366,8 @@ if(isset($_POST['update_warehouse'])){
 </div>
 <?php endforeach;?>
 <!-- END MODAL DELETE WAREHOUSE -->
+
+
 
 
 <?php include_once('layouts/footer.php'); ?>

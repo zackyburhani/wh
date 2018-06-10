@@ -34,7 +34,7 @@
        <span>Warehouse</span>
       </a>
       <ul class="nav submenu">
-        <li><a href="warehouse.php">Add Location</a></li>
+        <li><a href="add_location.php?id=<?php echo $user['id_warehouse'];?>">Add Location</a></li>
         <li><a href="lead_time.php">Lead Time</a></li>
         <li><a href="warehouse.php">Warehouse Condition</a></li>
         <li><a href="history_shipment.php">History Approve Shipment</a></li>
