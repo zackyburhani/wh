@@ -783,11 +783,6 @@ function count_all_bpack($id_warehouse){
   return($db->fetch_assoc($result));
 }
 
-
-
-
-
-
 /*--------------------------------------------------------------*/
 /* Determine if database table exists
 /*--------------------------------------------------------------*/
