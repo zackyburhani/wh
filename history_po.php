@@ -20,7 +20,7 @@
     <div class="panel-heading clearfix">
       <strong>
         <span class="glyphicon glyphicon-th"></span>
-        <span>History Purchase Order</span>
+        <span>Purchase Order History</span>
      </strong>
     </div>
      <div class="panel-body">

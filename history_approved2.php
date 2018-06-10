@@ -54,7 +54,7 @@
     <div class="panel-heading clearfix">
       <strong>
         <span class="glyphicon glyphicon-th"></span>
-        <span>History Approved Purchase Order</span>
+        <span>Approved Purchase Order History</span>
      </strong>
     </div>
      <div class="panel-body">

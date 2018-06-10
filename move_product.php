@@ -1,6 +1,6 @@
 <?php
 error_reporting(0);
-  $page_title = 'Receive Shipment';
+  $page_title = 'Receive Product';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
   page_require_level(2);
@@ -103,7 +103,7 @@ if(isset($_POST['update_po'])){
       <div class="panel-heading clearfix">
         <strong>
             <i class="fa fa-truck"></i>
-            <span>Receive Shipment</span>
+            <span>Receive Product</span>
           </strong>
         </div>
         

@@ -21,8 +21,8 @@
     <div class="panel panel-default">
     <div class="panel-heading clearfix">
       <strong>
-        <span class="glyphicon glyphicon-th"></span>
-        <span>History Shipment Warehouse</span>
+        <span class="fa fa-truck"></span>
+        <span> Approved History</span>
      </strong>
     </div>
      <div class="panel-body">

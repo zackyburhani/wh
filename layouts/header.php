@@ -148,17 +148,9 @@
         <!-- admin menu -->
       <?php include_once('admin_menu.php');?>
 
-      <?php elseif($user['level_user'] === '1'): ?>
+      <?php elseif($user['level_user'] === '1' || $user['level_user'] === '2' || $user['level_user'] === '3'): ?>
         <!-- Special user -->
       <?php include_once('special_menu.php');?>
-
-      <?php elseif($user['level_user'] === '2'): ?>
-        <!-- User menu -->
-      <?php include_once('user_menu.php');?>
-
-      <?php elseif($user['level_user'] === '3'): ?>
-
-      <?php include_once('user_menu.php');?>
 
       <?php endif;?>
 

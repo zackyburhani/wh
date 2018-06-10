@@ -124,8 +124,11 @@
           <span class="glyphicon glyphicon-th"></span>
           <span>Users</span>
        </strong>
-         <button type="button" title="Add New User" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addUser"><span class="glyphicon glyphicon-plus"></span> Add New User
+       <?php
+        if ($user['level_user']==0 || $user['level_user']==1) { ?>
+          <button type="button" title="Add New User" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addUser"><span class="glyphicon glyphicon-plus"></span> Add New User
         </button>
+      <?php } ?>
       </div>
      <div class="panel-body">
       <table class="table table-bordered table-striped" id="tableUser">
@@ -159,9 +162,12 @@
               <button data-target="#updateUser<?php echo $a_user['id_employer'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
               </button>
-              <button data-target="#deleteUser<?php echo $a_user['id_employer'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Hapus">
+            <?php
+                if ($user['level_user']==0 || $user['level_user']==1 || $user['level_user']== 2) { ?>
+              <button data-target="#deleteUser<?php echo $a_user['id_employer'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete">
                   <i class="glyphicon glyphicon-trash"></i>
               </button>
+            <?php } ?>
               </a>
            </td>
           </tr>
@@ -249,11 +255,11 @@
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" class="form-control" name ="password"  placeholder="Let It Empty If Do Not Want To Update The Password">
+                <input type="password" class="form-control" name ="password"  placeholder="Let It Empty If Do Not Want To Change The Password">
             </div>
             <div class="form-group">
                 <label for="password">Confirm Password</label>
-                <input type="password" class="form-control" name ="password2"  placeholder="Let It Empty If Do Not Want To Update The Password">
+                <input type="password" class="form-control" name ="password2"  placeholder="Let It Empty If Do Not Want To Change The Password">
             </div>
             
             <div class="form-group">

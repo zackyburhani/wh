@@ -10,7 +10,6 @@
   $all_subcategories = find_all_subcategories('sub_categories',$id);
   $join_categories   = find_allSubcategories($id);
 
-
 ?>
 
 <!-- ADD NEW CATEGORY -->
@@ -208,6 +207,7 @@
   </div>
 </div>
 <div class="row">
+  <?php if ($user['level_user']==0 || $user['level_user']==1) { ?>
   <div class="col-lg-4">
     <div class="row">
       <div class="col-lg-12">
@@ -224,7 +224,7 @@
             <div class="form-group">
               <input type="text" class="form-control" name="categories-name" onkeypress="return hanyaHuruf(event)" placeholder="Category Name">
             </div>
-            <button type="submit" name="add_cat" title="Add Category" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;Add category</button>
+            <button type="submit" title="Add Category" name="add_cat" title="Add Category" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;Add category</button> 
           </form>
         </div>
        </div>
@@ -258,7 +258,6 @@
                 <div class="form-group">
                     <input type="text" class="form-control" name="nm_subcategories" placeholder="Subcategory Name">
                 </div>
-
                 <button type="submit" title="Add Subcategory" name="add_subCategory" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;Add Subcategory</button>
             </form>
             </div>
@@ -266,7 +265,13 @@
         </div>
       </div>
     </div>
+    <?php } ?>
+
+    <?php if ($user['level_user']==0 || $user['level_user']==1) { ?>
     <div class="col-lg-8">
+    <?php } else { ?>
+    <div class="col-lg-12">
+    <?php } ?>
       <div class="form-component-container">
         <div class="panel panel-default form component main">
           <div class="panel-heading"> 
@@ -275,14 +280,18 @@
               <ul class="nav nav-tabs" role="tablist">
                 <li class="active col-md-6"><a href="#category" role="tab" data-toggle="tab">
                   <strong>
-                    <i class="fa fa-tag"></i>
-                    <span>All Categories</span>
+                    <center>
+                      <i class="fa fa-tag"></i>
+                      <span>All Categories</span>
+                    </center>
                   </strong>
                 </a></li>
                 <li class="col-md-6"><a href="#sub_category" role="tab" data-toggle="tab">
                   <strong>
-                    <i class="fa fa-tags"></i>
-                    <span>All Subcategories</span>
+                    <center>
+                      <i class="fa fa-tags"></i>
+                      <span>All Subcategories</span>
+                    </center>
                   </strong>
                 </a></li>
               </ul>
@@ -312,8 +321,11 @@
                         <td class="text-center">
                           <button data-target="#updateCategory<?php echo $cat['id_categories'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit"><i class="glyphicon glyphicon-edit"></i>
                           </button>
+                        <?php
+                         if ($user['level_user']==0 || $user['level_user']==1 || $user['level_user']== 2) { ?>
                           <button data-target="#deleteCategory<?php echo $cat['id_categories'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete"><i class="glyphicon glyphicon-trash"></i>
                           </button>
+                        <?php } ?>
                         </td>
                       </tr>
                     <?php endforeach; ?>
@@ -343,8 +355,11 @@
                           <td class="text-center">
                             <button data-target="#updateSubcategory<?php echo $subcat['id_subcategories'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit"><i class="glyphicon glyphicon-edit"></i>
                             </button>
+                          <?php
+                           if ($user['level_user']==0 || $user['level_user']==1 || $user['level_user']== 2) { ?>
                             <button data-target="#deleteCategory<?php echo $subcat['id_subcategories'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete"><i class="glyphicon glyphicon-trash"></i>
                             </button>
+                          <?php } ?>
                           </td>
                         </tr>
                       <?php endforeach; ?>

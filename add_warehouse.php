@@ -133,11 +133,13 @@ if(isset($_POST['update_warehouse'])){
     <div class="panel panel-default">
     <div class="panel-heading clearfix">
       <strong>
-        <span class="glyphicon glyphicon-th"></span>
+        <span class="fa fa-university"></span>
         <span>WAREHOUSE</span>
      </strong>
-       <a href="add_warehouse_location.php" class="btn btn-primary pull-right" title="Add New Warehouse"><span class="glyphicon glyphicon-plus"></span> Add New Warehouse
-        </a>
+     <?php
+      if ($user['level_user']==0 || $user['level_user']==1) { ?>
+       <a href="add_warehouse_location.php" class="btn btn-primary pull-right" title="Add New Warehouse"><span class="glyphicon glyphicon-plus"></span> Add New Warehouse</a>
+      <?php } ?>
     </div>
      <div class="panel-body">
       <table class="table table-bordered" id="tableWarehouse">
@@ -175,8 +177,12 @@ if(isset($_POST['update_warehouse'])){
                 <button data-target="#updateWarehouse<?php echo $a_warehouse['id_warehouse'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
                 </button>
+
+              <?php
+                if ($user['level_user']==0 || $user['level_user']==1 || $user['level_user']== 2) { ?>
                 <button type="button" class="btn btn-danger btn-md" data-toggle="modal" data-target="#deleteWarehouse<?php echo $a_warehouse['id_warehouse'];?>" title="Delete"><i class="glyphicon glyphicon-trash"></i>
                 </button>
+              <?php } ?>
            </td>
           </tr>
         <?php endforeach;?>
@@ -196,7 +202,7 @@ if(isset($_POST['update_warehouse'])){
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-th"></span> Detail Location On Warehouse <?php echo $location['id_warehouse'] ?></h4>
+          <h4 class="modal-title" id="myModalLabel"><span class="fa fa-university"></span> Detail Location On Warehouse <?php echo $location['id_warehouse'] ?></h4>
         </div>
         <div class="modal-body">
           <table class="table table-bordered">

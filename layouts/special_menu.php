@@ -27,6 +27,17 @@
       <span>Products</span>
     </a>
   </li>
+
+  <li>
+    <a href="#" class="submenu-toggle">
+      <i class="fa fa-truck"></i>
+       <span>Receive Product</span>
+      </a>
+      <ul class="nav submenu">
+        <li><a href="move_product.php">Receive Product</a></li>
+        <li><a href="history_shipment.php">History Approve</a></li>
+      </ul>
+  </li>
  
   <li>
     <a href="#" class="submenu-toggle">
@@ -34,10 +45,9 @@
        <span>Warehouse</span>
       </a>
       <ul class="nav submenu">
-        <li><a href="add_location.php?id=<?php echo $user['id_warehouse'];?>">Add Location</a></li>
+        <li><a href="add_location.php">Add Location</a></li>
         <li><a href="lead_time.php">Lead Time</a></li>
         <li><a href="warehouse.php">Warehouse Condition</a></li>
-        <li><a href="history_shipment.php">History Approve Shipment</a></li>
       </ul>
   </li>
 
@@ -63,9 +73,11 @@
         <?php   $warehouse = find_by_id_warehouse('warehouse',$user['id_warehouse']); ?>
         <?php if($warehouse['status'] != 0) { ?>
           <li><a href="approve2_po.php">Offer Purchase Order <span class="label label-danger" id="jumlah"><?php $notif = find_all_PO_destination_notif($user['id_warehouse']); if($notif != null) {echo $notif;}  ?></span></a></li>
-           <li><a href="history_approved2.php">Moved Stock History</a></li>
+           <li><a href="history_approved2.php">Approved Purchase Order</a></li>
         <?php } ?>
-         <li><a href="move_product.php">Receive Product</a></li>
       </ul>
   </li>
+
+  
+
 </ul>

@@ -172,8 +172,11 @@ if(isset($_POST['update_bpack'])){
         <i class="fa fa-archive"></i>
         <span>PACKAGE</span>
      </strong>
-       <button type="button" title="Combine Package" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addPackage"><span class="glyphicon glyphicon-plus"></span> Combine Package
+     <?php
+      if ($user['level_user']==0 || $user['level_user']==1) { ?>
+        <button type="button" title="Combine Package" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addPackage"><span class="glyphicon glyphicon-plus"></span> Combine Package
         </button>
+      <?php } ?>
     </div>
      <div class="panel-body">
       <table class="table table-bordered" id="tablePackage">
@@ -199,9 +202,13 @@ if(isset($_POST['update_bpack'])){
                 <button data-target="#updatebpack<?php echo $a_package['id_bpack'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
                 </button>
+              <?php
+                if ($user['level_user']==0 || $user['level_user']==1 || $user['level_user']== 2) 
+                  { ?>
                 <button data-target="#deletebpack<?php echo $a_package['id_bpack'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete">
                   <i class="glyphicon glyphicon-trash"></i>
                 </button>
+              <?php } ?>
            </td>
           </tr>
         <?php endforeach;?>

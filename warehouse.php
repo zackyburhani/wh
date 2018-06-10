@@ -90,7 +90,7 @@
             <th class="text-center" style="width: 5%;">No.</th>
             <th class="text-center" style="width: 10%;">Item </th>
             <th class="text-center" style="width: 10%;">Stock</th>
-            <th class="text-center" style="width: 10%;">Consumed Area</th>
+            <th class="text-center" style="width: 10%;">Consumed Area / Kg</th>
             <th class="text-center" style="width: 5%;">Order</th>
           </tr>
         </thead>
@@ -100,7 +100,7 @@
           <tr>
            <td class="text-center"><?php echo $no++;?>.</td>
            <td><?php echo remove_junk(ucwords($product['nm_item']))?></td>
-           <td><?php echo remove_junk($product['stock'])?></td>
+           <td class="text-center"><?php echo remove_junk($product['stock'])?></td>
            <td class="text-center"><?php echo $product['weight']*$product['stock']?></td>
            <td class="text-center"> 
             <form method="GET" action="po.php">

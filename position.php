@@ -122,8 +122,11 @@
         <span class="glyphicon glyphicon-th"></span>
         <span>Position</span>
      </strong>
-       <button title="Add New Position" type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addPosition"><span class="glyphicon glyphicon-plus"></span> Add New Positiion
+     <?php
+      if ($user['level_user']==0 || $user['level_user']==1) { ?>
+        <button title="Add New Position" type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addPosition"><span class="glyphicon glyphicon-plus"></span> Add New Positiion
         </button>
+      <?php } ?>
     </div>
      <div class="panel-body">
       <table class="table table-bordered" id="tablePosition">
@@ -145,9 +148,12 @@
               <button data-target="#updatePosition<?php echo $a_position['id_position'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                 <i class="glyphicon glyphicon-pencil"></i>
               </button>
-              <button data-target="#deletePosition<?php echo $a_position['id_position'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete">
-                <i class="glyphicon glyphicon-trash"></i>
-              </button>
+              <?php
+                if ($user['level_user']==0 || $user['level_user']==1 || $user['level_user']== 2) 
+                  { ?>
+                  <button data-target="#deletePosition<?php echo $a_position['id_position'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete"><i class="glyphicon glyphicon-trash"></i>
+                  </button>
+              <?php } ?>
            </td>
           </tr>
         <?php endforeach;?>

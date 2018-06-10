@@ -226,8 +226,11 @@ if(isset($_POST['update_package'])){
         <i class="fa fa-archive"></i>
         <span>PACKAGE</span>
      </strong>
+     <?php
+      if ($user['level_user']==0 || $user['level_user']==1) { ?>
        <button type="button" title="Add New Package" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addPackage"><span class="glyphicon glyphicon-plus"></span> Add New Package
-        </button>
+       </button>
+      <?php } ?>
     </div>
      <div class="panel-body">
       <table class="table table-bordered" id="tablePackage">
@@ -258,9 +261,13 @@ if(isset($_POST['update_package'])){
                 <button data-target="#updatePackage<?php echo $a_package['id_package'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
                 </button>
+              <?php
+                if ($user['level_user']==0 || $user['level_user']==1 || $user['level_user']== 2) 
+                  { ?>
                 <button data-target="#deletePackage<?php echo $a_package['id_package'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete">
                   <i class="glyphicon glyphicon-trash"></i>
                 </button>
+              <?php } ?>
            </td>
           </tr>
         <?php endforeach;?>
