@@ -280,9 +280,10 @@
               </tr>
             </thead>
             <tbody>
+              <?php echo $no=1; ?>
               <?php foreach ($get_product as $items):?>
               <tr>
-                <td class="text-center"><?php echo count_id().".";?></td>
+                <td class="text-center"><?php echo $no++;".";?></td>
                 <td class="text-center"><a href="#detilItem<?php echo $items['id_item'];?>" data-toggle="modal" title="Detail"> <?php echo remove_junk(ucfirst($items['nm_item'])); ?></a></td>
                 <td class="text-center"> <?php echo remove_junk(ucfirst($items['colour'])); ?></td>
                 <td class="text-center"> <?php echo remove_junk(ucfirst($items['stock'])); ?></td>

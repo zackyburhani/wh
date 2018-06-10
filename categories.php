@@ -357,7 +357,7 @@
                             </button>
                           <?php
                            if ($user['level_user']==0 || $user['level_user']==1 || $user['level_user']== 2) { ?>
-                            <button data-target="#deleteCategory<?php echo $subcat['id_subcategories'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete"><i class="glyphicon glyphicon-trash"></i>
+                            <button data-target="#deleteSubategory<?php echo $subcat['id_subcategories'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete"><i class="glyphicon glyphicon-trash"></i>
                             </button>
                           <?php } ?>
                           </td>
@@ -481,7 +481,7 @@
 
 <!-- DELETE MODAL SUBCATEGORR -->
 <?php foreach($all_subcategories as $a_subcategory): ?>
-  <div class="modal fade" id="deleteCategory<?php echo $a_subcategory['id_subcategories'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="deleteSubategory<?php echo $a_subcategory['id_subcategories'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
         <div class="modal-header">

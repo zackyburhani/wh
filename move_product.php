@@ -5,11 +5,12 @@ error_reporting(0);
   // Checkin What level user has permission to view this page
   page_require_level(2);
  // $po = find_all1('detil_po');
- $user              = current_user();
- $all_location      = find_all_location('location',$user['id_warehouse']);
- $status1           = status_shipment($user['id_warehouse']);
- $all_warehouse_id  = find_warehouse_id($user['id_warehouse']);
- $all_package       = find_all_package('package',$user['id_warehouse']);
+ $user               = current_user();
+ $all_location       = find_all_location('location',$user['id_warehouse']);
+ $status1            = status_shipment($user['id_warehouse']);
+ $all_warehouse_id   = find_warehouse_id($user['id_warehouse']);
+ $all_package        = find_all_package('package',$user['id_warehouse']);
+ $all_categories     = find_all_categories('categories',$user['id_warehouse']);
  $join_subcategories = find_allSubcategories($user['id_warehouse']);
  
  if (isset($_GET['search_po'])) {
@@ -34,7 +35,6 @@ if(isset($_POST['update_po'])){
   $idwarehouse  = $user["id_warehouse"];
   $idemployer   = $user["id_employer"];
 
-
         $query2  = "INSERT INTO shipment (";
         $query2 .=" id_shipment,date_shipment,id_po,id_warehouse,id_employer";
         $query2 .=") VALUES (";
@@ -56,9 +56,9 @@ if(isset($_POST['update_po'])){
         $stock_new   = $qty_new['qty'];
 
         $query3  = "INSERT INTO item (";
-        $query3 .=" id_item,nm_item,colour,width,height,length,weight,stock,id_location";
+        $query3 .=" id_item,nm_item,colour,width,height,length,weight,stock,id_package,id_subcategories,id_location";
         $query3 .=") VALUES (";
-        $query3 .=" '{$id_item_new}', '{$nm_item_new}', '{$colour_new}', '{$width_new}', '{$height_new}', '{$length_new}', '{$weight_new}', '{$stock_new}', '{$id_location}'";
+        $query3 .=" '{$id_item_new}', '{$nm_item_new}', '{$colour_new}', '{$width_new}', '{$height_new}', '{$length_new}', '{$weight_new}', '{$stock_new}','{$id_package}','{$id_subcategories}','{$id_location}'";
         $query3 .=")";
 
         //reduce area consumed 
@@ -158,7 +158,7 @@ if(isset($_POST['update_po'])){
       <form method="post" action="move_product.php">
 
         <div class="form-group">
-          <label for="name" class="control-label">Category</label>
+          <label for="name" class="control-label">Select Category</label>
             <select class="form-control" id="category" name="id_categories">
               <?php if($all_categories == null) { ?>
                 <option value="">-</option>
@@ -171,20 +171,21 @@ if(isset($_POST['update_po'])){
         </div>
 
         <div class="form-group">
-          <select class="form-control" id="sub_category" name="id_subcategories">
-            <?php if($join_subcategories== null) { ?>
-              <option value=" ">-</option>
-                <?php } else { ?>
-                <?php foreach($join_subcategories as $row2){ ?>
-                <option class="<?php echo $row2['id_categories']; ?>" value="<?php echo remove_junk($row2['id_subcategories']); ?>"><?php echo remove_junk(ucwords($row2['nm_subcategories'])); ?>
-                </option>
-                <?php } ?>
-                <?php } ?>  
-          </select>
+          <label for="name" class="control-label">Select Subcategory</label>
+            <select class="form-control" id="sub_category" name="id_subcategories">
+              <?php if($join_subcategories== null) { ?>
+                <option value=" ">-</option>
+                  <?php } else { ?>
+                  <?php foreach($join_subcategories as $row2){ ?>
+                  <option class="<?php echo $row2['id_categories']; ?>" value="<?php echo remove_junk($row2['id_subcategories']); ?>"><?php echo remove_junk(ucwords($row2['nm_subcategories'])); ?>
+                  </option>
+                  <?php } ?>
+                  <?php } ?>  
+            </select>
         </div>
 
         <div class="form-group">
-          <label for="name" class="control-label">Package</label>
+          <label for="name" class="control-label">Select Package</label>
             <select class="form-control" name="id_package">
             <?php if($all_package == null) { ?>
               <option value="">-</option>

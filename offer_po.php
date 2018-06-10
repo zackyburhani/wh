@@ -19,6 +19,7 @@
 
       if(empty($errors)){
         $id_item = remove_junk($db->escape($_POST['id_item']));
+        $id_po   = remove_junk($db->escape($_POST['id_po']));
         $status  = 'On Destination';
 
         $query  = "UPDATE detil_po SET ";
@@ -41,7 +42,7 @@
           $query2 .=")";
         }
 
-        $move_stock   = move_stock($id_item);
+        $move_stock   = move_stock($id_item,$id_po);
         $id_warehouse = $user['id_warehouse'];
         $consumed     = $all_warehouse_id['heavy_consumed'];
         $max          = $all_warehouse_id['heavy_max'];
@@ -208,6 +209,7 @@
           Are You Sure Want To Approve Item <b><u><?php echo remove_junk(ucwords($item['id_item'])); ?></u></b> ?
         <form method="post" action="offer_po.php" class="clearfix">
           <div class="form-group">
+            <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($item['id_po'])); ?>" name="id_po">
             <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($item['id_item'])); ?>" name="id_item">
           </div>    
         </div>

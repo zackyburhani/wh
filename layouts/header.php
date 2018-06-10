@@ -112,7 +112,6 @@
            </ul>
           </li>
 
-
           <li class="profile">
             <a href="#" data-toggle="dropdown" class="toggle" aria-expanded="false">
               <img src="uploads/users/<?php echo $user['image'];?>" alt=" " class="img-circle img-inline">
