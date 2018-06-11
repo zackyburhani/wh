@@ -6,20 +6,21 @@
   
   $user = current_user();
 
- $all_location = find_all_location('location',$user['id_warehouse']);
+  $all_location = find_all_location('location',$user['id_warehouse']);
+
 ?>
 
-<!-- INSERT WAREHOUSE -->
+<!-- INSERT LOCATION -->
 <?php
- if(isset($_POST['add_location'])){
-   $req_field = array('unit','floor','room');
-   validate_fields($req_field);
-   $id_loc   = autonumber('id_location','location');
-   $cat_unit = remove_junk($db->escape($_POST['unit']));
-   $floor    = remove_junk($db->escape($_POST['floor']));
-   $room     = remove_junk($db->escape($_POST['room']));
-   $id_wh    =  $user['id_warehouse'];  
-   if(empty($errors)){
+  if(isset($_POST['add_location'])){
+    $req_field = array('unit','floor','room');
+    validate_fields($req_field);
+    $id_loc   = autonumber('id_location','location');
+    $cat_unit = remove_junk($db->escape($_POST['unit']));
+    $floor    = remove_junk($db->escape($_POST['floor']));
+    $room     = remove_junk($db->escape($_POST['room']));
+    $id_wh    =  $user['id_warehouse'];  
+    if(empty($errors)){
       $sql  = "INSERT INTO location (id_location,unit,floor,room,id_warehouse)";
       $sql .= " VALUES ('{$id_loc}','{$cat_unit}','{$floor}','{$room}','{$id_wh}')";
 
@@ -37,18 +38,18 @@
      }
  }
 ?>
-<!-- END INSERT WAREHOUSE -->
+<!-- END INSERT LOCATION -->
 
-<!-- UPDATE WAREHOUSE -->
+<!-- UPDATE LOCATION -->
 <?php
 if(isset($_POST['update_location'])){
   $req_field = array('unit','floor','room','id_location');
   validate_fields($req_field);
-   $id_loc   = remove_junk($db->escape($_POST['id_location']));
-   $cat_unit = remove_junk($db->escape($_POST['unit']));
-   $floor    = remove_junk($db->escape($_POST['floor']));
-   $room     = remove_junk($db->escape($_POST['room']));
-   $id_wh1    =  $user['id_warehouse'];  
+  $id_loc   = remove_junk($db->escape($_POST['id_location']));
+  $cat_unit = remove_junk($db->escape($_POST['unit']));
+  $floor    = remove_junk($db->escape($_POST['floor']));
+  $room     = remove_junk($db->escape($_POST['room']));
+  $id_wh1    =  $user['id_warehouse'];  
   if(empty($errors)){
         $sql = "UPDATE location SET unit='{$cat_unit}',floor='{$floor}',room='{$room}',id_warehouse='{$id_wh1}'";
        $sql .= " WHERE id_location='{$id_loc}'";
@@ -66,9 +67,9 @@ if(isset($_POST['update_location'])){
   }
 }
 ?>
-<!-- END UPDATE WAREHOUSE -->
+<!-- END UPDATE LOCATION -->
 
-<!-- DELETE WAREHOUSE -->
+<!-- DELETE LOCATION-->
 <?php
   if(isset($_POST['delete_location'])){
   $req_field = array('idlocation');
@@ -91,7 +92,7 @@ if(isset($_POST['update_location'])){
   }
 }
 ?>
-<!-- END DELETE WAREHOUSE -->
+<!-- END DELETE LOCATION -->
 
 <?php include_once('layouts/header.php'); ?>
 <div class="row">
@@ -127,10 +128,11 @@ if(isset($_POST['update_location'])){
           </tr>
         </thead>
         <tbody>
+        <?php $no=1; ?>
         <?php foreach($all_location as $a_location): ?>
       
           <tr>
-           <td class="text-center"><?php echo count_id();?></td>
+           <td class="text-center"><?php echo $no++.".";?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_location['unit']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_location['floor']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_location['room']))?></td>
@@ -155,7 +157,7 @@ if(isset($_POST['update_location'])){
   </div>
 </div>
 
-<!-- MODAL ADD NEW WAREHOUSE -->
+<!-- MODAL ADD NEW LOCATION -->
 <br>
 <div class="modal fade" id="addLocation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -164,7 +166,7 @@ if(isset($_POST['update_location'])){
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel">Entry New Location</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><i class="glyphicon glyphicon-th"></i> Entry New Location</h4>
       </div>
       <div class="modal-body">
       <form method="post" action="add_location.php" class="clearfix">
@@ -191,9 +193,9 @@ if(isset($_POST['update_location'])){
 </div>
 </div>
 </div>
-<!-- END MODAL ADD NEW WAREHOUSE -->
+<!-- END MODAL ADD NEW LOCATION -->
 
-<!-- MODAL UPDATE WAREHOUSE -->
+<!-- MODAL UPDATE LOCATION -->
 <?php foreach($all_location as $a_location): ?> 
 <div class="modal fade" id="updateLocation<?php echo $a_location['id_location'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -229,9 +231,9 @@ if(isset($_POST['update_location'])){
 </div>
 </div>
 <?php endforeach;?>
-<!-- END MODAL UPDATE WAREHOUSE -->
+<!-- END MODAL UPDATE LOCATION -->
 
-<!-- MODAL DELETE WAREHOUSE -->
+<!-- MODAL DELETE LOCATION -->
 <?php foreach($all_location as $a_location): ?>
 <div class="modal fade" id="deletelocation<?php echo $a_location['id_location'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm" role="document">
@@ -257,6 +259,6 @@ if(isset($_POST['update_location'])){
 </div>
 </div>
 <?php endforeach;?>
-<!-- END MODAL DELETE WAREHOUSE -->
+<!-- END MODAL DELETE LOCATION -->
 
 <?php include_once('layouts/footer.php'); ?>

@@ -39,10 +39,7 @@
  		$(".alert-danger").fadeTo(900, 0).slideUp(900, function(){ $(this).remove(); }); 
  	}, 3000); 
 </script>
-
-      
-
-
+    
 
 
  </body>

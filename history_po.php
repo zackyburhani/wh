@@ -1,5 +1,5 @@
 <?php
-  $page_title = 'History Purchase Order';
+  $page_title = 'Purchase History';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
    page_require_level(2);
@@ -20,7 +20,7 @@
     <div class="panel-heading clearfix">
       <strong>
         <span class="glyphicon glyphicon-th"></span>
-        <span>Purchase Order History</span>
+        <span>Purchase History</span>
      </strong>
     </div>
      <div class="panel-body">
@@ -34,9 +34,10 @@
           </tr>
         </thead>
         <tbody>
+        <?php $no=1; ?>
         <?php foreach($all_po as $a_po): ?>
           <tr>
-           <td class="text-center"><?php echo count_id();?></td>
+           <td class="text-center"><?php echo $no++.".";?></td>
            <td><?php echo remove_junk(ucwords($a_po['id_po']))?></td>
            <td><?php echo remove_junk(ucwords($a_po['date_po']))?></td>
            <td class="text-center">

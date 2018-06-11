@@ -10,50 +10,8 @@
 
 <!-- INSERT WAREHOUSE -->
 <?php
- if(isset($_POST['add_warehouse'])){
-   $req_field  = array('warehousename','country','address','status','heavymax');
-   validate_fields($req_field);
-   $id_wh     = autonumber('id_warehouse','warehouse');
-   $cat_name  = remove_junk($db->escape($_POST['warehousename']));
-   $country   = remove_junk($db->escape($_POST['country']));
-   $address   = remove_junk($db->escape($_POST['address']));
-   $status    = remove_junk($db->escape($_POST['status']));
-   $heavymax  = remove_junk($db->escape($_POST['heavymax']));
 
-   $convert_max    = remove_junk($db->escape($_POST['convert_max']));
 
-  //convert weight
-  if($convert_max == "max_kilograms"){
-    $heavymax = $heavymax;
-  } else if($convert_max == "max_ton") {
-    $heavymax = $heavymax*1000;
-  } 
-
-   $consumed  = 0;
-   if(empty($errors)){
-      $sql  = "INSERT INTO warehouse (id_warehouse,nm_warehouse,country,address,status,heavy_max,heavy_consumed)";
-      $sql .= " VALUES ('{$id_wh}','{$cat_name}','{$country}','{$address}','{$status}','{$heavymax}','{$consumed}')";
-
-      $getAllWarehouseName = "SELECT nm_warehouse FROM warehouse where nm_warehouse = '$cat_name'";
-      $ada=$db->query($getAllWarehouseName) or die(mysql_error());
-      if(mysqli_num_rows($ada)>0)
-      { 
-        $session->msg("d", "Warehouse Is Exist");
-        redirect('add_warehouse.php',false);
-      } else {
-          if($db->query($sql)){
-          $session->msg("s", "Successfully Added Warehouse");
-          redirect('add_warehouse.php',false);
-        } else {
-          $session->msg("d", "Sorry Failed to insert.");
-          redirect('add_warehouse.php',false);
-        }
-      }
-   } else {
-     $session->msg("d", $errors);
-     redirect('add_warehouse.php',false);
-   }
- }
 ?>
 <!-- END INSERT WAREHOUSE -->
 
@@ -159,7 +117,7 @@ if(isset($_POST['update_warehouse'])){
         <?php $no=1; ?>
         <?php foreach($all_categories as $a_warehouse): ?>
           <tr>
-           <td class="text-center"><?php echo $no++;?></td>
+           <td class="text-center"><?php echo $no++.".";?></td>
            <td class="text-center"><a href="#detailloc<?php echo $a_warehouse['id_warehouse']?>" data-toggle="modal"><?php echo remove_junk(ucwords($a_warehouse['nm_warehouse']))?></a>
            </td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_warehouse['country']))?></td>

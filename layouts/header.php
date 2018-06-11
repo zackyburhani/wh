@@ -47,7 +47,7 @@
   <body>
   <?php  if ($session->isUserLoggedIn(true)): ?>
     <header id="header">
-      <div class="logo pull-left"> INVENTORY IKEA </div>
+      <div class="logo pull-left"> IKEA WAREHOUSE </div>
       <div class="header-content">
       <div class="header-date pull-left">
         <strong><?php echo date("F j, Y, g:i a");?></strong>
@@ -62,6 +62,27 @@
           <?php $warehouse = find_by_id_warehouse('warehouse',$user['id_warehouse']); ?>
 
           <?php $shipment   =  find_all_PO_shipment_notif($user['id_warehouse']); ?>
+
+          <?php $under_stock = find_all_item_under_stock($user['id_warehouse']); ?>
+
+          <?php $package = find_all_package_under_stock($user['id_warehouse'])?>
+
+          <li class="profile">
+            <span class="label label-danger"><?php if($under_stock != null) { echo $total = $under_stock+$package;}?></span>
+            <a href="#" data-toggle="dropdown" aria-expanded="false">
+              <span class="fa fa-balance-scale"><i class="caret"></i></span> 
+            </a>
+          
+            <ul class="dropdown-menu">
+              <li>
+                <a href="warehouse.php">
+                  <i class="fa fa-balance-scale"></i>Item Stock Out
+                  <span class="label label-danger"><?php if($under_stock != null) { echo $under_stock; }  ?></span>
+                </a>
+              </li>
+           </ul>
+          </li>
+
 
           <?php if($warehouse['status'] != 0) { ?>
 
@@ -158,7 +179,5 @@
 
 <div class="page">
   <div class="container-fluid">
-
-
  
     

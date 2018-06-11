@@ -1,5 +1,5 @@
 <?php
-  $page_title = 'All categories';
+  $page_title = 'Categories';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
   page_require_level(3);
@@ -314,9 +314,10 @@
                       </tr>
                     </thead>
                     <tbody>
+                    <?php $no=1; ?>
                     <?php foreach ($all_categories as $cat):?>
                       <tr>
-                        <td class="text-center"><?php echo count_id();?></td>
+                        <td class="text-center"><?php echo $no++.".";?></td>
                         <td><?php echo remove_junk(ucfirst($cat['nm_categories'])); ?></td>
                         <td class="text-center">
                           <button data-target="#updateCategory<?php echo $cat['id_categories'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit"><i class="glyphicon glyphicon-edit"></i>
@@ -350,7 +351,7 @@
                       <?php $no=1; ?>
                       <?php foreach ($all_subcategories as $subcat):?>
                         <tr>
-                          <td class="text-center"><?php echo $no++; ?></td>
+                          <td class="text-center"><?php echo $no++."."; ?></td>
                           <td><a href="#detailSubcategory<?php echo $subcat['id_subcategories'];?>" data-toggle="modal" title="Detail"><?php echo remove_junk(ucfirst($subcat['nm_subcategories'])); ?></a></td>
                           <td class="text-center">
                             <button data-target="#updateSubcategory<?php echo $subcat['id_subcategories'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit"><i class="glyphicon glyphicon-edit"></i>

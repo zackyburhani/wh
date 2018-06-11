@@ -110,6 +110,10 @@ function find_warehouse_location($id_warehouse) {
   return find_by_sql("SELECT * FROM location WHERE id_warehouse = '$id_warehouse'");
 }
 
+function find_warehouse_name() {
+   return find_by_sql("SELECT nm_warehouse FROM warehouse");
+}
+
 function find_all_chained_item() {
    global $db;
      return find_by_sql("SELECT * FROM warehouse, location,item WHERE warehouse.id_warehouse = location.id_warehouse AND item.id_location = location.id_location ORDER BY nm_warehouse");
@@ -122,6 +126,12 @@ function find_warehouse_po($id_warehouse) {
 function find_warehouse_id($id_warehouse) {
   global $db;
   $sql = $db->query("SELECT * FROM warehouse WHERE id_warehouse = '$id_warehouse'");
+  return $db->fetch_assoc($sql);
+}
+
+function find_package_id($id_package) {
+  global $db;
+  $sql = $db->query("SELECT * FROM package WHERE id_package = '$id_package'");
   return $db->fetch_assoc($sql);
 }
 
@@ -188,7 +198,7 @@ function find_all_package($table,$id) {
 
 function find_all_bpack($id_warehouse) {
   global $db;
-  return find_by_sql("SELECT * FROM bpack,package WHERE package.id_warehouse = '$id_warehouse'");
+  return find_by_sql("SELECT * FROM bpack,package WHERE bpack.id_package = package.id_package and package.id_warehouse = '$id_warehouse'");
 }
 
 
@@ -227,13 +237,13 @@ function get_product($table,$id){
 
 function get_item_condition($id_warehouse){
   global $db;
-    return find_by_sql("SELECT * FROM item,location,warehouse where item.id_location = location.id_location and location.id_warehouse = warehouse.id_warehouse and stock < 1000 and warehouse.id_warehouse = '$id_warehouse'");
+    return find_by_sql("SELECT * FROM item,location,warehouse where item.id_location = location.id_location and location.id_warehouse = warehouse.id_warehouse and stock < safety_Stock and warehouse.id_warehouse = '$id_warehouse'");
 }
 
 //note on oracle
 function get_package_condition($id_warehouse){
   global $db;
-    return find_by_sql("SELECT * FROM package,warehouse where package.id_warehouse = warehouse.id_warehouse and jml_stock < 1000 and warehouse.id_warehouse = '$id_warehouse'");
+    return find_by_sql("SELECT * FROM package where jml_stock < package.safety_stock and package.id_warehouse = '$id_warehouse'");
 }
 
 
@@ -381,6 +391,22 @@ function find_all_admin(){
       global $db;
       $results = array();
       $sql = $db->query("SELECT po.id_po,po.date_po as date_po,qty,status,po.id_warehouse as for_wh,total_weight,id_item, detil_po.date_po as date_sent, detil_po.id_warehouse as from_wh from detil_po,po WHERE po.id_po = detil_po.id_po and status = 'On Destination' and po.id_warehouse = '$id_warehouse' ORDER by 1 desc");
+      $result = $db->num_rows($sql);
+      return $result;
+  }
+
+  function find_all_item_under_stock( $id_warehouse){
+      global $db;
+      $results = array();
+      $sql = $db->query("SELECT * FROM item,location,warehouse WHERE item.id_location = location.id_location and warehouse.id_warehouse = location.id_warehouse and warehouse.id_warehouse = '$id_warehouse' and stock < safety_stock ORDER by 1 DESC;");
+      $result = $db->num_rows($sql);
+      return $result;
+  }
+
+  function find_all_package_under_stock( $id_warehouse){
+      global $db;
+      $results = array();
+      $sql = $db->query("SELECT * FROM package WHERE package.id_warehouse = '$id_warehouse' and jml_stock < safety_stock ORDER by 1 DESC");
       $result = $db->num_rows($sql);
       return $result;
   }
@@ -734,6 +760,16 @@ function count_by_warehouse($table){
   }
 }
 
+function count_total_bpack($table){
+  global $db;
+  if(tableExists($table))
+  {
+    $sql    = "SELECT sum(total) AS total FROM ".$db->escape($table);
+    $result = $db->query($sql);
+     return($db->fetch_assoc($result));
+  }
+}
+
 function count_by_all($id,$table,$id_warehouse){
   global $db;
     $sql    = "SELECT COUNT($id) AS total FROM $table WHERE id_warehouse = '$id_warehouse'";
@@ -778,7 +814,7 @@ function count_all_subcategories($id_warehouse){
 
 function count_all_bpack($id_warehouse){
   global $db;
-  $sql = "SELECT COUNT(id_bpack) as total FROM package JOIN bpack on package.id_package = bpack.id_package join item on item.id_item = bpack.id_item WHERE package.id_warehouse = '$id_warehouse'";
+  $sql = "SELECT COUNT(bpack.id_bpack) as total FROM package JOIN bpack on package.id_package = bpack.id_package join item on item.id_item = bpack.id_item WHERE package.id_warehouse = '$id_warehouse'";
   $result = $db->query($sql);
   return($db->fetch_assoc($result));
 }

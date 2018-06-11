@@ -6,6 +6,8 @@
   page_require_level(2);
   $user = current_user();
 
+  $get_product = get_item_condition($user['id_warehouse']);
+
   //only super user
   $c_warehouse    = count_by_warehouse('warehouse');
   $c_admin_wh     = count_all_admin();
@@ -16,7 +18,6 @@
   $c_subcategories = count_all_subcategories($user['id_warehouse']);
   $c_package       = count_by_all('id_package','package',$user['id_warehouse']);
   $c_bpack         = count_all_bpack($user['id_warehouse']);
-
 
 ?>
 
@@ -168,7 +169,7 @@ $get_product = get_item_condition($user['id_warehouse']);
   
      $array = array();
      foreach($get_product as $product) {
-        if($product['stock'] <= 1000){  
+        if($product['stock'] <= $product['safety_stock']){  
           echo '<script> setTimeout(function() {
                   swal({
                           title: "Your Items Almost Stock Out!",

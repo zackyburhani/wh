@@ -1,5 +1,5 @@
 <?php
-  $page_title = 'History Purchase Order';
+  $page_title = 'Purchase Offer';
   require_once('includes/load.php');
   $all_warehouse = find_all1('warehouse');
   $user = current_user();

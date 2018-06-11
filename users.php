@@ -1,5 +1,5 @@
 <?php
-  $page_title = 'All User';
+  $page_title = 'Manage Employee';
   require_once('includes/load.php');
 ?>
 <?php
@@ -144,9 +144,10 @@
           </tr>
         </thead>
         <tbody>
+        <?php $no=1; ?>
         <?php foreach($all_users as $a_user): ?>
           <tr>
-           <td class="text-center"><?php echo count_id();?>.</td>
+           <td class="text-center"><?php echo $no++.".";?>.</td>
            <td><?php echo remove_junk(ucwords($a_user['nm_employer']))?></td>
            <td><?php echo remove_junk($a_user['username'])?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_user['nm_position']))?></td>

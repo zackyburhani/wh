@@ -1,12 +1,12 @@
 <?php
-  $page_title = 'History Purchase Order';
+  $page_title = 'Approved History';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
    page_require_level(2);
    $all_warehouse = find_all1('warehouse');
    $user = current_user();
    $all_history_shipment  = find_all_history_shipment($user['id_warehouse']);
-   // echo json_encode($user);  die();
+
    
 ?>
 
@@ -38,9 +38,10 @@
           </tr>
         </thead>
         <tbody>
+        <?php echo $no=1; ?>
         <?php foreach($all_history_shipment as $a_shipment_history): ?>
           <tr>
-           <td class="text-center"><?php echo count_id();?></td>
+           <td class="text-center"><?php echo $no++.".";?></td>
            <td><?php echo remove_junk(ucwords($a_shipment_history['id_shipment']))?></td>
            <td><?php echo remove_junk(ucwords($a_shipment_history['date_shipment']))?></td>
            <td><?php echo remove_junk(ucwords($a_shipment_history['id_po']))?></td>

@@ -1,4 +1,4 @@
-<?php
+  <?php
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
   page_require_level(2);
@@ -139,10 +139,6 @@
       }
     }
  
-
-    var address1;
-    var latt;
-    var long;
     // create function to return address
     function getCoordinates(address) {
       //check wether geocode objet exist or not. if not create one
@@ -200,8 +196,10 @@
           infowindow.setContent(content);
  
           infowindow.open(map, marker);
-        
-                  //Save Location
+
+        } 
+
+        //Save Location
           $('#save_wh').on('click',function(){
 
             var address_AJX     = address1;
@@ -217,6 +215,7 @@
                 url: "insert_warehouse.php",
                 data: {warehousename:warehousename, status:status,heavymax:heavymax,convert_max:convert_max,address_AJX: address_AJX, latt_AJX: latt_AJX, long_AJX: long_AJX, country2:country2},
                 success: function(data) {
+                  location.reload();
                   $('[name="warehousename"]').val("");
                   $('[name="heavymax"]').val("");
                   $('[name="address"]').val("");
@@ -226,11 +225,7 @@
                 return false;
           });
 
-        } 
-
-
       });
-
     }
  
   })();   

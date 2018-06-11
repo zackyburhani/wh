@@ -1,5 +1,5 @@
 <?php
-  $page_title = 'All Group';
+  $page_title = 'Manage Position';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
    page_require_level(2);
@@ -139,9 +139,10 @@
           </tr>
         </thead>
         <tbody>
+        <?php $no=1; ?>
         <?php foreach($all_position as $a_position): ?>
           <tr>
-           <td class="text-center"><?php echo count_id();?></td>
+           <td class="text-center"><?php echo $no++.".";?></td>
            <td><?php echo remove_junk(ucwords($a_position['nm_position']))?></td>
            <td align="center"><?php echo remove_junk(ucwords($a_position['level_user']))?></td>
            <td class="text-center">

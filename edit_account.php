@@ -125,15 +125,15 @@
   <div class="col-md-12">
     <?php echo display_msg($msg); ?>
   </div>
-  <div class="col-md-6">
+</div>
+<div class="row">
+  <div class="col-md-7">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <div class="panel-heading clearfix">
             <span class="glyphicon glyphicon-camera"></span>
             <span>Change My photo</span>
-          </div>
         </div>
-        <div class="panel-body">
+        <div class="panel-body" style="background: #e6e6e6">
           <div class="row">
             <div class="col-md-4">
                 <img class="img-circle img-size-2" src="uploads/users/<?php echo $user['image'];?>" alt="">
@@ -153,7 +153,7 @@
         </div>
       </div>
   </div>
-  <div class="col-md-6">
+  <div class="col-md-5">
     <div class="panel panel-default">
       <div class="panel-heading clearfix">
         <span class="glyphicon glyphicon-edit"></span>
