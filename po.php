@@ -237,7 +237,7 @@ if(isset($_POST['update'])) {
       <?php if($_SESSION['cart'] != null){ ?>
         <div class="form-group">
           <label class="control-label">Send Date</label>
-          <input type="date" class="form-control" name="send_date">
+          <input type="date" class="form-control" required name="send_date">
         </div>
       <?php } ?>
         <hr>
@@ -372,7 +372,7 @@ if(isset($_POST['update'])) {
 
             <div class="form-group">
               <label class="control-label">QTY</label>
-              <input type="number" min="1" class="form-control" name="qty">
+              <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="1" class="form-control" name="qty">
             </div> 
           </div>
           <div class="modal-footer">

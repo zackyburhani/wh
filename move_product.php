@@ -55,11 +55,37 @@ if(isset($_POST['update_po'])){
   $weight_new  = $all_item['weight'];
   $stock_new   = $qty_new['qty'];
 
-  $query3  = "INSERT INTO item (";
-  $query3 .=" id_item,nm_item,colour,width,height,length,weight,stock,safety_stock,id_package,id_subcategories,id_location";
-  $query3 .=") VALUES (";
-  $query3 .=" '{$id_item_new}', '{$nm_item_new}', '{$colour_new}', '{$width_new}', '{$height_new}', '{$length_new}', '{$weight_new}', '{$stock_new}','{$safety_stock}','{$id_package}','{$id_subcategories}','{$id_location}'";
-  $query3 .=")";
+  $tes2 = find_all_product($user['id_warehouse']);
+    $a = array();
+    foreach ($tes2 as $key) {
+      $a[] = $key['stock'];
+    }
+
+  if(find_by_itemName($nm_item_new,$user['id_warehouse']) === false ){
+    $tes = find_all_product($user['id_warehouse']);
+
+    global $db;
+    foreach ($tes as $key) {
+      $id_item1 = $key['id_item'];
+
+      $coba = $db->query("SELECT stock from item where id_item = '$id_item1' and nm_item = '$nm_item_new'");
+      $assoc = $db->fetch_assoc($coba);
+
+      $stock1 = $stock_new+$assoc['stock'];
+      $query_up  = "UPDATE item SET ";
+      $query_up .= "nm_item = '{$nm_item_new}',colour = '{$colour_new}',id_subcategories = '{$id_subcategories}',width = '{$width_new}',height = '{$height_new}',length = '{$length_new}',weight = '{$weight_new}',stock = '{$stock1}',id_package = '{$id_package}',id_location = '{$id_location}', safety_stock = '{$safety_stock}'";
+      $query_up .= "WHERE id_item = '{$id_item1}' and nm_item = '{$nm_item_new}'";
+
+      $db->query($query_up); 
+    }
+  } else {
+    $query3  = "INSERT INTO item (";
+    $query3 .=" id_item,nm_item,colour,width,height,length,weight,stock,safety_stock,id_package,id_subcategories,id_location";
+    $query3 .=") VALUES (";
+    $query3 .=" '{$id_item_new}', '{$nm_item_new}', '{$colour_new}', '{$width_new}', '{$height_new}', '{$length_new}', '{$weight_new}', '{$stock_new}','{$safety_stock}','{$id_package}','{$id_subcategories}','{$id_location}'";
+    $query3 .=")";  
+    $db->query($query3);
+  }
 
   //reduce area consumed 
   $consumed     = $all_warehouse_id['heavy_consumed'];
@@ -83,7 +109,6 @@ if(isset($_POST['update_po'])){
      $result = $db->query($sql);
      if($result) {
       $db->query($query2);
-      $db->query($query3);
       $db->query($query4);
       $db->query($sql2);
        $session->msg("s", "Successfully Approved");

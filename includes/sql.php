@@ -222,7 +222,6 @@ function find_weight_package($id_package) {
      return $db->fetch_assoc($sql);
 }
 
-
 function find_all_subcategories($table,$id) {
    global $db;
    if(tableExists($table))
@@ -978,6 +977,17 @@ function insert_new_id($id_warehouse)
     $result = $db->query($sql);
     return($db->num_rows($result) === 0 ? true : false);
   }
+
+  //find itemName
+  function find_by_itemName($val,$id_warehouse)
+  {
+    global $db;
+    $sql = "SELECT nm_item FROM item,location,warehouse WHERE item.id_location = location.id_location and location.id_warehouse = warehouse.id_warehouse and nm_item = '{$db->escape($val)}' and warehouse.id_warehouse = '$id_warehouse' LIMIT 1 ";
+    $result = $db->query($sql);
+    return($db->num_rows($result) === 0 ? true : false);
+  }
+
+
   /*--------------------------------------------------------------*/
   /* Find group level
   /*--------------------------------------------------------------*/

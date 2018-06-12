@@ -147,7 +147,7 @@ $leadTime   = find_leadtime($leadTime_po['id_po'],$user['id_warehouse']);
           function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
               zoom: 4,
-              center: {lat: lat1, lng: long2},
+              center: {lat: lat1, lng: long1},
               mapTypeId: 'terrain'
             });
 

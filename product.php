@@ -335,6 +335,7 @@
             <thead>
               <tr>
                 <th class="text-center" style="width: 1px;">No.</th>
+                <th class="text-center"> ID Item</th>
                 <th class="text-center"> Name Product</th>
                 <th class="text-center"> Color Product </th>
                 <th class="text-center" style="width: 5px;"> Stock </th>
@@ -349,6 +350,7 @@
               <?php foreach ($get_product as $items):?>
               <tr>
                 <td class="text-center"><?php echo $no++.".";?></td>
+                <td class="text-center"> <?php echo remove_junk(ucfirst($items['id_item'])); ?></td>
                 <td class="text-center"><a href="#detilItem<?php echo $items['id_item'];?>" data-toggle="modal" title="Detail"> <?php echo remove_junk(ucfirst($items['nm_item'])); ?></a></td>
                 <td class="text-center"> <?php echo remove_junk(ucfirst($items['colour'])); ?></td>
                 <td class="text-center"> <?php echo remove_junk(ucfirst($items['stock'])); ?></td>
