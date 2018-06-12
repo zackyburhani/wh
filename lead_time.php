@@ -26,12 +26,12 @@ function GetDrivingDistance($lat1, $lat2, $long1, $long2)
     $response_a = json_decode($response, true);
     
       $time = $response_a['rows'][0]['elements'][0]['duration']['text'];
-      return array('time' => $time);
-    
+      return array('time' => $time);   
 }
 
+$leadTime_po = find_leadtime_po($user['id_warehouse']);
 
-$leadTime   = find_leadtime('0001',$user['id_warehouse']);
+$leadTime   = find_leadtime($leadTime_po['id_po'],$user['id_warehouse']);
 
 ?>
 
@@ -58,7 +58,8 @@ $leadTime   = find_leadtime('0001',$user['id_warehouse']);
             <th class="text-center">From Warehouse</th>
             <th class="text-center">To Warehouse</th>
             <th class="text-center" style="width: 150px;">Distance</th>
-            <th class="text-center" style="width: 150px;">Estimated Time</th>
+            <!-- <th class="text-center" style="width: 150px;">Estimated Time</th> -->
+            <th class="text-center" style="width: 150px;">Polylines</th>
           </tr>
         </thead>
         <tbody>
@@ -81,7 +82,6 @@ $leadTime   = find_leadtime('0001',$user['id_warehouse']);
             $dist = rad2deg($dist);
             $miles = $dist * 60 * 1.1515;
             $distance = ($miles * 1.609344);
-             
 
           ?>
             <tr>
@@ -89,7 +89,7 @@ $leadTime   = find_leadtime('0001',$user['id_warehouse']);
              <td class="text-center"><?php echo remove_junk(ucwords($time['from_wh']))?></td>
              <td class="text-center"><?php echo remove_junk(ucwords($time['for_wh']))?></td>
              <td class="text-center"><?php echo round($distance,2)." <b>Km</b>" ?></td>
-             <td class="text-center">    
+             <!-- <td class="text-center">    
               <?php 
 
               $dist = GetDrivingDistance($latitudeFrom,$latitudeTo,$longitudeFrom,$longitudeTo);
@@ -101,7 +101,8 @@ $leadTime   = find_leadtime('0001',$user['id_warehouse']);
 
               ?>
 
-             </td>
+             </td> -->
+             <td class="text-center"><button data-target="#target<?php echo $time['id_po'] ?>" data-toggle="modal" class="btn btn-primary"><i class="fa fa-plane"></i></button></td>
             </tr>
           <?php } ?>
         </tbody>
@@ -115,5 +116,74 @@ $leadTime   = find_leadtime('0001',$user['id_warehouse']);
   </div>
 </div>
 
+<!-- MODAL ADD NEW PACKAGE -->
+<?php foreach($leadTime as $time) { ?>
+<div class="modal fade" id="target<?php echo $time['id_po'] ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-plane"></i> Polylines</h4>
+      </div>
+      <div class="modal-body">
+
+        <div id="map"></div>
+
+
+        <input type="hidden" id="latitude1"  value="<?php echo $latitudeFrom  = $time['latitude1'];  ?>">
+        <input type="hidden" id="longitude1" value="<?php echo $longitudeFrom = $time['longitude1']; ?>">
+        <input type="hidden" id="latitude2"  value="<?php echo $latitudeTo    = $time['latitude2']; ?>">
+        <input type="hidden" id="longitude2" value="<?php echo $longitudeTo   = $time['longitude2']; ?>">
+
+        <script>
+
+          var lat1  = parseFloat(document.getElementById('latitude1').value);
+          var long1 = parseFloat(document.getElementById('longitude1').value);
+          var lat2  = parseFloat(document.getElementById('latitude2').value);
+          var long2 = parseFloat(document.getElementById('longitude2').value);
+
+          function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 4,
+              center: {lat: lat1, lng: long2},
+              mapTypeId: 'terrain'
+            });
+
+            console.log(lat2);
+
+            var flightPlanCoordinates = [
+              {lat: lat1, lng: long1},
+              {lat: lat2, lng: long2}
+            ];
+            var flightPath = new google.maps.Polyline({
+              path: flightPlanCoordinates,
+              geodesic: true,
+              strokeColor: '#3175b8',
+              strokeOpacity: 1.0,
+              strokeWeight: 2
+            });
+
+            flightPath.setMap(map);
+          }
+        </script>
+        <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjdeO9J1CF_PRTS9aOjZ9-Scg8dIlhxGg&callback=initMap">
+        </script>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" title="Close" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+<?php } ?>
+<!-- END MODAL ADD NEW PACKAGE -->
+
  
 <?php include_once('layouts/footer.php'); ?>
+

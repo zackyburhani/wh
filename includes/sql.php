@@ -163,6 +163,13 @@ FROM detil_po,po,warehouse WHERE po.id_po = '$id_po' and po.id_warehouse = '$id_
     ");
 }
 
+function find_leadtime_po($id_warehouse) {
+  global $db;
+  $sql = $db->query("SELECT po.id_po as id_po, po.date_po as date_po,po.id_warehouse as for_wh, detil_po.date_po as date_send,qty,status,detil_po.id_warehouse as from_wh,detil_po.total_weight FROM po,detil_po where STATUS = 'On Destination' and po.id_po = detil_po.id_po and po.id_warehouse = '$id_warehouse'");
+     return $db->fetch_assoc($sql);
+}
+
+
 function find_all1_ware($table) {
    global $db;
    if(tableExists($table))
