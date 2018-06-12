@@ -29,9 +29,11 @@ function GetDrivingDistance($lat1, $lat2, $long1, $long2)
       return array('time' => $time);   
 }
 
-$leadTime_po = find_leadtime_po($user['id_warehouse']);
+$warehouse_lt = find_leadtime_wh($user['id_warehouse']);
+$leadTime_po  = find_leadtime_po($warehouse_lt['for_wh'],$warehouse_lt['from_wh']);
+$leadTime     = find_leadtime($leadTime_po['id_po'],$user['id_warehouse']);
 
-$leadTime   = find_leadtime($leadTime_po['id_po'],$user['id_warehouse']);
+// echo json_encode($leadTime_po['id_po']);die();
 
 ?>
 
@@ -102,7 +104,7 @@ $leadTime   = find_leadtime($leadTime_po['id_po'],$user['id_warehouse']);
               ?>
 
              </td> -->
-             <td class="text-center"><button data-target="#target<?php echo $time['id_po'] ?>" data-toggle="modal" class="btn btn-primary"><i class="fa fa-plane"></i></button></td>
+             <td class="text-center"><button data-target="#target<?php echo $time['id_po'] ?>" data-toggle="modal" class="btn btn-primary"><i class="fa fa-map-marker"></i></button></td>
             </tr>
           <?php } ?>
         </tbody>
@@ -125,7 +127,7 @@ $leadTime   = find_leadtime($leadTime_po['id_po'],$user['id_warehouse']);
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-plane"></i> Polylines</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-map-marker"></i> Polylines</h4>
       </div>
       <div class="modal-body">
 

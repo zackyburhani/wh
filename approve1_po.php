@@ -42,6 +42,40 @@
  }
 ?>
 
+<!-- Disagree PO -->
+<?php
+  if(isset($_POST['cancel_po'])){
+
+    $req_fields = array('id_po');
+    validate_fields($req_fields);
+
+      if(empty($errors)){
+        $id_po = remove_junk($db->escape($_POST['id_po']));
+        $status  = 'Canceled';
+
+        $query  = "UPDATE detil_po SET ";
+        $query .= "status = '{$status}' ";
+        $query .= "WHERE id_po = '{$id_po}'";
+
+        $result = $db->query($query);
+         if($result){
+          //sucess
+          $db->query($query2);
+          $session->msg('s',"Purchase Order Has Been Canceled ! ");
+          redirect('approve1_po.php', false);
+        } else {
+          //failed
+          $session->msg('d',' Sorry Failed To Cancel Purchase Order !');
+          redirect('approve1_po.php', false);
+          }
+   } else {
+     $session->msg("d", $errors);
+     redirect('approve1_po.php', false);
+   }
+ }
+?>
+
+
 
 <?php include_once('layouts/header.php'); ?>
 <div class="row">
@@ -188,6 +222,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+          <button type="submit" name="cancel_po" class="btn btn-danger"><i class="fa fa-warning"></i> Disagree</button>
           <button type="submit" name="approve_po" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Approve</button>
         </div>
       </form>

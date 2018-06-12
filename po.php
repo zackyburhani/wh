@@ -243,7 +243,7 @@ if(isset($_POST['update'])) {
         <hr>
         <div class="form-group pull-right">
           <?php if($_SESSION['cart'] != null){ ?>
-            <button type="submit" class="btn btn-success" name="process"><i class="fa fa-money"></i> Process Purchase Order</button>
+            <button type="submit" class="btn btn-warning  " name="process"><i class="fa fa-money"></i> Process Purchase Order</button>
           <?php } ?>
           <button type="button" data-target="#add_product" class="btn btn-md btn-primary" data-toggle="modal" title="Add Item"><i class="glyphicon glyphicon-plus"></i> Choose Item
             </button>
@@ -261,7 +261,7 @@ if(isset($_POST['update'])) {
             <span>WAREHOUSE</span>
          </strong>
          <div class="pull-right">
-           <button type="submit" class="btn btn-danger" name="update"><i class="  fa fa-pencil-square"></i> Update QTY</button>
+           <button type="submit" class="btn btn-success" name="update"><i class="  fa fa-pencil-square"></i> Update QTY</button>
          </div>
         </div>
          <div class="panel-body">
@@ -300,7 +300,7 @@ if(isset($_POST['update'])) {
                   <td align="center"> <?php echo $cart[$i]->id_package; ?> </td>
                   <td align="center"> <?php echo $cart[$i]->nm_warehouse; ?> </td>
                   <td align="center">
-                    <input type="number" min="0" value="<?php echo $cart[$i]->qty; ?>" name="qty[]" style="width: 80px;">
+                    <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" value="<?php echo $cart[$i]->qty; ?>" name="qty[]" style="width: 80px;">
                   </td>
                   <td align="center"> <?php echo $cart[$i]->weight * $cart[$i]->qty; ?> </td> 
                   <td align="center"><a class="btn btn-danger" href="po.php?index=<?php echo $index; ?>" onclick="return confirm('Are you sure?')"><span class="glyphicon glyphicon-trash"></span></a> </td>

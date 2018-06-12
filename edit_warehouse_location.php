@@ -176,7 +176,7 @@
             marker = new google.maps.Marker({
               map: map,
               animation: google.maps.Animation.DROP,
-              icon: 'img/maps/maps.ico'
+              icon: 'img/maps/333.png'
             });
           }
           // set position
