@@ -27,6 +27,7 @@
       if(empty($errors)){
         $id_item = remove_junk($db->escape($_POST['id_item']));
         $id_po   = remove_junk($db->escape($_POST['id_po']));
+        $qty     = remove_junk($db->escape($_POST['qty']));
         $status  = 'On Destination';
 
         $query  = "UPDATE detil_po SET ";
@@ -55,15 +56,29 @@
         $max          = $all_warehouse_id['heavy_max'];
         $count        = $consumed-$move_stock['total_weight'];
 
+        $item_fetch   = find_product_fetch($id_item);
+        if($item_fetch['stock'] < $qty){
+          $session->msg('d','The Item Is Not Enough');
+          redirect('approve2_po.php', false);
+        }
+
         $query3  = "UPDATE warehouse SET ";
         $query3.= "heavy_consumed = '{$count}' ";
         $query3 .= "WHERE id_warehouse = '{$id_warehouse}'";
+
+        //update qty item
+        $item_fetch   = find_product_fetch($id_item);
+        $update  =  $item_fetch['stock']-$qty;
+        $query4  = "UPDATE item SET ";
+        $query4 .= "stock = '{$update}' ";
+        $query4 .= "WHERE id_item = '{$id_item}'";
 
         $result = $db->query($query);
          if($result){
           //sucess
           $db->query($query2);
           $db->query($query3);
+          $db->query($query4);
           $session->msg('s',"Purchase Order Has Been Approved ! ");
           redirect('approve2_po.php', false);
         } else {
@@ -224,6 +239,7 @@
           <div class="form-group">
             <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($item['id_item'])); ?>" name="id_item">
              <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($item['id_po'])); ?>" name="id_po">
+             <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($item['qty'])); ?>" name="qty">
           </div>    
         </div>
         <div class="modal-footer">

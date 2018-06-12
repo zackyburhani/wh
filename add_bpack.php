@@ -41,7 +41,6 @@
       $query .= "heavy_consumed='{$reduced}' ";
       $query .= "WHERE id_warehouse = '{$id_warehouse}'";
 
-
    if(empty($errors)){
       $sql  = "INSERT INTO bpack (id_bpack,id_package,id_item,qty,total)";
       $sql .= " VALUES ('{$id_bpack}','{$id_package}','{$id_item}','{$qty}','{$count}')";
@@ -89,7 +88,6 @@ if(isset($_POST['update_bpack'])){
     redirect('add_bpack.php', false);
   }
 
-
   if(empty($errors)){
         $sql = "UPDATE bpack SET id_package='{$id_package}',id_item='{$id_item}',qty='{$qty}',total='{$count}'";
        $sql .= " WHERE id_bpack='{$id_bpack}'";
@@ -123,6 +121,7 @@ if(isset($_POST['update_bpack'])){
   $id_bpack  = remove_junk($db->escape($_POST['id_bpack']));
   $qty       = remove_junk($db->escape($_POST['qty']));
   $total     = remove_junk($db->escape($_POST['total']));
+  $id_item   = remove_junk($db->escape($_POST['id_item']));
 
   //reduce area consumed
     $consumed     = $all_warehouse_id['heavy_consumed']; 
@@ -143,6 +142,8 @@ if(isset($_POST['update_bpack'])){
         $sql = "DELETE FROM bpack WHERE id_bpack = '{$id_bpack}'";
      $result = $db->query($sql);
      if($result && $db->affected_rows() === 1) {
+       //delete item
+       $delete_id2   = delete('id_item','item',$id_item);
        $db->query($query);
        $session->msg("s", "Successfully delete Package");
        redirect('add_bpack.php',false);
@@ -174,8 +175,8 @@ if(isset($_POST['update_bpack'])){
      </strong>
      <?php
       if ($user['level_user']==0 || $user['level_user']==1) { ?>
-        <button type="button" title="Combine Package" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addPackage"><span class="glyphicon glyphicon-plus"></span> Combine Package
-        </button>
+        <!-- <button type="button" title="Combine Package" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addPackage"><span class="glyphicon glyphicon-plus"></span> Combine Package
+        </button> -->
       <?php } ?>
     </div>
      <div class="panel-body">
@@ -187,29 +188,28 @@ if(isset($_POST['update_bpack'])){
             <th class="text-center" style="width: 50px;">ID Item</th>
             <th class="text-center" style="width: 50px;">QTY</th>
             <th class="text-center" style="width: 50px;">Total Weight</th>
-            <th class="text-center" style="width: 100px;">Actions</th>
+            <!-- <th class="text-center" style="width: 100px;">Actions</th> -->
           </tr>
         </thead>
         <tbody>
+        <?php $no=1; ?>
         <?php foreach($all_package as $a_package): ?>
           <tr>
-           <td class="text-center"><?php echo count_id();?></td>
+           <td class="text-center"><?php echo $no++."."?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_package['id_package']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_package['id_item']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords(number_format($a_package['qty'])))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords(number_format($a_package['total'])))?></td>
-           <td class="text-center">
-                <button data-target="#updatebpack<?php echo $a_package['id_bpack'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
-                  <i class="glyphicon glyphicon-pencil"></i>
-                </button>
-              <?php
+           
+    <!--        <?php
                 if ($user['level_user']==0 || $user['level_user']==1 || $user['level_user']== 2) 
                   { ?>
-                <button data-target="#deletebpack<?php echo $a_package['id_bpack'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete">
-                  <i class="glyphicon glyphicon-trash"></i>
-                </button>
-              <?php } ?>
+           <td class="text-center">
+              <button data-target="#deletebpack<?php echo $a_package['id_bpack'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete">
+                <i class="glyphicon glyphicon-trash"></i>
+              </button>
            </td>
+           <?php } ?> -->
           </tr>
         <?php endforeach;?>
        </tbody>
@@ -348,7 +348,7 @@ if(isset($_POST['update_bpack'])){
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel">Delete Package</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-trash"></i> Delete Package</h4>
       </div>
       <div class="modal-body">
       <form method="post" action="add_bpack.php" class="clearfix">
@@ -356,6 +356,7 @@ if(isset($_POST['update_bpack'])){
         <p>Are You Sure to Delete Package ?</p>  
         <input type="hidden" name="total" value="<?php echo $a_package['total']; ?>">
         <input type="hidden" name="qty" value="<?php echo $a_package['qty']; ?>">
+        <input type="hidden" name="id_item" value="<?php echo $a_package['id_item']; ?>">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" title="Close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>

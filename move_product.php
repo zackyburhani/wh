@@ -26,6 +26,7 @@ if(isset($_POST['update_po'])){
   $id_location      = remove_junk($db->escape($_POST['id_location']));
   $id_package       = remove_junk($db->escape($_POST['id_package']));
   $id_subcategories = remove_junk($db->escape($_POST['id_subcategories']));
+  $safety_stock     = remove_junk($db->escape($_POST['safety_stock']));
 
 
   //insert table shipment 
@@ -35,41 +36,72 @@ if(isset($_POST['update_po'])){
   $idwarehouse  = $user["id_warehouse"];
   $idemployer   = $user["id_employer"];
 
-        $query2  = "INSERT INTO shipment (";
-        $query2 .=" id_shipment,date_shipment,id_po,id_warehouse,id_employer";
-        $query2 .=") VALUES (";
-        $query2 .=" '{$idshipment}', '{$dateshipment}', '{$idpo}', '{$idwarehouse}', '{$idemployer}'";
-        $query2 .=")";
+  $query2  = "INSERT INTO shipment (";
+  $query2 .=" id_shipment,date_shipment,id_po,id_warehouse,id_employer";
+  $query2 .=") VALUES (";
+  $query2 .=" '{$idshipment}', '{$dateshipment}', '{$idpo}', '{$idwarehouse}', '{$idemployer}'";
+  $query2 .=")";
 
-        //insert table product
-        $all_item = find_all_product_shipment($iditem);
-        $qty_new  = insert_new_id($user['id_warehouse']);
+  //insert table product
+  $all_item = find_all_product_shipment($iditem);
+  $qty_new  = insert_new_id($user['id_warehouse']);
 
+  $id_item_new = autonumber('id_item','item');
+  $nm_item_new = $all_item['nm_item'];
+  $colour_new  = $all_item['colour'];
+  $width_new   = $all_item['width'];
+  $height_new  = $all_item['height'];
+  $length_new  = $all_item['length'];
+  $weight_new  = $all_item['weight'];
+  $stock_new   = $qty_new['qty'];
 
-        $id_item_new = autonumber('id_item','item');
-        $nm_item_new = $all_item['nm_item'];
-        $colour_new  = $all_item['colour'];
-        $width_new   = $all_item['width'];
-        $height_new  = $all_item['height'];
-        $length_new  = $all_item['length'];
-        $weight_new  = $all_item['weight'];
-        $stock_new   = $qty_new['qty'];
+  $tes2 = find_all_product($user['id_warehouse']);
+    $a = array();
+    foreach ($tes2 as $key) {
+      $a[] = $key['stock'];
+    }
 
-        $query3  = "INSERT INTO item (";
-        $query3 .=" id_item,nm_item,colour,width,height,length,weight,stock,id_package,id_subcategories,id_location";
-        $query3 .=") VALUES (";
-        $query3 .=" '{$id_item_new}', '{$nm_item_new}', '{$colour_new}', '{$width_new}', '{$height_new}', '{$length_new}', '{$weight_new}', '{$stock_new}','{$id_package}','{$id_subcategories}','{$id_location}'";
-        $query3 .=")";
+  if(find_by_itemName($nm_item_new,$user['id_warehouse']) === false ){
+    $tes = find_all_product($user['id_warehouse']);
 
-        //reduce area consumed 
-        $consumed     = $all_warehouse_id['heavy_consumed'];
-        $heavy_max    = $all_warehouse_id['heavy_max'];
-        $id_warehouse = $all_warehouse_id['id_warehouse']; 
-        $reduced      = ($weight_new*$stock_new )+$consumed;
+    global $db;
+    foreach ($tes as $key) {
+      $id_item1 = $key['id_item'];
 
-      $query4  = "UPDATE warehouse SET ";
-      $query4 .= "heavy_consumed='{$reduced}' ";
-      $query4 .= "WHERE id_warehouse = '{$id_warehouse}'";
+      $coba = $db->query("SELECT stock from item where id_item = '$id_item1' and nm_item = '$nm_item_new'");
+      $assoc = $db->fetch_assoc($coba);
+
+      $stock1 = $stock_new+$assoc['stock'];
+      $query_up  = "UPDATE item SET ";
+      $query_up .= "nm_item = '{$nm_item_new}',colour = '{$colour_new}',id_subcategories = '{$id_subcategories}',width = '{$width_new}',height = '{$height_new}',length = '{$length_new}',weight = '{$weight_new}',stock = '{$stock1}',id_package = '{$id_package}',id_location = '{$id_location}', safety_stock = '{$safety_stock}'";
+      $query_up .= "WHERE id_item = '{$id_item1}' and nm_item = '{$nm_item_new}'";
+
+      $db->query($query_up); 
+    }
+  } else {
+    $query3  = "INSERT INTO item (";
+    $query3 .=" id_item,nm_item,colour,width,height,length,weight,stock,safety_stock,id_package,id_subcategories,id_location";
+    $query3 .=") VALUES (";
+    $query3 .=" '{$id_item_new}', '{$nm_item_new}', '{$colour_new}', '{$width_new}', '{$height_new}', '{$length_new}', '{$weight_new}', '{$stock_new}','{$safety_stock}','{$id_package}','{$id_subcategories}','{$id_location}'";
+    $query3 .=")";  
+    $db->query($query3);
+  }
+
+  //reduce area consumed 
+  $consumed     = $all_warehouse_id['heavy_consumed'];
+  $heavy_max    = $all_warehouse_id['heavy_max'];
+  $id_warehouse = $all_warehouse_id['id_warehouse']; 
+  $reduced      = ($weight_new*$stock_new )+$consumed;
+
+  $query4  = "UPDATE warehouse SET ";
+  $query4 .= "heavy_consumed='{$reduced}' ";
+  $query4 .= "WHERE id_warehouse = '{$id_warehouse}'";
+
+  //insert table bpack
+  $id_bpack = autonumber('id_bpack','bpack');
+  $count    = $weight_new*$stock_new;
+  $sql2  = "INSERT INTO bpack (id_bpack,id_package,id_item,qty,total)";
+  $sql2 .= " VALUES ('{$id_bpack}','{$id_package}','{$iditem}','{$stock_new}','{$count}')";
 
   if(empty($errors)){
         $sql = "UPDATE detil_po SET status='{$status}'";
@@ -77,8 +109,8 @@ if(isset($_POST['update_po'])){
      $result = $db->query($sql);
      if($result) {
       $db->query($query2);
-      $db->query($query3);
       $db->query($query4);
+      $db->query($sql2);
        $session->msg("s", "Successfully Approved");
        redirect('move_product.php',false);
      } else {
@@ -121,10 +153,11 @@ if(isset($_POST['update_po'])){
               </tr>
             </thead>
             <tbody>
+              <?php $no=1; ?>
               <?php foreach ($status1 as $po1):?>     
                 <input type="hidden" name="idpo" value="<?php echo remove_junk ($po1["id_po"])?>">
                <tr>
-                <td class="text-center"><?php echo count_id();?></td>
+                <td class="text-center"><?php echo $no++.".";?></td>
                 <td class="text-center"> <?php echo remove_junk($po1['id_po']); ?></td>
                 <td class="text-center"> <?php echo remove_junk($po1['date_po']); ?></td>
                 <td class="text-center"> <?php echo remove_junk($po1['id_item']); ?></td>
@@ -208,6 +241,12 @@ if(isset($_POST['update_po'])){
             <?php } ?>
             </select>
           </div>
+
+          <div class="form-group">
+            <label class="control-label">Safety Stock</label>
+            <input type="number" min="0" class="form-control" required placeholder="Safety Stock" name="safety_stock">
+          </div>
+
         <input type="hidden" value="<?php echo $a_location['id_po'];?>" name="id_po">
          <input type="hidden" value="<?php echo $a_location['id_item'];?>" name="id_item">
         </div>

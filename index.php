@@ -18,7 +18,7 @@
 
     <!-- Icon -->
     <div class="fadeIn first">
-      <img src="img/ikea-gif.gif" id="icon" alt="User Icon"/>
+      <img src="img/logo.png" id="icon" alt="User Icon"/ style="padding-top: 50px; padding-bottom: 20px">
     </div>
     <!-- Login Form -->
     <form method="post" action="auth.php" class="clearfix">

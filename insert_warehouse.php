@@ -21,7 +21,7 @@ $convert_max    = remove_junk($db->escape($_POST['convert_max']));
 
 $query = $db->query("INSERT INTO warehouse (id_warehouse,nm_warehouse,country, address, status, heavy_max, heavy_consumed, latitude, longitude) VALUES ('$id_warehouse','$warehousename','$country','$address_AJX','$status','$heavymax','$heavy_consumed',$latt_AJX, $long_AJX)");
 
-$getAllWarehouseName = "SELECT nm_warehouse FROM warehouse where nm_warehouse = '$cat_name'";
+$getAllWarehouseName = "SELECT nm_warehouse FROM warehouse where nm_warehouse = '$warehousename'";
     $ada=$db->query($getAllWarehouseName) or die(mysql_error());
     if(mysqli_num_rows($ada)>0)
     { 

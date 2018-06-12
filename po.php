@@ -1,5 +1,5 @@
 <?php
-  $page_title = 'Purchase Order Transaction';
+  $page_title = 'Add Purchase Order';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
   page_require_level(2);
@@ -110,12 +110,13 @@ class POrder{
 }
 
 if(isset($_GET['add_item']) && !isset($_POST['update']))  { 
+  global $db;
   $id    = $_GET['id_item'];
   $id_wh = remove_junk($db->escape($_GET['warehouse_id']));
   $qty   = remove_junk($db->escape($_GET['qty']));
   $sql   = "SELECT item.id_item,item.nm_item,item.colour,item.width,item.height,item.length,item.weight,item.stock,item.id_package,item.id_subcategories,item.id_location,warehouse.nm_warehouse,warehouse.id_warehouse FROM item,location,warehouse WHERE item.id_location = location.id_location and location.id_warehouse = warehouse.id_warehouse and item.id_item = '$id'";
   $result  = $db->query($sql); 
-  $product = mysqli_fetch_object($result);
+  $product = $db->fetch_object($result);
 
   $po    = new POrder();
   $po->id_item          = $product->id_item;
@@ -236,16 +237,8 @@ if(isset($_POST['update'])) {
       <?php if($_SESSION['cart'] != null){ ?>
         <div class="form-group">
           <label class="control-label">Send Date</label>
-          <input type="date" class="form-control" name="send_date">
+          <input type="date" class="form-control" required name="send_date">
         </div>
-        <!-- <div class="form-group">
-          <label class="control-label">From Warehouse</label>
-          <select class="form-control" id="warehouse" name="from_id_warehouse">
-            <?php foreach($getAllWarehouse as $wh) { ?>
-            <option value="<?php echo remove_junk($wh['id_warehouse']); ?>"><?php echo remove_junk(ucwords($wh['nm_warehouse'])); ?></option>
-              <?php } ?>
-          </select>
-        </div> --> 
       <?php } ?>
         <hr>
         <div class="form-group pull-right">
@@ -379,7 +372,7 @@ if(isset($_POST['update'])) {
 
             <div class="form-group">
               <label class="control-label">QTY</label>
-              <input type="number" min="1" class="form-control" name="qty">
+              <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="1" class="form-control" name="qty">
             </div> 
           </div>
           <div class="modal-footer">

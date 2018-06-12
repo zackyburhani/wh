@@ -45,8 +45,8 @@ $pdf->Cell(4,0.5,'SUM WEIGHT',1,1,'C');
  
 $pdf->SetFont('Arial','',10);
  
-global = $db;
-$report = $db->query($connect, "SELECT po.id_po as no_po, nm_item, qty, total_weight,detil_po.id_warehouse as warehouse_from, po.id_warehouse as warehouse_to,po.date_po as datepo FROM po JOIN detil_po ON po.id_po = detil_po.id_po JOIN item on detil_po.id_item = item.id_item join warehouse on detil_po.id_warehouse = warehouse.id_warehouse WHERE po.id_po = '$id' order by po.id_po desc");
+global $db;
+$report = $db->query("SELECT po.id_po as no_po, nm_item, qty, total_weight,detil_po.id_warehouse as warehouse_from, po.id_warehouse as warehouse_to,po.date_po as datepo FROM po JOIN detil_po ON po.id_po = detil_po.id_po JOIN item on detil_po.id_item = item.id_item join warehouse on detil_po.id_warehouse = warehouse.id_warehouse WHERE po.id_po = '$id' order by po.id_po desc");
 if (!$report) {
     printf("Error: %s\n", mysqli_error($connect));
     exit();
@@ -59,10 +59,10 @@ while ($row = $db->fetch_assoc($report))
     $pdf->Cell(4,0.5,$row['warehouse_from'],1,0,'C');
     $pdf->Cell(4,0.5,$row['warehouse_to'],1,0,'C');
     $pdf->Cell(2,0.5,$row['qty'],1,0,'C');
-    $pdf->Cell(4,0.5,$row['total_weight']."/ Kg",1,1,'C');
+    $pdf->Cell(4,0.5,$row['total_weight']." /Kg",1,1,'C');
 }
 
-$query=$db->query($connect, "SELECT SUM(total_weight) AS sum_weight FROM detil_po WHERE id_po = '$id'");
+$query=$db->query("SELECT SUM(total_weight) AS sum_weight FROM detil_po WHERE id_po = '$id'");
 if (!$query) {
     printf("Error: %s\n", mysqli_error($connect));
     exit();
@@ -71,7 +71,7 @@ while($total = $db->fetch_assoc($query))
 {
 	$pdf->SetFont('Arial','B',10);
 	$pdf->Cell(22,0.5,"TOTAL WEIGHT", 1, 0,'C');		
-	$pdf->Cell(4,0.5, number_format($total['sum_weight'])." kg", 1, 0,'C');	
+	$pdf->Cell(4,0.5, number_format($total['sum_weight'])." /kg", 1, 0,'C');	
 }
 
  

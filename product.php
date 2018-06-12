@@ -1,5 +1,5 @@
 <?php
-  $page_title = 'All Product';
+  $page_title = 'Products';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
    page_require_level(2);
@@ -19,13 +19,17 @@
   $all_location        = find_all_location('location',$id);
 
   $warehouse    = find_by_id_warehouse('warehouse',$user['id_warehouse']);
- 
-  // if($get_product == null){
-  //   $query2  = "UPDATE warehouse SET ";
-  //   $query2 .= "heavy_consumed = 0.00";
-  //   $query2 .= " WHERE id_warehouse = '{$id}'";
-  //   $db->query($query2);
-  // } 
+
+  //check qty package and item
+  $get_product     = get_product('item',$user['id_warehouse']);
+  $get_package     = find_all_package('package',$user['id_warehouse']);
+  
+  if($get_package == null && $get_package == null){
+    $query2  = "UPDATE warehouse SET ";
+    $query2 .= "heavy_consumed = 0.00";
+    $query2 .= " WHERE id_warehouse = '{$id}'";
+    $db->query($query2);
+  }
 
 ?> 
 
@@ -33,7 +37,7 @@
 <?php
   if(isset($_POST['add_Product'])){
 
-    $req_fields = array('nm_item','colour','stock','id_subcategories','id_package', 'id_location');
+    $req_fields = array('nm_item','colour','stock','id_subcategories','id_package','id_location');
     validate_fields($req_fields);
     if(empty($errors)){
       $id_warehouse = $user['id_warehouse'];
@@ -48,10 +52,10 @@
       $id_package       = remove_junk($db->escape($_POST['id_package']));
       $id_subcategories = remove_junk($db->escape($_POST['id_subcategories']));
       $id_location      = remove_junk($db->escape($_POST['id_location']));
+      $safety_stock     = remove_junk($db->escape($_POST['safety_stock']));
 
       //convert
       $convert_weight   = remove_junk($db->escape($_POST['convert_weight']));
-      $convert_stock    = remove_junk($db->escape($_POST['convert_stock']));
 
       //convert weight
       if($convert_weight == "weight_kilograms"){
@@ -75,20 +79,48 @@
       //   redirect('product.php', false);
       // }
 
-        $query  = "UPDATE warehouse SET ";
-        $query .= "heavy_consumed='{$reduced}' ";
-        $query .= "WHERE id_warehouse = '{$id_warehouse}'";
+      $fetch_package = find_package_id($id_package);
+      if($fetch_package['jml_stock'] <= $stock){
+        $session->msg('d',"QTY Package Is Not Enough");
+        redirect('product.php', false);
+      }
 
-      if($db->query($query)){
-        
-        //insert item
-        $query2  = "INSERT INTO item (";
-        $query2 .=" id_item,nm_item,colour,width,height,length,weight,stock,id_package,id_subcategories,id_location";
-        $query2 .=") VALUES (";
-        $query2 .=" '{$id_item}', '{$nm_item}', '{$colour}', '{$width}', '{$height}', '{$length}', '{$weight}', '{$stock}', '{$id_package}', '{$id_subcategories}', '{$id_location}'";
-        $query2 .=")";
+      //if package < 0
+      $fetch_package = find_package_id($id_package);
+      if($fetch_package['jml_stock'] <= 0){
+        $session->msg('d',"The Package Runs Out! ");
+        redirect('product.php', false);
+      }
 
-        if($db->query($query2)) {
+      //insert item
+      $query2  = "INSERT INTO item (";
+      $query2 .=" id_item,nm_item,colour,width,height,length,weight,stock,id_package,id_subcategories,id_location,safety_stock";
+      $query2 .=") VALUES (";
+      $query2 .=" '{$id_item}', '{$nm_item}', '{$colour}', '{$width}', '{$height}', '{$length}', '{$weight}', '{$stock}', '{$id_package}', '{$id_subcategories}', '{$id_location}','{$safety_stock}'";
+      $query2 .=")";
+
+      //insert bpack
+      $id_bpack = autonumber('id_bpack','bpack');
+      $count    = $weight*$stock;
+      $sql2  = "INSERT INTO bpack (id_bpack,id_package,id_item,qty,total)";
+      $sql2 .= " VALUES ('{$id_bpack}','{$id_package}','{$id_item}','{$stock}','{$count}')";
+
+      $pack = find_package_id($id_package);
+      $up_pack =$pack['jml_stock']-$stock;      
+
+      $sql3  = "UPDATE package SET jml_stock = '$up_pack'";
+      $sql3 .= " WHERE id_package='{$id_package}'";
+
+      if($db->query($query2)){        
+        if($db->query($sql2)) {
+          $db->query($sql3);
+          $count_b = count_total_bpack('bpack');
+          $fetch_package2 = find_package_id($id_package);
+          $a = $count_b['total']+($fetch_package2['jml_stock']*$fetch_package2['weight']);
+          $query  = "UPDATE warehouse SET ";
+          $query .= "heavy_consumed='{$a}' ";
+          $query .= "WHERE id_warehouse = '{$id_warehouse}'";
+          $db->query($query);
           $session->msg('s',"Product added ");
           redirect('product.php', false);  
         } 
@@ -110,7 +142,7 @@
 <?php
   if(isset($_POST['update_Product'])){
 
-    $req_fields = array('nm_item','colour','stock','id_subcategories','id_location','id_package');
+    $req_fields = array('nm_item','colour','stock','id_subcategories','id_location');
     validate_fields($req_fields);
 
    if(empty($errors)){
@@ -127,10 +159,10 @@
     $id_subcategories = remove_junk($db->escape($_POST['id_subcategories']));
     $id_location      = remove_junk($db->escape($_POST['id_location']));
     $id_categories    = remove_junk($db->escape($_POST['id_categories']));
+    $safety_stock     = remove_junk($db->escape($_POST['safety_stock']));
 
     //convert
     $convert_weight   = remove_junk($db->escape($_POST['convert_weight']));
-    $convert_stock    = remove_junk($db->escape($_POST['convert_stock']));
 
     //convert weight
     if($convert_weight == "weight_kilograms"){
@@ -158,19 +190,50 @@
     //   redirect('product.php', false);
     // }
 
+
+    $fetch_package = find_package_id($id_package);
+      if($fetch_package['jml_stock'] <= $stock){
+        $session->msg('d',"QTY Package Is Not Enough");
+        redirect('product.php', false);
+      }
+
+    $fetch_package = find_package_id($id_package);
+      if($fetch_package['jml_stock'] <= 0){
+        $session->msg('d',"The Package Runs Out! ");
+        redirect('product.php', false);
+      }
+
+      
+        $count2  = $stock*$weight;
         $id_warehouse = $user['id_warehouse'];
         $query  = "UPDATE item SET ";
-        $query .= "nm_item = '{$nm_item}',colour = '{$colour}',id_subcategories = '{$id_subcategories}',width = '{$width}',height = '{$height}',length = '{$length}',weight = '{$weight}',stock = '{$stock}',id_package = '{$id_package}',id_location = '{$id_location}', id_item = '{$id_item}' ";
+        $query .= "nm_item = '{$nm_item}',colour = '{$colour}',id_subcategories = '{$id_subcategories}',width = '{$width}',height = '{$height}',length = '{$length}',weight = '{$weight}',stock = '{$stock}',id_package = '{$id_package}',id_location = '{$id_location}', id_item = '{$id_item}', safety_stock = '{$safety_stock}'";
         $query .= "WHERE id_item = '{$id_item}'";
 
-        $query2  = "UPDATE warehouse SET ";
-        $query2 .= "heavy_consumed='{$reduced}' ";
-        $query2 .= "WHERE id_warehouse = '{$id_warehouse}'";
+        //update bpack
+        $sql = "UPDATE bpack SET id_package='{$id_package}',id_item='{$id_item}',qty='{$stock}',total='{$count2}'";
+       $sql .= " WHERE id_item='{$id_item}'";
+
+      $pack  = find_package_id($id_package);
+      $up_pack = ($pack['jml_stock']-$stock);
+
+      $sql3 = "UPDATE package SET jml_stock = '$up_pack'";
+      $sql3 .= " WHERE id_package='{$id_package}'";
 
         $result = $db->query($query);
-         if($result && $db->affected_rows() === 1){
+         if($result){
           //sucess
+          $db->query($sql);
+          $db->query($sql3);
+
+          $pack  = find_package_id($id_package);
+
+          $a = $reduced +($pack['jml_stock']*$pack['weight']);
+          $query2  = "UPDATE warehouse SET ";
+          $query2 .= "heavy_consumed='{$a}' ";
+          $query2 .= "WHERE id_warehouse = '{$id_warehouse}'";
           $db->query($query2);
+
           $session->msg('s',"Product Has Been Updated! ");
           redirect('product.php', false);
         } else {
@@ -205,10 +268,10 @@
       $id_itemPackage = $data['id_item'];  
     }
 
-    if($id_item == $id_item2 || $id_item == $id_itemPackage){
-      $session->msg("d","The Field Connected To Other Key.");
-      redirect('product.php');
-    }
+    // if($id_item == $id_item2 || $id_item == $id_itemPackage){
+    //   $session->msg("d","The Field Connected To Other Key.");
+    //   redirect('product.php');
+    // }
 
     //reduce area consumed
     $consumed     = $all_warehouse_id['heavy_consumed']; 
@@ -220,14 +283,16 @@
     $query .= "heavy_consumed='{$reduced}'";
     $query .= " WHERE id_warehouse = '{$id_warehouse}'";
 
-    //delete function
-    $delete_id   = delete('id_item','item',$id_item);
+    //delete bpack
+    $delete_id1   = delete('id_item','bpack',$id_item);
+    //delete item
+    $delete_id2   = delete('id_item','item',$id_item);
 
-    $query2  = "UPDATE warehouse SET ";
+    $query2  = "UPDATE warehouse SET  ";
     $query2 .= "heavy_consumed = 0.00";
     $query2 .= " WHERE id_warehouse = '{$id_warehouse}'";      
 
-    if($delete_id){
+    if($delete_id2){
       $db->query($query);
         if($reduced < 0){
           $db->query($query2);
@@ -270,6 +335,7 @@
             <thead>
               <tr>
                 <th class="text-center" style="width: 1px;">No.</th>
+                <th class="text-center"> ID Item</th>
                 <th class="text-center"> Name Product</th>
                 <th class="text-center"> Color Product </th>
                 <th class="text-center" style="width: 5px;"> Stock </th>
@@ -280,10 +346,11 @@
               </tr>
             </thead>
             <tbody>
-              <?php echo $no=1; ?>
+              <?php $no=1; ?>
               <?php foreach ($get_product as $items):?>
               <tr>
-                <td class="text-center"><?php echo $no++;".";?></td>
+                <td class="text-center"><?php echo $no++.".";?></td>
+                <td class="text-center"> <?php echo remove_junk(ucfirst($items['id_item'])); ?></td>
                 <td class="text-center"><a href="#detilItem<?php echo $items['id_item'];?>" data-toggle="modal" title="Detail"> <?php echo remove_junk(ucfirst($items['nm_item'])); ?></a></td>
                 <td class="text-center"> <?php echo remove_junk(ucfirst($items['colour'])); ?></td>
                 <td class="text-center"> <?php echo remove_junk(ucfirst($items['stock'])); ?></td>
@@ -416,7 +483,7 @@
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                     <input type="number" min="0" class="form-control" name="height" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
+                     <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="height" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
                     </div>
                   </div>
 
@@ -426,7 +493,7 @@
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                      <input type="number" min="0" class="form-control" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
+                      <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
                     </div>
                   </div>
 
@@ -436,7 +503,7 @@
                       <span class="input-group-addon">
                           <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                      <input type="number" min="0" class="form-control" name="length" onkeypress="return hanyaAngka(event)" placeholder="Length Product">
+                      <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="length" onkeypress="return hanyaAngka(event)" placeholder="Length Product">
                     </div>
                   </div>
                 </div>
@@ -452,7 +519,7 @@
                       <span class="input-group-addon">
                          <i class="fa fa-tachometer"></i>
                      </span>
-                     <input type="number" min="0" class="form-control" name="weight" onkeypress="return hanyaAngka(event)"placeholder="Weight Product">
+                     <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="weight" onkeypress="return hanyaAngka(event)"placeholder="Weight Product">
                     </div>
                   </div>
 
@@ -470,15 +537,26 @@
               <hr>
 
              <div class="row">
-               <div class="col-md-12">
+               <div class="col-md-6">
                  <label for="name" class="control-label">Stock / Unit</label>
                   <div class="input-group">
                     <span class="input-group-addon">
                       <i class="fa fa-server"></i>
                     </span>
-                    <input type="number" min="0" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
+                    <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
                   </div>
                </div>
+
+               <div class="col-md-6">
+                 <label for="name" class="control-label">Safety Stock</label>
+                  <div class="input-group">
+                    <span class="input-group-addon">
+                      <i class="fa fa-server"></i>
+                    </span>
+                    <input type="number" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" name="safety_stock" onkeypress="return hanyaAngka(event)" placeholder="Safety Stock"><br>
+                  </div>
+               </div>
+
              </div>
             
           </div>
@@ -573,7 +651,7 @@
                        <span class="input-group-addon">
                           <i class="glyphicon glyphicon-paperclip"></i>
                         </span>
-                        <input type="text" value="<?php echo remove_junk($item['nm_item']);?>" class="form-control" name="nm_item" onkeypress="return hanyaHuruf(event)" placeholder="Name Product">
+                        <input type="text" value="<?php echo remove_junk($item['nm_item']);?>" class="form-control" name="nm_item" placeholder="Name Product">
                     </div>
                    </div>
                     <div class="col-md-6">
@@ -582,7 +660,7 @@
                         <span class="input-group-addon">
                            <i class="fa fa-certificate"></i>
                         </span>
-                        <input type="text" class="form-control" name="colour" value="<?php echo remove_junk($item['colour']);?>" onkeypress="return hanyaHuruf(event)" placeholder="Color Product"><br>
+                        <input type="text" class="form-control" name="colour" value="<?php echo remove_junk($item['colour']);?>"  placeholder="Color Product"><br>
                      </div>
                     </div>
                  </div>
@@ -598,7 +676,7 @@
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                     <input type="number" min="0" class="form-control" name="height" value="<?php echo remove_junk($item['height']);?>" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
+                     <input type="number" min="0" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="height" value="<?php echo remove_junk($item['height']);?>" placeholder="Height Product">
                     </div>
                   </div>
                   
@@ -608,7 +686,7 @@
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                      <input type="number" min="0" class="form-control" value="<?php echo remove_junk($item['width']);?>" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
+                      <input type="number" min="0" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" value="<?php echo remove_junk($item['width']);?>" name="width" placeholder="Widht Product">
                     </div>
                   </div>
 
@@ -618,7 +696,7 @@
                       <span class="input-group-addon">
                           <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                      <input type="number" min="0" class="form-control" name="length" onkeypress="return hanyaAngka(event)" value="<?php echo remove_junk($item['length']);?>" placeholder="Length Product">
+                      <input type="number" min="0" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="length" value="<?php echo remove_junk($item['length']);?>" placeholder="Length Product">
                     </div>
                   </div>
                 </div>
@@ -634,7 +712,7 @@
                       <span class="input-group-addon">
                          <i class="fa fa-tachometer"></i>
                      </span>
-                     <input type="number" min="0" class="form-control" min="0" name="weight" value="<?php echo remove_junk(round($item['weight']));?>" placeholder="Weight Product">
+                     <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="weight" value="<?php echo remove_junk(round($item['weight'],4));?>" placeholder="Weight Product">
                     </div>
                   </div>
 
@@ -652,13 +730,23 @@
               <hr>
 
             <div class="row">
-               <div class="col-md-12">
+               <div class="col-md-6">
                  <label for="name" class="control-label">Stock / Unit</label>
                   <div class="input-group">
                     <span class="input-group-addon">
                       <i class="fa fa-server"></i>
                     </span>
-                    <input type="number" min="0" value="<?php echo remove_junk($item['stock']);?>" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
+                    <input type="number" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" value="<?php echo remove_junk($item['stock']);?>" class="form-control" name="stock" placeholder="Stock Product"><br>
+                  </div>
+               </div>
+
+               <div class="col-md-6">
+                 <label for="name" class="control-label">Safety Stock</label>
+                  <div class="input-group">
+                    <span class="input-group-addon">
+                      <i class="fa fa-server"></i>
+                    </span>
+                    <input type="number" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" value="<?php echo remove_junk($item['safety_stock']);?>" name="safety_stock" onkeypress="return hanyaAngka(event)" placeholder="Safety Stock"><br>
                   </div>
                </div>
              </div>
@@ -755,7 +843,6 @@
 <script>
   $("#sub_category").chained("#category");
 </script>
-
 
   <script>
     $(".hapus").click(function () {

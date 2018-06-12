@@ -1,5 +1,5 @@
 <?php
-  $page_title = 'History Purchase Order';
+  $page_title = 'Approved Purchase Order';
   require_once('includes/load.php');
 
    page_require_level(2);
@@ -85,6 +85,8 @@
                 <td align="center"><label class="label label-danger"><?php echo remove_junk(ucwords($list['status']))?></label></td>
                <?php } else if($list['status'] == "On Destination") { ?>
                 <td align="center"><label class="label label-warning"><?php echo remove_junk(ucwords($list['status']))?></label></td>
+               <?php } else { ?>
+                <td align="center"><label class="label label-success"><?php echo remove_junk(ucwords($list['status']))?></label></td>
                <?php } ?>
                <td align="center"><?php echo remove_junk(ucwords($list['for_wh']))?></td>
                <td align="center"><?php echo remove_junk(ucwords($list['id_item']))?></td>
