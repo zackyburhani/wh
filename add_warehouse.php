@@ -132,9 +132,10 @@ if(isset($_POST['update_warehouse'])){
            <td class="text-center"><?php echo remove_junk(ucwords(number_format($a_warehouse['heavy_max'])))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords(number_format($a_warehouse['heavy_consumed'])))?></td>
            <td class="text-center">
-                <button data-target="#updateWarehouse<?php echo $a_warehouse['id_warehouse'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
+                <!-- <button data-target="#updateWarehouse<?php echo $a_warehouse['id_warehouse'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
                   <i class="glyphicon glyphicon-pencil"></i>
-                </button>
+                </button> -->
+                <a href="edit_warehouse_location.php?id=<?php echo $a_warehouse['id_warehouse'] ?>" class="btn btn-md btn-warning" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
 
               <?php
                 if ($user['level_user']==0 || $user['level_user']==1 || $user['level_user']== 2) { ?>

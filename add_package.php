@@ -298,19 +298,19 @@ if(isset($_POST['update_package'])){
       <form method="post" action="add_package.php" class="clearfix">
         <div class="form-group">
           <label class="control-label">Package</label>
-          <input type="text" class="form-control" name="packagename">
+          <input type="text" class="form-control" name="packagename" required>
         </div>
         <div class="form-group">
           <label class="control-label">Height / Centimeters</label>
-          <input type="number" min="0" class="form-control" name="height">
+          <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="height">
         </div>
         <div class="form-group">
           <label class="control-label">Width / Centimeters</label>
-          <input type="number" min="0" class="form-control" name="width">
+          <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="width">
         </div>      
         <div class="form-group">
           <label class="control-label">Lenght / Centimeters</label>
-          <input type="number" min="0" class="form-control" name="lenght">
+          <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="lenght">
         </div>
       
         <hr>
@@ -319,7 +319,7 @@ if(isset($_POST['update_package'])){
           <div class="row">
             <div class="col-md-6">
               <label class="control-label">Weight</label>    
-              <input type="number" min="0" class="form-control" name="weight">
+              <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="weight" required>
             </div>
             <div class="col-md-6">
               <label for="name" class="control-label">Convert Weight</label>
@@ -339,14 +339,14 @@ if(isset($_POST['update_package'])){
           <div class="col-md-6">
             <div class="form-group">
               <label class="control-label">Stock / Unit</label>
-              <input type="number" min="0" class="form-control" name="stock">
+              <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="stock" required>
             </div>
           </div>
 
           <div class="col-md-6">
             <div class="form-group">
               <label class="control-label">Safety Stock</label>
-              <input type="number" min="0" class="form-control" name="safety_stock">
+              <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="safety_stock" required>
             </div>
           </div>
   
@@ -381,19 +381,19 @@ if(isset($_POST['update_package'])){
         <div class="form-group">
           <label class="control-label">Package</label>
           <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_package['id_package'])); ?>" name="idpackage">
-          <input type="text" class="form-control" value="<?php echo remove_junk(ucwords($a_package['nm_package'])); ?>" name="packagename">
+          <input type="text" class="form-control" value="<?php echo remove_junk(ucwords($a_package['nm_package'])); ?>" name="packagename" required>
         </div>
         <div class="form-group">
           <label class="control-label">Height / Centimeters</label>
-          <input type="number" min="0" class="form-control" value="<?php echo remove_junk(ucwords($a_package['height'])); ?>" name="height">
+          <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" value="<?php echo remove_junk(ucwords($a_package['height'])); ?>" name="height">
         </div>  
         <div class="form-group">
           <label class="control-label">Width / Centimeters</label>
-          <input type="number" min="0" class="form-control" value="<?php echo remove_junk(ucwords($a_package['width'])); ?>" name="width">
+          <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" value="<?php echo remove_junk(ucwords($a_package['width'])); ?>" name="width">
         </div>   
         <div class="form-group">
           <label class="control-label">Lenght / Centimeters</label>
-          <input type="number" min="0" class="form-control" name="lenght" value="<?php echo remove_junk(ucwords($a_package['lenght'])); ?>">
+          <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="lenght" value="<?php echo remove_junk(ucwords($a_package['lenght'])); ?>">
         </div> 
 
         <hr>
@@ -402,7 +402,7 @@ if(isset($_POST['update_package'])){
           <div class="col-md-6">
             <div class="form-group">
               <label class="control-label">Weight</label>
-              <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" name="weight" value="<?php echo remove_junk(round($a_package['weight'],4)); ?>">
+              <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" name="weight" value="<?php echo remove_junk(round($a_package['weight'],4)); ?>" required>
             </div>
           </div>
           <div class="col-md-6">
@@ -422,14 +422,14 @@ if(isset($_POST['update_package'])){
           <div class="col-md-6">
             <div class="form-group">
               <label class="control-label">Stock / Unit</label>
-              <input type="number" min="0" class="form-control" value="<?php echo remove_junk(ucwords($a_package['jml_stock'])); ?>" name="stock">
+              <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" value="<?php echo remove_junk(ucwords($a_package['jml_stock'])); ?>" name="stock" required>
             </div>
           </div>
 
           <div class="col-md-6">
             <div class="form-group">
               <label class="control-label">Safety Stock</label>
-              <input type="number" min="0" class="form-control" value="<?php echo remove_junk(ucwords($a_package['safety_stock'])); ?>" name="safety_stock">
+              <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" value="<?php echo remove_junk(ucwords($a_package['safety_stock'])); ?>" name="safety_stock" required>
             </div>
           </div>
   

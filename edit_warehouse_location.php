@@ -2,14 +2,16 @@
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
   page_require_level(2);
-  
-  $user = current_user();
-  $warehouse = find_warehouse_id($user['id_warehouse']);
+  $id          = $_GET['id'];
+  $user        = current_user();
+  $warehouse   = find_warehouse_id($user['id_warehouse']);
   $get_product = get_item_condition($user['id_warehouse']);
   $get_package = get_package_condition($user['id_warehouse']);
 
-  $page_title = "Warehouse ".$warehouse["nm_warehouse"];
+  $warehouse1  = find_warehouse_id($id);
 
+  $page_title = "Edit Warehouse ".$warehouse["nm_warehouse"];;
+  
 ?>
 <?php include_once('layouts/header.php'); ?>
 
@@ -35,7 +37,7 @@
                 <label class="control-label">Warehouse</label>
               </div>
               <div class="col-md-4">
-                <input type="name" placeholder="Warehouse Name" class="form-control" name="warehousename" id="warehousename">
+                <input type="name" value="<?php echo $warehouse1['nm_warehouse'] ?>" placeholder="Warehouse Name" class="form-control" name="warehousename" id="warehousename">
               </div>
 
               <div class="col-md-2">
@@ -43,8 +45,8 @@
               </div>
               <div class="col-md-4">
                 <select class="form-control" name="status" id="status">
-                  <option value="1"> Produce </option>
-                  <option value="0"> Not Produce</option>
+                  <option <?php if($warehouse1['status'] == '1'  ): echo "selected"; endif; ?> value="1"> Produce </option>
+                  <option <?php if($warehouse1['status'] == '0'  ): echo "selected"; endif; ?> value="0"> Not Produce</option>
                 </select>
               </div>
 
@@ -57,7 +59,7 @@
                 <label class="control-label">Heavy Max</label>
               </div>
               <div class="col-md-4">
-                <input type="number" placeholder="heavy Max" class="form-control" name="heavymax" id="heavymax">
+                <input type="number" placeholder="heavy Max" value="<?php echo $warehouse1['heavy_max'] ?>" class="form-control" name="heavymax" id="heavymax">
               </div>
               
               <div class="col-md-2">
@@ -98,6 +100,11 @@
                 </div>
               </div>
             </div>
+
+            <input type="hidden" id="get_address"  value="<?php echo $warehouse1['address'] ?>">
+            <input type="hidden" id="latitude" value="<?php echo $warehouse1['latitude'] ?>">
+            <input type="hidden" id="longitude" value="<?php echo $warehouse1['longitude'] ?>">
+
           </form>
         </div>
       </div>
@@ -114,18 +121,24 @@
  
     window.onload = function() {
  
+      var latitude    = document.getElementById('latitude').value;
+      var longitude   = document.getElementById('longitude').value;
+      var get_address = document.getElementById('get_address').value;
+
       // Create New Map
       var options = {  
         zoom: 5,  
-        center: new google.maps.LatLng(-0.789275, 113.92132700000002),  
-        mapTypeId: google.maps.MapTypeId.ROADMAP  
+        center: new google.maps.LatLng(latitude, longitude),  
+        mapTypeId: google.maps.MapTypeId.ROADMAP ,
       };  
  
       map = new google.maps.Map(document.getElementById('map'), options);
- 
+
       // Get reference from HTML
       var form = document.getElementById('addressForm');
  
+      getCoordinates(get_address);
+
       // Catch The Event
       form.onsubmit = function() {
         // Mendapatkan alamat dari input teks
@@ -161,7 +174,9 @@
           // check objek marker
           if (!marker) {
             marker = new google.maps.Marker({
-              map: map
+              map: map,
+              animation: google.maps.Animation.DROP,
+              icon: 'img/maps/maps.ico'
             });
           }
           // set position

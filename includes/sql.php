@@ -398,7 +398,7 @@ function find_all_admin(){
   function find_all_item_under_stock( $id_warehouse){
       global $db;
       $results = array();
-      $sql = $db->query("SELECT * FROM item,location,warehouse WHERE item.id_location = location.id_location and warehouse.id_warehouse = location.id_warehouse and warehouse.id_warehouse = '$id_warehouse' and stock < safety_stock ORDER by 1 DESC;");
+      $sql = $db->query("SELECT * FROM item,location,warehouse WHERE item.id_location = location.id_location and warehouse.id_warehouse = location.id_warehouse and warehouse.id_warehouse = '$id_warehouse' and stock < safety_stock ORDER by 1 DESC");
       $result = $db->num_rows($sql);
       return $result;
   }

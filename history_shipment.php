@@ -29,7 +29,7 @@
       <table class="table table-bordered" id="tablePosition">
         <thead>
           <tr>
-            <th class="text-center" style="width: 50px;">No. </th>
+            <th class="text-center" style="width: 10px;">No. </th>
             <th class="text-center">ID Shipment</th>
             <th class="text-center">Date Shipment</th>
             <th class="text-center">ID Purchase Order</th>
@@ -42,11 +42,11 @@
         <?php foreach($all_history_shipment as $a_shipment_history): ?>
           <tr>
            <td class="text-center"><?php echo $no++.".";?></td>
-           <td><?php echo remove_junk(ucwords($a_shipment_history['id_shipment']))?></td>
-           <td><?php echo remove_junk(ucwords($a_shipment_history['date_shipment']))?></td>
-           <td><?php echo remove_junk(ucwords($a_shipment_history['id_po']))?></td>
-           <td><?php echo remove_junk(ucwords($a_shipment_history['id_warehouse']))?></td>
-           <td><?php echo remove_junk(ucwords($a_shipment_history['id_employer']))?></td>
+           <td class="text-center"><?php echo remove_junk(ucwords($a_shipment_history['id_shipment']))?></td>
+           <td class="text-center"><?php echo remove_junk(ucwords($a_shipment_history['date_shipment']))?></td>
+           <td class="text-center"><?php echo remove_junk(ucwords($a_shipment_history['id_po']))?></td>
+           <td class="text-center"><?php echo remove_junk(ucwords($a_shipment_history['id_warehouse']))?></td>
+           <td class="text-center"><?php echo remove_junk(ucwords($a_shipment_history['id_employer']))?></td>
           </tr>
         <?php endforeach;?>
         </tbody>

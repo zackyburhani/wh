@@ -170,18 +170,18 @@ if(isset($_POST['update_location'])){
       </div>
       <div class="modal-body">
       <form method="post" action="add_location.php" class="clearfix">
-          <input type="hidden" class="form-control" name="location">
+          <input type="hidden" class="form-control" name="location" required>
         <div class="form-group">
           <label class="control-label">Location Unit</label>
-          <input type="name" class="form-control" name="unit">
+          <input type="name" class="form-control" name="unit" required>
         </div>
         <div class="form-group">
           <label class="control-label">Floor</label>
-          <input type="name" class="form-control" name="floor">
+          <input type="name" class="form-control" name="floor" required>
         </div>  
         <div class="form-group">
           <label class="control-label">Room</label>
-          <input type="name" class="form-control" name="room">
+          <input type="name" class="form-control" name="room" required>
         </div>
       </div>
     <div class="modal-footer">
@@ -208,18 +208,18 @@ if(isset($_POST['update_location'])){
       </div>
       <div class="modal-body">
       <form method="post" action="add_location.php" class="clearfix">
-        <div class="form-group">
+        <div class="form-group" required>
           <label class="control-label">Location Unit</label>
-          <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_location['id_location'])); ?>" name="id_location">
-          <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_location['unit'])); ?>" name="unit">
+          <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_location['id_location'])); ?>" name="id_location" required>
+          <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_location['unit'])); ?>" name="unit" required>
         </div>
         <div class="form-group">
           <label class="control-label">Floor</label>
-          <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_location['floor'])); ?>" name="floor">
+          <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_location['floor'])); ?>" name="floor" required>
         </div>  
         <div class="form-group">
           <label class="control-label">Room</label>
-          <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_location['room'])); ?>" name="room">
+          <input type="name" class="form-control" value="<?php echo remove_junk(ucwords($a_location['room'])); ?>" name="room" required>
         </div> 
       </div>
       <div class="modal-footer">

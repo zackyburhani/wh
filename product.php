@@ -481,7 +481,7 @@
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                     <input type="number" min="0" class="form-control" name="height" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
+                     <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="height" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
                     </div>
                   </div>
 
@@ -491,7 +491,7 @@
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                      <input type="number" min="0" class="form-control" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
+                      <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
                     </div>
                   </div>
 
@@ -501,7 +501,7 @@
                       <span class="input-group-addon">
                           <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                      <input type="number" min="0" class="form-control" name="length" onkeypress="return hanyaAngka(event)" placeholder="Length Product">
+                      <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="length" onkeypress="return hanyaAngka(event)" placeholder="Length Product">
                     </div>
                   </div>
                 </div>
@@ -517,7 +517,7 @@
                       <span class="input-group-addon">
                          <i class="fa fa-tachometer"></i>
                      </span>
-                     <input type="number" min="0" class="form-control" name="weight" onkeypress="return hanyaAngka(event)"placeholder="Weight Product">
+                     <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="weight" onkeypress="return hanyaAngka(event)"placeholder="Weight Product">
                     </div>
                   </div>
 
@@ -541,7 +541,7 @@
                     <span class="input-group-addon">
                       <i class="fa fa-server"></i>
                     </span>
-                    <input type="number" min="0" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
+                    <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
                   </div>
                </div>
 
@@ -551,7 +551,7 @@
                     <span class="input-group-addon">
                       <i class="fa fa-server"></i>
                     </span>
-                    <input type="number" min="0" class="form-control" name="safety_stock" onkeypress="return hanyaAngka(event)" placeholder="Safety Stock"><br>
+                    <input type="number" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" name="safety_stock" onkeypress="return hanyaAngka(event)" placeholder="Safety Stock"><br>
                   </div>
                </div>
 
@@ -674,7 +674,7 @@
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                     <input type="number" min="0" class="form-control" name="height" value="<?php echo remove_junk($item['height']);?>" placeholder="Height Product">
+                     <input type="number" min="0" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="height" value="<?php echo remove_junk($item['height']);?>" placeholder="Height Product">
                     </div>
                   </div>
                   
@@ -684,7 +684,7 @@
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                      <input type="number" min="0" class="form-control" value="<?php echo remove_junk($item['width']);?>" name="width" placeholder="Widht Product">
+                      <input type="number" min="0" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" value="<?php echo remove_junk($item['width']);?>" name="width" placeholder="Widht Product">
                     </div>
                   </div>
 
@@ -694,7 +694,7 @@
                       <span class="input-group-addon">
                           <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                      <input type="number" min="0" class="form-control" name="length" value="<?php echo remove_junk($item['length']);?>" placeholder="Length Product">
+                      <input type="number" min="0" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="length" value="<?php echo remove_junk($item['length']);?>" placeholder="Length Product">
                     </div>
                   </div>
                 </div>
@@ -734,7 +734,7 @@
                     <span class="input-group-addon">
                       <i class="fa fa-server"></i>
                     </span>
-                    <input type="number" min="0" value="<?php echo remove_junk($item['stock']);?>" class="form-control" name="stock" placeholder="Stock Product"><br>
+                    <input type="number" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" value="<?php echo remove_junk($item['stock']);?>" class="form-control" name="stock" placeholder="Stock Product"><br>
                   </div>
                </div>
 
@@ -744,7 +744,7 @@
                     <span class="input-group-addon">
                       <i class="fa fa-server"></i>
                     </span>
-                    <input type="number" min="0" class="form-control" value="<?php echo remove_junk($item['safety_stock']);?>" name="safety_stock" onkeypress="return hanyaAngka(event)" placeholder="Safety Stock"><br>
+                    <input type="number" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" value="<?php echo remove_junk($item['safety_stock']);?>" name="safety_stock" onkeypress="return hanyaAngka(event)" placeholder="Safety Stock"><br>
                   </div>
                </div>
              </div>
