@@ -461,18 +461,26 @@ function find_all_shippment($id_warehouse){
       return $result;
   }
 
-    function find_all_canceledPO($id_warehouse){
+    function find_all_canceledPO_detil($id_warehouse,$id_po){
       global $db;
       $results = array();
-      $sql = "SELECT po.id_po as id_po, po.date_po as date_po, detil_po.date_po as date_send, id_item, qty,po.id_warehouse as for_wh, detil_po.id_warehouse as from_wh, status FROM po,detil_po WHERE po.id_po = detil_po.id_po and status = 'Canceled' and po.id_warehouse = '$id_warehouse' order by 1 desc";
+      $sql = "SELECT po.id_po as id_po, po.date_po as date_po, detil_po.date_po as date_send, id_item, qty,po.id_warehouse as for_wh, detil_po.id_warehouse as from_wh, status FROM po,detil_po WHERE po.id_po = detil_po.id_po and status = 'Canceled' and po.id_warehouse = '$id_warehouse' and po.id_po = '$id_po' order by 1 desc";
       $result = find_by_sql($sql);
       return $result;
+  }
+
+  function find_all_canceledPO($id_warehouse){
+    global $db;
+    $results = array();
+    $sql = "SELECT po.id_po as id_po, po.date_po as date_po, detil_po.date_po as date_send, detil_po.id_warehouse as from_wh,po.id_warehouse as for_wh,detil_po.id_item FROM po,detil_po WHERE po.id_po = detil_po.id_po and po.id_warehouse = '$id_warehouse' and status = 'Canceled' GROUP by po.id_po order by 1 desc";
+    $result = find_by_sql($sql);
+    return $result;
   }
 
   function find_all_canceled_notif($id_warehouse){
       global $db;
       $results = array();
-      $sql = $db->query("SELECT po.id_po as id_po, po.date_po as date_po, detil_po.date_po as date_send, id_item, qty,po.id_warehouse as for_wh, detil_po.id_warehouse as from_wh, status FROM po,detil_po WHERE po.id_po = detil_po.id_po and status = 'Canceled' and po.id_warehouse = '$id_warehouse' order by 1 desc");
+      $sql = $db->query("SELECT po.id_po as id_po, po.date_po as date_po, detil_po.date_po as date_send, id_item, qty,po.id_warehouse as for_wh, detil_po.id_warehouse as from_wh, status FROM po,detil_po WHERE po.id_po = detil_po.id_po and status = 'Canceled' and po.id_warehouse = '$id_warehouse' group by po.id_po order by 1 DESC");
       $result = $db->num_rows($sql);
       return $result;
   }

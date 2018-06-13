@@ -80,7 +80,7 @@
       // }
 
       $fetch_package = find_package_id($id_package);
-      if($fetch_package['jml_stock'] <= $stock){
+      if($stock >= $fetch_package['jml_stock']){
         $session->msg('d',"QTY Package Is Not Enough");
         redirect('product.php', false);
       }
@@ -178,6 +178,7 @@
     $product_fetch    = find_product_fetch($id_item);
     //reduce area consumed
     $stock_fetch      = $product_fetch['stock'];
+
     $weight_fetch     = $product_fetch['weight'];
     $consumed         = $all_warehouse_id['heavy_consumed']; 
     $heavy_max        = $all_warehouse_id['heavy_max'];
@@ -189,7 +190,6 @@
     //   $session->msg('d',"You Do Not Have Enough Storage Space !");
     //   redirect('product.php', false);
     // }
-
 
     $fetch_package = find_package_id($id_package);
       if($fetch_package['jml_stock'] <= $stock){
@@ -203,44 +203,49 @@
         redirect('product.php', false);
       }
 
-      
-        $count2  = $stock*$weight;
-        $id_warehouse = $user['id_warehouse'];
-        $query  = "UPDATE item SET ";
-        $query .= "nm_item = '{$nm_item}',colour = '{$colour}',id_subcategories = '{$id_subcategories}',width = '{$width}',height = '{$height}',length = '{$length}',weight = '{$weight}',stock = '{$stock}',id_package = '{$id_package}',id_location = '{$id_location}', id_item = '{$id_item}', safety_stock = '{$safety_stock}'";
-        $query .= "WHERE id_item = '{$id_item}'";
+    $count2  = $stock*$weight;
+    $id_warehouse = $user['id_warehouse'];
+    
+    $query  = "UPDATE item SET ";
+    $query .= "nm_item = '{$nm_item}',colour = '{$colour}',id_subcategories = '{$id_subcategories}',width = '{$width}',height = '{$height}',length = '{$length}',weight = '{$weight}',stock = '{$stock}',id_package = '{$id_package}',id_location = '{$id_location}', id_item = '{$id_item}', safety_stock = '{$safety_stock}'";
+    $query .= "WHERE id_item = '{$id_item}'";
 
-        //update bpack
-        $sql = "UPDATE bpack SET id_package='{$id_package}',id_item='{$id_item}',qty='{$stock}',total='{$count2}'";
-       $sql .= " WHERE id_item='{$id_item}'";
+    //update bpack
+    $sql  = "UPDATE bpack SET id_package='{$id_package}',id_item='{$id_item}',qty='{$stock}',total='{$count2}'";
+    $sql .= " WHERE id_item='{$id_item}'";
 
-      $pack  = find_package_id($id_package);
-      $up_pack = ($pack['jml_stock']-$stock);
+    $pack    = find_package_id($id_package);
+    $jml     = $pack['jml_stock'];
+    $up_pack = ($jml-$stock);
 
+    if($stock_fetch == $stock){
+      $sql3 = "UPDATE package SET jml_stock = '$jml'";
+      $sql3 .= " WHERE id_package='{$id_package}'";
+    } else {
       $sql3 = "UPDATE package SET jml_stock = '$up_pack'";
       $sql3 .= " WHERE id_package='{$id_package}'";
+    } 
 
-        $result = $db->query($query);
-         if($result){
-          //sucess
-          $db->query($sql);
-          $db->query($sql3);
+    $result = $db->query($query);
+      if($result){
+        //sucess
+        $db->query($sql);
+        $db->query($sql3);
+        $pack  = find_package_id($id_package);
 
-          $pack  = find_package_id($id_package);
+        $a = $reduced +($pack['jml_stock']*$pack['weight']);
+        $query2  = "UPDATE warehouse SET ";
+        $query2 .= "heavy_consumed='{$a}' ";
+        $query2 .= "WHERE id_warehouse = '{$id_warehouse}'";
+        $db->query($query2);
 
-          $a = $reduced +($pack['jml_stock']*$pack['weight']);
-          $query2  = "UPDATE warehouse SET ";
-          $query2 .= "heavy_consumed='{$a}' ";
-          $query2 .= "WHERE id_warehouse = '{$id_warehouse}'";
-          $db->query($query2);
-
-          $session->msg('s',"Product Has Been Updated! ");
-          redirect('product.php', false);
-        } else {
-          //failed
-          $session->msg('d',' Sorry Failed To Updated Product!');
-          redirect('product.php', false);
-        }
+        $session->msg('s',"Product Has Been Updated! ");
+        redirect('product.php', false);
+      } else {
+        //failed
+        $session->msg('d',' Sorry Failed To Updated Product!');
+        redirect('product.php', false);
+      }
    } else {
      $session->msg("d", $errors);
      redirect('product.php', false);

@@ -1,5 +1,5 @@
 <?php
-  $page_title = 'History Purchase Order';
+  $page_title = 'List Purchase Order';
   require_once('includes/load.php');
 
    page_require_level(1);

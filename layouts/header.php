@@ -115,7 +115,7 @@
 
 
           <li class="profile">
-            <span class="label label-danger"><?php if($shipment != null) { echo $total = $shipment+$canceled;}?></span>
+            <span class="label label-danger"><?php if($shipment != null || $canceled != null) { echo $total = $shipment+$canceled;}?></span>
             <a href="#" data-toggle="dropdown" aria-expanded="false">
               <span class="fa fa-truck"><i class="caret"></i></span> 
             </a>
