@@ -78,6 +78,7 @@
           <li><a href="approve2_po.php">Approved Purchase Order <span class="label label-danger" id="jumlah"><?php $notif = find_all_PO_destination_notif($user['id_warehouse']); if($notif != null) {echo $notif;}  ?></span></a></li>
            <li><a href="history_approved2.php">Approved History</a></li>
         <?php } ?>
+        <li><a href="canceled_po.php">Canceled Order</a></li>
       </ul>
   </li>
 </ul>

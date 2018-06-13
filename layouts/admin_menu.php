@@ -81,6 +81,7 @@
         <li><a href="approve1_po.php">Approved Purchase Order <span class="label label-danger label-sm"><?php if($approve1 != null) {echo $approve1;} ?></span></a></li>
         <?php } ?>
         <li><a href="history_approved1.php">Approved History</a></li>
+        <li><a href="canceled_po.php">Canceled Order</a></li>
       </ul>
   </li>
 

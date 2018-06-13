@@ -80,7 +80,7 @@
       // }
 
       $fetch_package = find_package_id($id_package);
-      if($fetch_package['jml_stock'] <= $stock){
+      if($stock >= $fetch_package['jml_stock']){
         $session->msg('d',"QTY Package Is Not Enough");
         redirect('product.php', false);
       }
@@ -178,6 +178,7 @@
     $product_fetch    = find_product_fetch($id_item);
     //reduce area consumed
     $stock_fetch      = $product_fetch['stock'];
+
     $weight_fetch     = $product_fetch['weight'];
     $consumed         = $all_warehouse_id['heavy_consumed']; 
     $heavy_max        = $all_warehouse_id['heavy_max'];
@@ -189,7 +190,6 @@
     //   $session->msg('d',"You Do Not Have Enough Storage Space !");
     //   redirect('product.php', false);
     // }
-
 
     $fetch_package = find_package_id($id_package);
       if($fetch_package['jml_stock'] <= $stock){
@@ -203,44 +203,49 @@
         redirect('product.php', false);
       }
 
-      
-        $count2  = $stock*$weight;
-        $id_warehouse = $user['id_warehouse'];
-        $query  = "UPDATE item SET ";
-        $query .= "nm_item = '{$nm_item}',colour = '{$colour}',id_subcategories = '{$id_subcategories}',width = '{$width}',height = '{$height}',length = '{$length}',weight = '{$weight}',stock = '{$stock}',id_package = '{$id_package}',id_location = '{$id_location}', id_item = '{$id_item}', safety_stock = '{$safety_stock}'";
-        $query .= "WHERE id_item = '{$id_item}'";
+    $count2  = $stock*$weight;
+    $id_warehouse = $user['id_warehouse'];
+    
+    $query  = "UPDATE item SET ";
+    $query .= "nm_item = '{$nm_item}',colour = '{$colour}',id_subcategories = '{$id_subcategories}',width = '{$width}',height = '{$height}',length = '{$length}',weight = '{$weight}',stock = '{$stock}',id_package = '{$id_package}',id_location = '{$id_location}', id_item = '{$id_item}', safety_stock = '{$safety_stock}'";
+    $query .= "WHERE id_item = '{$id_item}'";
 
-        //update bpack
-        $sql = "UPDATE bpack SET id_package='{$id_package}',id_item='{$id_item}',qty='{$stock}',total='{$count2}'";
-       $sql .= " WHERE id_item='{$id_item}'";
+    //update bpack
+    $sql  = "UPDATE bpack SET id_package='{$id_package}',id_item='{$id_item}',qty='{$stock}',total='{$count2}'";
+    $sql .= " WHERE id_item='{$id_item}'";
 
-      $pack  = find_package_id($id_package);
-      $up_pack = ($pack['jml_stock']-$stock);
+    $pack    = find_package_id($id_package);
+    $jml     = $pack['jml_stock'];
+    $up_pack = ($jml-$stock);
 
+    if($stock_fetch == $stock){
+      $sql3 = "UPDATE package SET jml_stock = '$jml'";
+      $sql3 .= " WHERE id_package='{$id_package}'";
+    } else {
       $sql3 = "UPDATE package SET jml_stock = '$up_pack'";
       $sql3 .= " WHERE id_package='{$id_package}'";
+    } 
 
-        $result = $db->query($query);
-         if($result){
-          //sucess
-          $db->query($sql);
-          $db->query($sql3);
+    $result = $db->query($query);
+      if($result){
+        //sucess
+        $db->query($sql);
+        $db->query($sql3);
+        $pack  = find_package_id($id_package);
 
-          $pack  = find_package_id($id_package);
+        $a = $reduced +($pack['jml_stock']*$pack['weight']);
+        $query2  = "UPDATE warehouse SET ";
+        $query2 .= "heavy_consumed='{$a}' ";
+        $query2 .= "WHERE id_warehouse = '{$id_warehouse}'";
+        $db->query($query2);
 
-          $a = $reduced +($pack['jml_stock']*$pack['weight']);
-          $query2  = "UPDATE warehouse SET ";
-          $query2 .= "heavy_consumed='{$a}' ";
-          $query2 .= "WHERE id_warehouse = '{$id_warehouse}'";
-          $db->query($query2);
-
-          $session->msg('s',"Product Has Been Updated! ");
-          redirect('product.php', false);
-        } else {
-          //failed
-          $session->msg('d',' Sorry Failed To Updated Product!');
-          redirect('product.php', false);
-        }
+        $session->msg('s',"Product Has Been Updated! ");
+        redirect('product.php', false);
+      } else {
+        //failed
+        $session->msg('d',' Sorry Failed To Updated Product!');
+        redirect('product.php', false);
+      }
    } else {
      $session->msg("d", $errors);
      redirect('product.php', false);
@@ -457,7 +462,7 @@
                        <span class="input-group-addon">
                           <i class="glyphicon glyphicon-paperclip"></i>
                         </span>
-                        <input type="text" class="form-control" name="nm_item" onkeypress="return hanyaHuruf(event)" placeholder="Name Product">
+                        <input type="text" class="form-control" name="nm_item" placeholder="Name Product">
                     </div>
                    </div>
                     <div class="col-md-6">
@@ -466,7 +471,7 @@
                         <span class="input-group-addon">
                            <i class="fa fa-certificate"></i>
                         </span>
-                        <input type="text" class="form-control" name="colour"  onkeypress="return hanyaHuruf(event)" placeholder="Color Product"><br>
+                        <input type="text" class="form-control" name="colour" placeholder="Color Product"><br>
                      </div>
                     </div>
                  </div>
@@ -483,7 +488,7 @@
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                     <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="height" onkeypress="return hanyaAngka(event)" placeholder="Height Product">
+                     <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="height" placeholder="Height Product">
                     </div>
                   </div>
 
@@ -493,7 +498,7 @@
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                      <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="width" onkeypress="return hanyaAngka(event)" placeholder="Widht Product">
+                      <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="width" placeholder="Widht Product">
                     </div>
                   </div>
 
@@ -503,7 +508,7 @@
                       <span class="input-group-addon">
                           <i class="glyphicon glyphicon-tasks"></i>
                       </span>
-                      <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="length" onkeypress="return hanyaAngka(event)" placeholder="Length Product">
+                      <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="length" placeholder="Length Product">
                     </div>
                   </div>
                 </div>
@@ -519,7 +524,7 @@
                       <span class="input-group-addon">
                          <i class="fa fa-tachometer"></i>
                      </span>
-                     <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="weight" onkeypress="return hanyaAngka(event)"placeholder="Weight Product">
+                     <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="weight" placeholder="Weight Product">
                     </div>
                   </div>
 
@@ -543,7 +548,7 @@
                     <span class="input-group-addon">
                       <i class="fa fa-server"></i>
                     </span>
-                    <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="stock" onkeypress="return hanyaAngka(event)" placeholder="Stock Product"><br>
+                    <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="stock" placeholder="Stock Product"><br>
                   </div>
                </div>
 
@@ -553,7 +558,7 @@
                     <span class="input-group-addon">
                       <i class="fa fa-server"></i>
                     </span>
-                    <input type="number" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" name="safety_stock" onkeypress="return hanyaAngka(event)" placeholder="Safety Stock"><br>
+                    <input type="number" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" name="safety_stock" placeholder="Safety Stock"><br>
                   </div>
                </div>
 
@@ -746,7 +751,7 @@
                     <span class="input-group-addon">
                       <i class="fa fa-server"></i>
                     </span>
-                    <input type="number" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" value="<?php echo remove_junk($item['safety_stock']);?>" name="safety_stock" onkeypress="return hanyaAngka(event)" placeholder="Safety Stock"><br>
+                    <input type="number" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" value="<?php echo remove_junk($item['safety_stock']);?>" name="safety_stock" placeholder="Safety Stock"><br>
                   </div>
                </div>
              </div>

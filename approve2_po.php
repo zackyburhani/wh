@@ -1,5 +1,5 @@
 <?php
-  $page_title = 'History Purchase Order';
+  $page_title = 'List Purchase Order';
   require_once('includes/load.php');
   $all_warehouse = find_all1('warehouse');
   $user = current_user();
@@ -86,6 +86,39 @@
           $session->msg('d',' Sorry Failed To Approve Purchase Order !');
           redirect('approve2_po.php', false);
         }
+   } else {
+     $session->msg("d", $errors);
+     redirect('approve2_po.php', false);
+   }
+ }
+?>
+
+<!-- Disagree PO -->
+<?php
+  if(isset($_POST['canceled_po'])){
+
+    $req_fields = array('id_po');
+    validate_fields($req_fields);
+
+      if(empty($errors)){
+        $id_item = remove_junk($db->escape($_POST['id_item']));
+        $status  = 'Canceled';
+
+        $query  = "UPDATE detil_po SET ";
+        $query .= "status = '{$status}' ";
+        $query .= "WHERE id_item = '{$id_item}'";
+
+        $result = $db->query($query);
+         if($result){
+          //sucess
+          $db->query($query2);
+          $session->msg('s',"The Item Has Been Canceled ! ");
+          redirect('approve2_po.php', false);
+        } else {
+          //failed
+          $session->msg('d',' Sorry Failed To Cancel The Item !');
+          redirect('approve2_po.php', false);
+          }
    } else {
      $session->msg("d", $errors);
      redirect('approve2_po.php', false);
@@ -244,6 +277,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+          <button type="submit" name="canceled_po" class="btn btn-danger"><span class="fa fa-warning"></span> Canceled</button>
           <button type="submit" name="approve_po" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Approve</button>
         </div>
       </form>

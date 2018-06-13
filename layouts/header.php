@@ -61,15 +61,12 @@
 
           <?php $offer_admin   = find_all_PO_destination_admin_notif($user['id_warehouse']); ?>
           <?php $approve_admin = find_all_PO_admin_notif($user['id_warehouse']); ?>
-
-          <?php $approve2 = find_all_PO_destination_notif($user['id_warehouse']);  ?>
-          <?php $warehouse = find_by_id_warehouse('warehouse',$user['id_warehouse']); ?>
-
-          <?php $shipment   =  find_all_PO_shipment_notif($user['id_warehouse']); ?>
-
-          <?php $under_stock = find_all_item_under_stock($user['id_warehouse']); ?>
-
-          <?php $package = find_all_package_under_stock($user['id_warehouse'])?>
+          <?php $approve2      = find_all_PO_destination_notif($user['id_warehouse']);  ?>
+          <?php $warehouse     = find_by_id_warehouse('warehouse',$user['id_warehouse']); ?>
+          <?php $shipment      = find_all_PO_shipment_notif($user['id_warehouse']); ?>
+          <?php $under_stock   = find_all_item_under_stock($user['id_warehouse']); ?>
+          <?php $package       = find_all_package_under_stock($user['id_warehouse'])?>
+          <?php $canceled      = find_all_canceled_notif($user['id_warehouse']) ?>
 
           <li class="profile">
             <span class="label label-danger"><?php if($under_stock != null) { echo $total = $under_stock+$package;}?></span>
@@ -98,7 +95,7 @@
           
             <ul class="dropdown-menu">
               <li>
-                  <?php if ($user['id_warehouse'] =='0001'){ ?>
+                  <?php if ($user['level_user'] =='0'){ ?>
                     
                     <a href="offer_po.php">
                       <i class="fa fa-envelope-o"></i> Offer PO
@@ -122,12 +119,20 @@
 
 
           <li class="profile">
-            <span class="label label-danger"><?php if($shipment != null) { echo $total = $shipment;}?></span>
+            <span class="label label-danger"><?php if($shipment != null || $canceled != null) { echo $total = $shipment+$canceled;}?></span>
             <a href="#" data-toggle="dropdown" aria-expanded="false">
               <span class="fa fa-truck"><i class="caret"></i></span> 
             </a>
           
             <ul class="dropdown-menu">
+              <?php if($canceled != null) { ?>
+              <li>
+                <a href="canceled_po.php">
+                  <i class="fa fa-warning"></i> Canceled PO
+                  <span class="label label-danger"><?php if($canceled != null) { echo $canceled; }  ?></span>
+                </a>
+              </li>
+              <?php } ?>
               <li>
                 <a href="move_product.php">
                   <i class="fa fa-truck"></i> Shipment

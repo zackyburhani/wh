@@ -161,8 +161,9 @@ if(isset($_POST['update_package'])){
             <th class="text-center" style="width: 10%;">Stock</th>
             <th class="text-center" style="width: 10%;">Safety Stock</th>
             <th class="text-center" style="width: 10%;">Consumed Area / Kg</th>
+            <?php if($warehouse['status'] != 0) { ?>
             <th class="text-center" style="width: 5%;">Produce</th>
-            <th class="text-center" style="width: 5%;">Order</th>
+            <?php } ?>
           </tr>
         </thead>
         <tbody>
@@ -174,15 +175,9 @@ if(isset($_POST['update_package'])){
            <td class="text-center"><?php echo remove_junk($product['stock'])?></td>
            <td class="text-center"><?php echo remove_junk($product['safety_stock'])?></td>
            <td class="text-center"><?php echo $product['weight']*$product['stock']?></td>
+           <?php if($warehouse['status'] != 0) { ?>
            <td class="text-center"><a class="btn btn-primary" href="product.php"><i class="fa fa-gears"></i></a></td>
-           <td class="text-center"> 
-            <form method="GET" action="po.php">
-              <input type="hidden" name="id_item" value="<?php echo $product['id_item']; ?>">
-              <button type="submit" title="Order" class="btn btn-md btn-success" name="add_item">
-                  <i class="glyphicon glyphicon-new-window"></i>
-              </button>
-            </form>
-           </td>
+           <?php } ?>
           </tr>
         <?php endforeach;?>
        </tbody>

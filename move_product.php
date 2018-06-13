@@ -55,29 +55,19 @@ if(isset($_POST['update_po'])){
   $weight_new  = $all_item['weight'];
   $stock_new   = $qty_new['qty'];
 
-  $tes2 = find_all_product($user['id_warehouse']);
-    $a = array();
-    foreach ($tes2 as $key) {
-      $a[] = $key['stock'];
-    }
-
   if(find_by_itemName($nm_item_new,$user['id_warehouse']) === false ){
-    $tes = find_all_product($user['id_warehouse']);
 
-    global $db;
-    foreach ($tes as $key) {
-      $id_item1 = $key['id_item'];
+    $id_st         = get_id_product($nm_item_new,$user['id_warehouse']);
+    $id_item_fetch = $id_st['id_item'];
+    $stock_fetch   = get_stock($id_st['id_item']);
+    $get_qty       = update_new_id($user['id_warehouse'],$iditem);
+    $stock1        = $get_qty['qty']+$stock_fetch['stock'];
 
-      $coba = $db->query("SELECT stock from item where id_item = '$id_item1' and nm_item = '$nm_item_new'");
-      $assoc = $db->fetch_assoc($coba);
+    $query_up  = "UPDATE item SET ";
+    $query_up .= "nm_item = '{$nm_item_new}',colour = '{$colour_new}',id_subcategories = '{$id_subcategories}',width = '{$width_new}',height = '{$height_new}',length = '{$length_new}',weight = '{$weight_new}',stock = '{$stock1}',id_package = '{$id_package}',id_location = '{$id_location}', safety_stock = '{$safety_stock}'";
+    $query_up .= "WHERE id_item = '{$id_item_fetch}' and nm_item = '{$nm_item_new}'";
+    $db->query($query_up); 
 
-      $stock1 = $stock_new+$assoc['stock'];
-      $query_up  = "UPDATE item SET ";
-      $query_up .= "nm_item = '{$nm_item_new}',colour = '{$colour_new}',id_subcategories = '{$id_subcategories}',width = '{$width_new}',height = '{$height_new}',length = '{$length_new}',weight = '{$weight_new}',stock = '{$stock1}',id_package = '{$id_package}',id_location = '{$id_location}', safety_stock = '{$safety_stock}'";
-      $query_up .= "WHERE id_item = '{$id_item1}' and nm_item = '{$nm_item_new}'";
-
-      $db->query($query_up); 
-    }
   } else {
     $query3  = "INSERT INTO item (";
     $query3 .=" id_item,nm_item,colour,width,height,length,weight,stock,safety_stock,id_package,id_subcategories,id_location";
@@ -150,6 +140,7 @@ if(isset($_POST['update_po'])){
                 <th class="text-center"> Quantity </th>
                 <th class="text-center"> Status </th>
                 <th class="text-center"> Actions </th>
+                <th class="text-center"> Print </th>
               </tr>
             </thead>
             <tbody>
@@ -157,17 +148,22 @@ if(isset($_POST['update_po'])){
               <?php foreach ($status1 as $po1):?>     
                 <input type="hidden" name="idpo" value="<?php echo remove_junk ($po1["id_po"])?>">
                <tr>
-                <td class="text-center"><?php echo $no++.".";?></td>
+                <td class="text-center"> <?php echo $no++.".";?></td>
                 <td class="text-center"> <?php echo remove_junk($po1['id_po']); ?></td>
                 <td class="text-center"> <?php echo remove_junk($po1['date_po']); ?></td>
                 <td class="text-center"> <?php echo remove_junk($po1['id_item']); ?></td>
                 <td class="text-center"> <?php echo remove_junk($po1['qty']); ?></td>
                 <td class="text-center"><span class="label label-danger"> <?php echo remove_junk($po1['status']); ?></span></td>
                 <td class="text-center">
-                    <button   class="btn btn-md btn-success" name="update_status" data-toggle="modal" data-target="#status<?php echo $po1['id_item']?>" title="Approve">
+                    <button class="btn btn-md btn-success" name="update_status" data-toggle="modal" data-target="#status<?php echo $po1['id_item']?>" title="Approve">
                     <i class="glyphicon glyphicon-ok"></i>
                   </button>
                 </td>
+                <td align="center">
+                 <a href="report_po.php?id=<?php echo $po1['id_po'] ?>" class="btn btn-danger" role="button" title="print PO">
+                    <i class="glyphicon glyphicon-print"></i>
+                  </a>
+               </td>
               </tr>
              <?php endforeach; ?>
             </tbody>
@@ -242,13 +238,24 @@ if(isset($_POST['update_po'])){
             </select>
           </div>
 
-          <div class="form-group">
-            <label class="control-label">Safety Stock</label>
-            <input type="number" min="0" class="form-control" required placeholder="Safety Stock" name="safety_stock">
-          </div>
+          <input type="hidden" value="<?php echo $a_location['id_po'];?>" name="id_po">
+          <input type="hidden" value="<?php echo $id_itemCheck = $a_location['id_item'];?>" name="id_item">
 
-        <input type="hidden" value="<?php echo $a_location['id_po'];?>" name="id_po">
-         <input type="hidden" value="<?php echo $a_location['id_item'];?>" name="id_item">
+          <!-- check item exst or not -->
+          <?php 
+
+            $all_item = find_all_product_shipment($id_itemCheck);
+            $nm_item_new = $all_item['nm_item'];
+
+          ?>
+
+          <?php if(find_by_itemName($nm_item_new,$user['id_warehouse']) === true ) { ?>
+            <div class="form-group">
+              <label class="control-label">Safety Stock</label>
+              <input type="number" min="0" class="form-control" required placeholder="Safety Stock" name="safety_stock">
+            </div>
+          <?php } ?>
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
