@@ -40,6 +40,10 @@
     <link rel="stylesheet" href="libs/datatables/jquery.dataTables.min.css">
     <!-- END DATATABLES -->
 
+    <!-- CHAIN COMBOBOX -->
+    <script src="jquery-1.10.2.min.js"></script>
+    <script src="jquery.chained.min.js"></script>
+
      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjdeO9J1CF_PRTS9aOjZ9-Scg8dIlhxGg&libraries=places&callback=initAutocomplete"
          async defer></script>
 

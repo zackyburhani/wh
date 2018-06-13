@@ -589,30 +589,30 @@
           <div class="row">
             <div class="col-md-3">
               <label for="name" class="control-label">Category</label>
-                <select class="form-control" id="category" name="id_categories">
-                  <?php if($all_categories == null) { ?>
-                    <option value="">-</option>
-                      <?php } else { ?>
-                        <?php foreach ($all_categories as $cat) : ?>
-                          <option value="<?php echo $cat['id_categories']; ?>" <?php if($item['id_categories'] === $cat['id_categories']): echo "selected"; endif; ?> ><?php echo remove_junk($cat['nm_categories']); ?></option>
-                        <?php endforeach; ?> 
-                    <?php } ?>
-                  </select>
+                 <select class="form-control" id="category" name="id_categories">
+                    <?php if($all_categories == null) { ?>
+                      <option value="">-</option>
+                        <?php } else { ?>
+                          <?php foreach($all_categories as $row){ ?>
+                            <option value="<?php echo remove_junk($row['id_categories']); ?>"><?php echo remove_junk(ucwords($row['nm_categories'])); ?></option>
+                          <?php } ?>  
+                        <?php } ?>
+                   </select>
                 </div>
                 <div class="col-md-3">
                   <label for="name" class="control-label">Subcategory</label>
                   <form method="post" action="product.php" class="clearfix">
                     <input type="hidden" name="id_item" value="<?php echo remove_junk($item['id_item']);?>">
                     <select class="form-control" id="sub_category" name="id_subcategories">
-                      <option value="">-</option>
                         <?php if($join_subcategories== null) { ?>
-                          <option value="">-</option>
-                        <?php } else { ?>
-                          <?php foreach ($join_subcategories as $subcat): ?>
-                            <option value="<?php echo $subcat['id_subcategories']; ?>" <?php if($item['id_subcategories'] === $subcat['id_subcategories']): echo "selected"; endif; ?> class="<?php echo $item['id_categories']; ?>"><?php echo remove_junk($subcat['nm_subcategories']); ?></option>
-                          <?php endforeach; ?>
-                      <?php } ?>  
-                    </select>
+                          <option value=" ">-</option>
+                            <?php } else { ?>
+                              <?php foreach($join_subcategories as $row2){ ?>
+                                <option class="<?php echo $row2['id_categories']; ?>" value="<?php echo remove_junk($row2['id_subcategories']); ?>"><?php echo remove_junk(ucwords($row2['nm_subcategories'])); ?>
+                                </option>
+                              <?php } ?>
+                            <?php } ?>  
+                        </select>
                     </div>
                     <div class="col-md-3">
                       <label for="name" class="control-label">Package</label>
