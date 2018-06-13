@@ -106,7 +106,7 @@ if(isset($_POST['update_warehouse'])){
             <th class="text-center" style="width: 5px;">No</th>
             <th class="text-center" style="width: 30px;">Warehouse</th>
             <th class="text-center" style="width: 50px;">Country</th>
-            <th class="text-center" style="width: 50px;">Address</th>
+            <th class="text-center" style="width: 10px;">Address</th>
             <th class="text-center" style="width: 50px;">Status</th>
             <th class="text-center" style="width: 50px;">Heavy Max</th>
             <th class="text-center" style="width: 50px;">Area Consumed</th>

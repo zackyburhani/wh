@@ -14,7 +14,6 @@
       <ul class="nav submenu">
         <li><a href="add_warehouse.php">Add Warehouse</a></li>
         <li><a href="add_location.php">Add Location</a></li>
-        <li><a href="lead_time.php">Lead Time</a></li>
         <li><a href="warehouse.php">Warehouse Condition</a></li>
       </ul>
   </li>
@@ -63,6 +62,7 @@
       </a>
       <ul class="nav submenu">
         <li><a href="move_product.php">Receive Product</a></li>
+        <li><a href="lead_time.php">Lead Time</a></li>
         <li><a href="history_shipment.php">Approved History</a></li>
       </ul>
   </li>
@@ -76,7 +76,7 @@
         <li><a href="po.php">Add Purchase Order</a></li>
         <li><a href="history_po.php">Purchase History</a></li>
         <li><a href="offer_po.php">Purchase Offer <span class="label label-danger" id="jumlah"><?php $offer_po = find_all_PO_destination_admin_notif($user['id_warehouse']); if($offer_po != null) {echo $offer_po;}  ?></span></a></li>
-        <?php if ($user['id_warehouse'] =='0001') { ?>
+        <?php if ($user['level_user'] =='0') { ?>
         <?php $approve1 = find_all_PO_admin_notif($user['id_warehouse']); ?>
         <li><a href="approve1_po.php">Approved Purchase Order <span class="label label-danger label-sm"><?php if($approve1 != null) {echo $approve1;} ?></span></a></li>
         <?php } ?>

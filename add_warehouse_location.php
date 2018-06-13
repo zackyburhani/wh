@@ -161,7 +161,9 @@
           // check objek marker
           if (!marker) {
             marker = new google.maps.Marker({
-              map: map
+              map: map,
+              animation: google.maps.Animation.DROP,
+              icon: 'img/maps/333.png'
             });
           }
           // set position
@@ -197,8 +199,8 @@
  
           infowindow.open(map, marker);
 
-        } 
 
+        } 
         //Save Location
           $('#save_wh').on('click',function(){
 

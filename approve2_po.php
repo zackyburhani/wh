@@ -277,7 +277,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
-          <button type="submit" name="canceled_po" class="btn btn-danger"><span class="fa fa-warning"></span> Canceled</button>
+          <button type="submit" name="canceled_po" class="btn btn-danger"><span class="fa fa-warning"></span> Disagree</button>
           <button type="submit" name="approve_po" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Approve</button>
         </div>
       </form>

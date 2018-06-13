@@ -159,7 +159,7 @@ if(isset($_POST['update_package'])){
             <th class="text-center" style="width: 5%;">No.</th>
             <th class="text-center" style="width: 10%;">Item </th>
             <th class="text-center" style="width: 10%;">Stock</th>
-            <th class="text-center" style="width: 10%;">Safety Stock</th>
+            <th class="text-center" style="width: 10%;">Safety Stock / Kg</th>
             <th class="text-center" style="width: 10%;">Consumed Area / Kg</th>
             <?php if($warehouse['status'] != 0) { ?>
             <th class="text-center" style="width: 5%;">Produce</th>

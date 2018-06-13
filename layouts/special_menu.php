@@ -13,7 +13,6 @@
       </a>
       <ul class="nav submenu">
         <li><a href="add_location.php">Add Location</a></li>
-        <li><a href="lead_time.php">Lead Time</a></li>
         <li><a href="warehouse.php">Warehouse Condition</a></li>
       </ul>
   </li>
@@ -61,6 +60,10 @@
       </a>
       <ul class="nav submenu">
         <li><a href="move_product.php">Receive Product</a></li>
+        <?php $warehouse = find_by_id_warehouse('warehouse',$user['id_warehouse']); ?>
+        <?php if($warehouse['status'] != 0) { ?> 
+          <li><a href="lead_time.php">Lead Time</a></li>
+        <?php } ?>
         <li><a href="history_shipment.php">Approved History</a></li>
       </ul>
   </li>

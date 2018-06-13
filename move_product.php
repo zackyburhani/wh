@@ -4,18 +4,93 @@ error_reporting(0);
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
   page_require_level(2);
- // $po = find_all1('detil_po');
- $user               = current_user();
- $all_location       = find_all_location('location',$user['id_warehouse']);
- $status1            = status_shipment($user['id_warehouse']);
- $all_warehouse_id   = find_warehouse_id($user['id_warehouse']);
- $all_package        = find_all_package('package',$user['id_warehouse']);
- $all_categories     = find_all_categories('categories',$user['id_warehouse']);
- $join_subcategories = find_allSubcategories($user['id_warehouse']);
+   // $po = find_all1('detil_po');
+   $user               = current_user();
+   $all_location       = find_all_location('location',$user['id_warehouse']);
+   $status1            = status_shipment($user['id_warehouse']);
+   $all_warehouse_id   = find_warehouse_id($user['id_warehouse']);
+   $all_package        = find_all_package('package',$user['id_warehouse']);
+   $all_categories     = find_all_categories('categories',$user['id_warehouse']);
+   $join_subcategories = find_allSubcategories($user['id_warehouse']);
+
+  //leadtime
+  $warehouse_lt = find_leadtime_wh($user['id_warehouse']);
+  $leadTime_po  = find_leadtime_po($warehouse_lt['for_wh'],$warehouse_lt['from_wh']);
  
- if (isset($_GET['search_po'])) {
+  function GetDrivingDistance($lat1, $lat2, $long1, $long2)
+  {
+    $distance="";
+    $duration="";
+    $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$lat1.",".$long1."&destinations=".$lat2.",".$long2."&mode=driving&language=en";
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_PROXYPORT, 3128);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $response_a = json_decode($response, true);
+    
+      $time = $response_a['rows'][0]['elements'][0]['duration']['text'];
+      return array('time' => $time);   
+  }
+
+  function get_driving_information($start, $finish, $raw = false)
+  {
+    if(strcmp($start, $finish) == 0)
+    {
+      $time = 0;
+      if($raw)
+      {
+        $time .= ' seconds';
+      }
+   
+      return array('distance' => 0, 'time' => $time);
+    }
+   
+    $start  = urlencode($start);
+    $finish = urlencode($finish);
+   
+    $distance   = 'unknown';
+    $time   = 'unknown';
+   
+    $url = 'http://maps.googleapis.com/maps/api/directions/xml?origin='.$start.'&destination='.$finish.'&sensor=false';
+    if($data = file_get_contents($url))
+    {
+      $xml = new SimpleXMLElement($data);
+   
+      if(isset($xml->route->leg->duration->value) AND (int)$xml->route->leg->duration->value > 0)
+      {
+        if($raw)
+        {
+          $distance = (string)$xml->route->leg->distance->text;
+          $time   = (string)$xml->route->leg->duration->text;
+        }
+        else
+        {
+          $distance = (int)$xml->route->leg->distance->value / 1000 / 1.609344; 
+          $time   = (int)$xml->route->leg->duration->value;
+        }
+      }
+      else
+      {
+        throw new Exception('Could not find that route');
+      }
+   
+      return array('distance' => $distance, 'time' => $time);
+    }
+    else
+    {
+      throw new Exception('Could not resolve URL');
+    }
+  }
+
+
+  if (isset($_GET['search_po'])) {
     $no = $_POST['no_po'];   
-   }
+  }
 ?>
 <?php
 if(isset($_POST['update_po'])){
@@ -46,14 +121,15 @@ if(isset($_POST['update_po'])){
   $all_item = find_all_product_shipment($iditem);
   $qty_new  = insert_new_id($user['id_warehouse']);
 
-  $id_item_new = autonumber('id_item','item');
-  $nm_item_new = $all_item['nm_item'];
-  $colour_new  = $all_item['colour'];
-  $width_new   = $all_item['width'];
-  $height_new  = $all_item['height'];
-  $length_new  = $all_item['length'];
-  $weight_new  = $all_item['weight'];
-  $stock_new   = $qty_new['qty'];
+  $id_item_new  = autonumber('id_item','item');
+  $nm_item_new  = $all_item['nm_item'];
+  $colour_new   = $all_item['colour'];
+  $width_new    = $all_item['width'];
+  $height_new   = $all_item['height'];
+  $length_new   = $all_item['length'];
+  $diameter_new = $all_item['diameter'];
+  $weight_new   = $all_item['weight'];
+  $stock_new    = $qty_new['qty'];
 
   if(find_by_itemName($nm_item_new,$user['id_warehouse']) === false ){
 
@@ -64,15 +140,15 @@ if(isset($_POST['update_po'])){
     $stock1        = $get_qty['qty']+$stock_fetch['stock'];
 
     $query_up  = "UPDATE item SET ";
-    $query_up .= "nm_item = '{$nm_item_new}',colour = '{$colour_new}',id_subcategories = '{$id_subcategories}',width = '{$width_new}',height = '{$height_new}',length = '{$length_new}',weight = '{$weight_new}',stock = '{$stock1}',id_package = '{$id_package}',id_location = '{$id_location}', safety_stock = '{$safety_stock}'";
+    $query_up .= "nm_item = '{$nm_item_new}',colour = '{$colour_new}',id_subcategories = '{$id_subcategories}',width = '{$width_new}',height = '{$height_new}',length = '{$length_new}',diameter = '{$diameter_new}',weight = '{$weight_new}',stock = '{$stock1}',id_package = '{$id_package}',id_location = '{$id_location}', safety_stock = '{$safety_stock}'";
     $query_up .= "WHERE id_item = '{$id_item_fetch}' and nm_item = '{$nm_item_new}'";
     $db->query($query_up); 
 
   } else {
     $query3  = "INSERT INTO item (";
-    $query3 .=" id_item,nm_item,colour,width,height,length,weight,stock,safety_stock,id_package,id_subcategories,id_location";
+    $query3 .=" id_item,nm_item,colour,width,height,length,diameter,weight,stock,safety_stock,id_package,id_subcategories,id_location";
     $query3 .=") VALUES (";
-    $query3 .=" '{$id_item_new}', '{$nm_item_new}', '{$colour_new}', '{$width_new}', '{$height_new}', '{$length_new}', '{$weight_new}', '{$stock_new}','{$safety_stock}','{$id_package}','{$id_subcategories}','{$id_location}'";
+    $query3 .=" '{$id_item_new}', '{$nm_item_new}', '{$colour_new}', '{$width_new}', '{$height_new}', '{$length_new}','{$diameter_new}', '{$weight_new}', '{$stock_new}','{$safety_stock}','{$id_package}','{$id_subcategories}','{$id_location}'";
     $query3 .=")";  
     $db->query($query3);
   }
@@ -134,13 +210,14 @@ if(isset($_POST['update_po'])){
            <thead>
               <tr>
                <th class="text-center" style="width: 1px;">No.</th>
-                <th class="text-center"> Id Purchase Order</th>
-                <th class="text-center"> Date Shipment </th>
+                <th class="text-center"> Id PO</th>
+                <th class="text-center"> From Warehouse</th>
+                <th class="text-center"> Shipment Date</th>
                 <th class="text-center"> ID Item </th>
                 <th class="text-center"> Quantity </th>
                 <th class="text-center"> Status </th>
-                <th class="text-center"> Actions </th>
-                <th class="text-center"> Print </th>
+                <th class="text-center" width="150px"> Actions </th>
+                <!-- <th class="text-center"> Print </th> -->
               </tr>
             </thead>
             <tbody>
@@ -150,17 +227,19 @@ if(isset($_POST['update_po'])){
                <tr>
                 <td class="text-center"> <?php echo $no++.".";?></td>
                 <td class="text-center"> <?php echo remove_junk($po1['id_po']); ?></td>
+                <td class="text-center"> <?php echo remove_junk($po1['from_wh']); ?></td>
                 <td class="text-center"> <?php echo remove_junk($po1['date_po']); ?></td>
                 <td class="text-center"> <?php echo remove_junk($po1['id_item']); ?></td>
                 <td class="text-center"> <?php echo remove_junk($po1['qty']); ?></td>
                 <td class="text-center"><span class="label label-danger"> <?php echo remove_junk($po1['status']); ?></span></td>
                 <td class="text-center">
-                    <button class="btn btn-md btn-success" name="update_status" data-toggle="modal" data-target="#status<?php echo $po1['id_item']?>" title="Approve">
+                  <button class="btn btn-md btn-primary" name="update_status" data-toggle="modal" data-target="#leadTime<?php echo $po1['id_po']?>" title="Lead Time">
+                    <i class="fa fa-clock-o"></i>
+                  </button>
+                  <button class="btn btn-md btn-success" name="update_status" data-toggle="modal" data-target="#status<?php echo $po1['id_item']?>" title="Approve">
                     <i class="glyphicon glyphicon-ok"></i>
                   </button>
-                </td>
-                <td align="center">
-                 <a href="report_po.php?id=<?php echo $po1['id_po'] ?>" class="btn btn-danger" role="button" title="print PO">
+                  <a href="report_po.php?id=<?php echo $po1['id_po'] ?>" class="btn btn-danger" role="button" title="Print PO">
                     <i class="glyphicon glyphicon-print"></i>
                   </a>
                </td>
@@ -268,6 +347,80 @@ if(isset($_POST['update_po'])){
 </div>
 <?php endforeach;?>
 
+<?php foreach($status1 as $a_location): ?>
+<div class="modal fade" id="leadTime<?php echo $a_location['id_po'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-clock-o"></i> Lead Time </h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th class="text-center">ID PO</th>
+            <th class="text-center">From Warehouse</th>
+            <th class="text-center">To Warehouse</th>
+            <th class="text-center" style="width: 150px;">Distance</th>
+            <th class="text-center" style="width: 150px;">Estimated Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php $no=1; ?>
+          <?php $leadTime = find_leadtime($a_location['id_po'],$user['id_warehouse'],$warehouse_lt['for_wh']);?>
+          <?php foreach($leadTime as $time) { ?>
+          <?php 
+
+            $latitudeFrom  = $time['latitude1']; 
+            $longitudeFrom = $time['longitude1'];
+            $latitudeTo    = $time['latitude2'];
+            $longitudeTo   = $time['longitude2'];
+
+            //Calculate distance from latitude and longitude
+            $theta = $longitudeFrom - $longitudeTo;
+            $dist = sin(deg2rad($latitudeFrom)) * sin(deg2rad($latitudeTo)) +  cos(deg2rad($latitudeFrom)) * cos(deg2rad($latitudeTo)) * cos(deg2rad($theta));
+            $dist = acos($dist);
+            $dist = rad2deg($dist);
+            $miles = $dist * 60 * 1.1515;
+            $distance = ($miles * 1.609344);
+
+          ?>
+            <tr>
+             <td class="text-center"><?php echo remove_junk(ucwords($time['id_po']))?></td>
+             <td class="text-center"><?php echo remove_junk(ucwords($time['from_wh_nm']))?></td>
+             <td class="text-center"><?php echo remove_junk(ucwords($time['for_wh_nm']))?></td>
+             <td class="text-center"><?php echo round($distance,2)." <b>Km</b>" ?></td>
+             <td class="text-center">
+               <?php 
+
+                try
+                {
+                  $info = get_driving_information($time['address1'], $time['address2'], true);
+                  echo $info['time'];
+                }
+                catch(Exception $e)
+                {
+                    echo 'Caught exception: '.$e->getMessage()."\n";
+                }
+
+               ?>
+             </td>
+            </tr>
+          <?php } ?>
+        </tbody>
+      </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<?php endforeach;?>
+
 
 
 <script src="jquery-1.10.2.min.js"></script>
@@ -276,24 +429,4 @@ if(isset($_POST['update_po'])){
   $("#sub_category").chained("#category");
 </script>
 
-
-  <script>
-    $(".hapus").click(function () {
-        var jawab = confirm("Press a button!");
-        if (jawab === true) {
-            var hapus = false;
-            if (!hapus) {
-                hapus = true;
-                $.post('hapus.php', {id: $(this).attr('data-id')},
-                function (data) {
-                    alert(data);
-                });
-                hapus = false;
-            }
-        } else {
-            return false;
-        }
-    });
-</script>
-
-  <?php include_once('layouts/footer.php'); ?>
+<?php include_once('layouts/footer.php'); ?>

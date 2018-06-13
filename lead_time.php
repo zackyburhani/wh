@@ -5,6 +5,7 @@
    page_require_level(2);
    $all_warehouse = find_all1('warehouse');
    $user = current_user();
+   
 ?>
 
 <?php
@@ -29,11 +30,59 @@ function GetDrivingDistance($lat1, $lat2, $long1, $long2)
       return array('time' => $time);   
 }
 
-$warehouse_lt = find_leadtime_wh($user['id_warehouse']);
-$leadTime_po  = find_leadtime_po($warehouse_lt['for_wh'],$warehouse_lt['from_wh']);
-$leadTime     = find_leadtime($leadTime_po['id_po'],$user['id_warehouse']);
+$leadTime_po  = find_leadtime_po_from($user['id_warehouse']);
+$leadTime     = find_leadtime_from($leadTime_po['id_po'],$user['id_warehouse']);  
 
-// echo json_encode($leadTime_po['id_po']);die();
+function get_driving_information($start, $finish, $raw = false)
+{
+  if(strcmp($start, $finish) == 0)
+  {
+    $time = 0;
+    if($raw)
+    {
+      $time .= ' seconds';
+    }
+ 
+    return array('distance' => 0, 'time' => $time);
+  }
+ 
+  $start  = urlencode($start);
+  $finish = urlencode($finish);
+ 
+  $distance   = 'unknown';
+  $time   = 'unknown';
+ 
+  $url = 'http://maps.googleapis.com/maps/api/directions/xml?origin='.$start.'&destination='.$finish.'&sensor=false';
+  if($data = file_get_contents($url))
+  {
+    $xml = new SimpleXMLElement($data);
+ 
+    if(isset($xml->route->leg->duration->value) AND (int)$xml->route->leg->duration->value > 0)
+    {
+      if($raw)
+      {
+        $distance = (string)$xml->route->leg->distance->text;
+        $time   = (string)$xml->route->leg->duration->text;
+      }
+      else
+      {
+        $distance = (int)$xml->route->leg->distance->value / 1000 / 1.609344; 
+        $time   = (int)$xml->route->leg->duration->value;
+      }
+    }
+    else
+    {
+      throw new Exception('Could not find that route');
+    }
+ 
+    return array('distance' => $distance, 'time' => $time);
+  }
+  else
+  {
+    throw new Exception('Could not resolve URL');
+  }
+}
+
 
 ?>
 
@@ -57,11 +106,11 @@ $leadTime     = find_leadtime($leadTime_po['id_po'],$user['id_warehouse']);
         <thead>
           <tr>
             <th class="text-center" style="width: 50px;">No. </th>
+            <th class="text-center">ID PO</th>
             <th class="text-center">From Warehouse</th>
             <th class="text-center">To Warehouse</th>
             <th class="text-center" style="width: 150px;">Distance</th>
-            <!-- <th class="text-center" style="width: 150px;">Estimated Time</th> -->
-            <th class="text-center" style="width: 150px;">Polylines</th>
+            <th class="text-center" style="width: 150px;">Estimated Time</th>
           </tr>
         </thead>
         <tbody>
@@ -87,24 +136,26 @@ $leadTime     = find_leadtime($leadTime_po['id_po'],$user['id_warehouse']);
 
           ?>
             <tr>
-             <td class="text-center"><?php echo $no++; ?></td>
-             <td class="text-center"><?php echo remove_junk(ucwords($time['from_wh']))?></td>
-             <td class="text-center"><?php echo remove_junk(ucwords($time['for_wh']))?></td>
+             <td class="text-center"><?php echo $no++."."; ?></td>
+             <td class="text-center"><?php echo remove_junk(ucwords($time['id_po']))?></td>
+             <td class="text-center"><?php echo remove_junk(ucwords($time['from_wh_nm']))?></td>
+             <td class="text-center"><?php echo remove_junk(ucwords($time['for_wh_nm']))?></td>
              <td class="text-center"><?php echo round($distance,2)." <b>Km</b>" ?></td>
-             <!-- <td class="text-center">    
-              <?php 
+             <td class="text-center">
+               <?php 
 
-              $dist = GetDrivingDistance($latitudeFrom,$latitudeTo,$longitudeFrom,$longitudeTo);
-              if($dist) {
-                echo $dist['time']; 
-              } else {
-                  echo "Uncaught Location";
-              }
+                try
+                {
+                  $info = get_driving_information($time['address1'], $time['address2'], true);
+                  echo $info['time'];
+                }
+                catch(Exception $e)
+                {
+                    echo 'Caught exception: '.$e->getMessage()."\n";
+                }
 
-              ?>
-
-             </td> -->
-             <td class="text-center"><button data-target="#target<?php echo $time['id_po'] ?>" data-toggle="modal" class="btn btn-primary"><i class="fa fa-map-marker"></i></button></td>
+               ?>
+             </td>
             </tr>
           <?php } ?>
         </tbody>
@@ -117,74 +168,6 @@ $leadTime     = find_leadtime($leadTime_po['id_po'],$user['id_warehouse']);
 
   </div>
 </div>
-
-<!-- MODAL ADD NEW PACKAGE -->
-<?php foreach($leadTime as $time) { ?>
-<div class="modal fade" id="target<?php echo $time['id_po'] ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-map-marker"></i> Polylines</h4>
-      </div>
-      <div class="modal-body">
-
-        <div id="map"></div>
-
-
-        <input type="hidden" id="latitude1"  value="<?php echo $latitudeFrom  = $time['latitude1'];  ?>">
-        <input type="hidden" id="longitude1" value="<?php echo $longitudeFrom = $time['longitude1']; ?>">
-        <input type="hidden" id="latitude2"  value="<?php echo $latitudeTo    = $time['latitude2']; ?>">
-        <input type="hidden" id="longitude2" value="<?php echo $longitudeTo   = $time['longitude2']; ?>">
-
-        <script>
-
-          var lat1  = parseFloat(document.getElementById('latitude1').value);
-          var long1 = parseFloat(document.getElementById('longitude1').value);
-          var lat2  = parseFloat(document.getElementById('latitude2').value);
-          var long2 = parseFloat(document.getElementById('longitude2').value);
-
-          function initMap() {
-            var map = new google.maps.Map(document.getElementById('map'), {
-              zoom: 4,
-              center: {lat: lat1, lng: long1},
-              mapTypeId: 'terrain'
-            });
-
-            console.log(lat2);
-
-            var flightPlanCoordinates = [
-              {lat: lat1, lng: long1},
-              {lat: lat2, lng: long2}
-            ];
-            var flightPath = new google.maps.Polyline({
-              path: flightPlanCoordinates,
-              geodesic: true,
-              strokeColor: '#3175b8',
-              strokeOpacity: 1.0,
-              strokeWeight: 2
-            });
-
-            flightPath.setMap(map);
-          }
-        </script>
-        <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjdeO9J1CF_PRTS9aOjZ9-Scg8dIlhxGg&callback=initMap">
-        </script>
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" title="Close" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-  </div>
-</div>
-<?php } ?>
-<!-- END MODAL ADD NEW PACKAGE -->
 
  
 <?php include_once('layouts/footer.php'); ?>

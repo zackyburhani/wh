@@ -49,6 +49,7 @@
       $length           = remove_junk($db->escape($_POST['length']));
       $weight           = remove_junk($db->escape($_POST['weight']));
       $stock            = remove_junk($db->escape($_POST['stock']));  
+      $diameter         = remove_junk($db->escape($_POST['diameter']));  
       $id_package       = remove_junk($db->escape($_POST['id_package']));
       $id_subcategories = remove_junk($db->escape($_POST['id_subcategories']));
       $id_location      = remove_junk($db->escape($_POST['id_location']));
@@ -94,9 +95,9 @@
 
       //insert item
       $query2  = "INSERT INTO item (";
-      $query2 .=" id_item,nm_item,colour,width,height,length,weight,stock,id_package,id_subcategories,id_location,safety_stock";
+      $query2 .=" id_item,nm_item,colour,width,height,length,diameter,weight,stock,id_package,id_subcategories,id_location,safety_stock";
       $query2 .=") VALUES (";
-      $query2 .=" '{$id_item}', '{$nm_item}', '{$colour}', '{$width}', '{$height}', '{$length}', '{$weight}', '{$stock}', '{$id_package}', '{$id_subcategories}', '{$id_location}','{$safety_stock}'";
+      $query2 .=" '{$id_item}', '{$nm_item}', '{$colour}', '{$width}', '{$height}', '{$length}','{$diameter}','{$weight}', '{$stock}', '{$id_package}', '{$id_subcategories}', '{$id_location}','{$safety_stock}'";
       $query2 .=")";
 
       //insert bpack
@@ -154,11 +155,11 @@
     $height           = remove_junk($db->escape($_POST['height']));
     $length           = remove_junk($db->escape($_POST['length']));
     $weight           = remove_junk($db->escape($_POST['weight']));
-    $stock            = remove_junk($db->escape($_POST['stock']));     
+    $stock            = remove_junk($db->escape($_POST['stock']));
+    $diameter         = remove_junk($db->escape($_POST['diameter']));     
     $id_package       = remove_junk($db->escape($_POST['id_package']));
     $id_subcategories = remove_junk($db->escape($_POST['id_subcategories']));
     $id_location      = remove_junk($db->escape($_POST['id_location']));
-    $id_categories    = remove_junk($db->escape($_POST['id_categories']));
     $safety_stock     = remove_junk($db->escape($_POST['safety_stock']));
 
     //convert
@@ -195,7 +196,7 @@
       if($fetch_package['jml_stock'] <= $stock){
         $session->msg('d',"QTY Package Is Not Enough");
         redirect('product.php', false);
-      }
+    }
 
     $fetch_package = find_package_id($id_package);
       if($fetch_package['jml_stock'] <= 0){
@@ -207,7 +208,7 @@
     $id_warehouse = $user['id_warehouse'];
     
     $query  = "UPDATE item SET ";
-    $query .= "nm_item = '{$nm_item}',colour = '{$colour}',id_subcategories = '{$id_subcategories}',width = '{$width}',height = '{$height}',length = '{$length}',weight = '{$weight}',stock = '{$stock}',id_package = '{$id_package}',id_location = '{$id_location}', id_item = '{$id_item}', safety_stock = '{$safety_stock}'";
+    $query .= "nm_item = '{$nm_item}',colour = '{$colour}',id_subcategories = '{$id_subcategories}',width = '{$width}',height = '{$height}',length = '{$length}',diameter = '{$diameter}',weight = '{$weight}',stock = '{$stock}',id_package = '{$id_package}',id_location = '{$id_location}', id_item = '{$id_item}', safety_stock = '{$safety_stock}'";
     $query .= "WHERE id_item = '{$id_item}'";
 
     //update bpack
@@ -234,9 +235,18 @@
         $pack  = find_package_id($id_package);
 
         $a = $reduced +($pack['jml_stock']*$pack['weight']);
-        $query2  = "UPDATE warehouse SET ";
-        $query2 .= "heavy_consumed='{$a}' ";
-        $query2 .= "WHERE id_warehouse = '{$id_warehouse}'";
+
+        //check if same qty updated
+        if($stock_fetch == $stock){
+          $query2  = "UPDATE warehouse SET ";
+          $query2 .= "heavy_consumed='{$reduced}' ";
+          $query2 .= "WHERE id_warehouse = '{$id_warehouse}'";
+        } else{
+          $query2  = "UPDATE warehouse SET ";
+          $query2 .= "heavy_consumed='{$a}' ";
+          $query2 .= "WHERE id_warehouse = '{$id_warehouse}'";  
+        }
+
         $db->query($query2);
 
         $session->msg('s',"Product Has Been Updated! ");
@@ -482,8 +492,8 @@
               <div class="form-group">
                 <div class="row">
 
-                  <div class="col-md-4">
-                    <label for="name" class="control-label">Height / Centimeters</label>
+                  <div class="col-md-3">
+                    <label for="name" class="control-label">Height / cm</label>
                     <div class="input-group">
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
@@ -492,8 +502,8 @@
                     </div>
                   </div>
 
-                  <div class="col-md-4">
-                    <label for="name" class="control-label">Width / Centimeters</label>
+                  <div class="col-md-3">
+                    <label for="name" class="control-label">Width / cm</label>
                     <div class="input-group">
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
@@ -502,8 +512,8 @@
                     </div>
                   </div>
 
-                  <div class="col-md-4">
-                    <label for="name" class="control-label">Length / Centimeters</label>
+                  <div class="col-md-3">
+                    <label for="name" class="control-label">Length / cm</label>
                     <div class="input-group">
                       <span class="input-group-addon">
                           <i class="glyphicon glyphicon-tasks"></i>
@@ -511,6 +521,17 @@
                       <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="length" placeholder="Length Product">
                     </div>
                   </div>
+
+                  <div class="col-md-3">
+                    <label for="name" class="control-label">Diameter / cm</label>
+                    <div class="input-group">
+                      <span class="input-group-addon">
+                          <i class="glyphicon glyphicon-tasks"></i>
+                      </span>
+                      <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="diameter" placeholder="Diameter Product">
+                    </div>
+                  </div>
+
                 </div>
               </div>
 
@@ -675,8 +696,8 @@
               <div class="form-group">
                 <div class="row">
 
-                  <div class="col-md-4">
-                    <label for="name" class="control-label">Height / Centimeters</label>
+                  <div class="col-md-3">
+                    <label for="name" class="control-label">Height / cm</label>
                     <div class="input-group">
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
@@ -685,8 +706,8 @@
                     </div>
                   </div>
                   
-                  <div class="col-md-4">
-                    <label for="name" class="control-label">Width / Centimeters</label>
+                  <div class="col-md-3">
+                    <label for="name" class="control-label">Width / cm</label>
                     <div class="input-group">
                       <span class="input-group-addon">
                         <i class="glyphicon glyphicon-tasks"></i>
@@ -695,8 +716,8 @@
                     </div>
                   </div>
 
-                  <div class="col-md-4">
-                    <label for="name" class="control-label">Length / Centimeters</label>
+                  <div class="col-md-3">
+                    <label for="name" class="control-label">Length / cm</label>
                     <div class="input-group">
                       <span class="input-group-addon">
                           <i class="glyphicon glyphicon-tasks"></i>
@@ -704,6 +725,18 @@
                       <input type="number" min="0" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="length" value="<?php echo remove_junk($item['length']);?>" placeholder="Length Product">
                     </div>
                   </div>
+
+
+                  <div class="col-md-3">
+                    <label for="name" class="control-label">Diameter / cm</label>
+                    <div class="input-group">
+                      <span class="input-group-addon">
+                          <i class="glyphicon glyphicon-tasks"></i>
+                      </span>
+                      <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" value="<?php echo remove_junk($item['diameter']);?>" class="form-control" name="diameter" placeholder="Diameter Product">
+                    </div>
+                  </div>
+
                 </div>
               </div>
 
@@ -827,6 +860,11 @@
                   <td width="90px">Length</td>
                   <td>:</td>
                   <td><b><?php echo $item['length'];?></b></td>
+                </tr>
+                <tr>
+                  <td width="90px">Diameter</td>
+                  <td>:</td>
+                  <td><b><?php echo $item['diameter'];?></b></td>
                 </tr>
                 <tr>
                   <td width="90px">Weight</td>

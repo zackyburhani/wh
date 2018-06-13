@@ -1,4 +1,4 @@
-<?php $user = current_user();?>
+<?php $user = current_user(); ?>
 <!DOCTYPE html>
   <html lang="en">
     <head>
@@ -40,14 +40,14 @@
     <link rel="stylesheet" href="libs/datatables/jquery.dataTables.min.css">
     <!-- END DATATABLES -->
 
-     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjdeO9J1CF_PRTS9aOjZ9-Scg8dIlhxGg&libraries=places&callback=initAutocomplete"
+     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjdeO9J1CF_PRTS9aOjZ9-Scg8dIlhxGg&libraries=places&callback=initMap"
          async defer></script>
 
   </head>
   <body>
   <?php  if ($session->isUserLoggedIn(true)): ?>
     <header id="header">
-      <div class="logo pull-left"> IKEA WAREHOUSE </div>
+      <div class="logo pull-left" style="color: #ffda1a"> IKEA WAREHOUSE </div>
       <div class="header-content">
       <div class="header-date pull-left">
         <strong><?php echo date("F j, Y, g:i a");?></strong>
@@ -84,7 +84,7 @@
           <?php if($warehouse['status'] != 0) { ?>
 
           <li class="profile">
-            <span class="label label-danger"><?php  if ($user['id_warehouse'] =='0001') {$total = $offer_admin+$approve_admin; if($total != null) {echo $total;} } else { if($approve2 != null) { echo $total = $approve2;}}?></span>
+            <span class="label label-danger"><?php  if ($user['level_user'] =='0') {$total = $offer_admin+$approve_admin; if($total != null) {echo $total;} } else { if($approve2 != null) { echo $total = $approve2;}}?></span>
             <a href="#" data-toggle="dropdown" aria-expanded="false">
               <span class="fa fa-envelope-o"><i class="caret"></i></span> 
             </a>

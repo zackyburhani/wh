@@ -25,7 +25,7 @@
       $sql .= " VALUES ('{$id_loc}','{$cat_unit}','{$floor}','{$room}','{$id_wh}')";
 
        if($db->query($sql)){
-        $session->msg('s',"success ");
+        $session->msg('s',"Successfully Added Location");
         redirect('add_location.php', false);
       } else {
         $session->msg('d',' Sorry failed to added!');
@@ -75,6 +75,16 @@ if(isset($_POST['update_location'])){
   $req_field = array('idlocation');
   validate_fields($req_field);
   $id_location = remove_junk($db->escape($_POST['idlocation']));
+
+  //validation connected foreign key
+  $location = find_all_id('item',$id_location,'id_location');
+  foreach ($location as $data) {
+    $id_location2 = $data['id_location'];
+  }
+  if($id_location == $id_location2){
+    $session->msg("d","The Field Connected To Other Data.");
+    redirect('add_location.php');
+  }
 
   if(empty($errors)){
         $sql = "DELETE FROM location WHERE id_location='{$id_location}'";
