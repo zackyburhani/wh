@@ -14,6 +14,18 @@ function autonumber($id, $table){
   return $new_code;
 }
 
+function autonumber_min($id, $table){
+  global $db;
+  $query = 'SELECT MAX(RIGHT('.$id.', 4)) as max_id FROM '.$table.' ORDER BY '.$id;
+  $result = $db->query($query);
+  $data = $db->fetch_assoc($result);
+  $id_max = $data['max_id'];
+  $sort_num = (int) substr($id_max, 1, 4);
+  $sort_num--;
+  $new_code = sprintf("%04s", $sort_num);
+  return $new_code;
+}
+
  
 /*--------------------------------------------------------------*/
 /* Function for find all database table rows by table name
@@ -1058,6 +1070,12 @@ function get_id_product($nm_item,$id_warehouse)
     $sql = "SELECT nm_item FROM item,location,warehouse WHERE item.id_location = location.id_location and location.id_warehouse = warehouse.id_warehouse and nm_item = '{$db->escape($val)}' and warehouse.id_warehouse = '$id_warehouse' LIMIT 1 ";
     $result = $db->query($sql);
     return($db->num_rows($result) === 0 ? true : false);
+  }
+
+  function max_warehouse(){
+    global $db;
+     $sql = $db->query("SELECT max(id_warehouse) as max from warehouse");
+     return $db->fetch_assoc($sql);
   }
 
 

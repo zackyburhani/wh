@@ -151,7 +151,7 @@ function get_driving_information($start, $finish, $raw = false)
                 }
                 catch(Exception $e)
                 {
-                    echo 'Caught exception: '.$e->getMessage()."\n";
+                    echo 'Could Not Find The Route ';
                 }
 
                ?>

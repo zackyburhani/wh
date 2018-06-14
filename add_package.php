@@ -192,7 +192,7 @@ if(isset($_POST['update_package'])){
     $reduced      = $consumed-($weight*$stock);
 
     // if($reduced < 0){
-    //   $session->msg("d","Can not Delete The Product.");
+    //   $session->msg("d","Could not Delete The Product.");
     //   redirect('add_package.php');
     // }
 

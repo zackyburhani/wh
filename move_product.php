@@ -403,7 +403,7 @@ if(isset($_POST['update_po'])){
                 }
                 catch(Exception $e)
                 {
-                    echo 'Caught exception: '.$e->getMessage()."\n";
+                    echo '<i>Could Not Find The Route</i>';
                 }
 
                ?>

@@ -267,7 +267,7 @@
           <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-th"></span> Approve Purchase Order</h4>
         </div>
         <div class="modal-body">
-          Are You Sure Want To Approve Item <b><u><?php echo remove_junk(ucwords($item['id_item'])); ?></u></b> ?
+          Are You Sure Want To Send Item <b><u><?php echo remove_junk(ucwords($item['id_item'])); ?></u></b> ?
         <form method="post" action="approve2_po.php" class="clearfix">
           <div class="form-group">
             <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($item['id_item'])); ?>" name="id_item">

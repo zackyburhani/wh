@@ -1,5 +1,6 @@
 <?php 
 require_once('includes/load.php');
+page_require_level(1);
 
 $id_warehouse   = autonumber('id_warehouse','warehouse');
 $warehousename  = remove_junk($db->escape($_POST['warehousename']));
@@ -21,21 +22,7 @@ $convert_max    = remove_junk($db->escape($_POST['convert_max']));
 
 $query = $db->query("INSERT INTO warehouse (id_warehouse,nm_warehouse,country, address, status, heavy_max, heavy_consumed, latitude, longitude) VALUES ('$id_warehouse','$warehousename','$country','$address_AJX','$status','$heavymax','$heavy_consumed',$latt_AJX, $long_AJX)");
 
-$getAllWarehouseName = "SELECT nm_warehouse FROM warehouse where nm_warehouse = '$warehousename'";
-    $ada=$db->query($getAllWarehouseName) or die(mysql_error());
-    if(mysqli_num_rows($ada)>0)
-    { 
-    	$session->msg("d", "Warehouse Is Exist");
-        redirect('add_warehouse_location.php',false);
-    } else {
-        if($db->query($sql)){
-        	$session->msg("s", "Successfully Added Warehouse");
-        	redirect('add_warehouse_location.php',false);
-    	} else {
-        	$session->msg("d", "Sorry Failed to insert.");
-        	redirect('add_warehouse_location.php',false);
-    	}
-	}  
-
+//delete duplicate warehouse in ajax
+$query = $db->query("DELETE wh1 FROM warehouse wh1, warehouse wh2 WHERE wh1.nm_warehouse = wh2.nm_warehouse AND wh1.id_warehouse < wh2.id_warehouse");
 
 ?>

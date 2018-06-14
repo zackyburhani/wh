@@ -130,7 +130,7 @@ if(isset($_POST['update_bpack'])){
     $reduced      = $consumed-($total);
 
     if($reduced < 0){
-      $session->msg("d","Can not Delete The Product.");
+      $session->msg("d","Could Not Delete The Product.");
       redirect('add_bpack.php');
     }
 

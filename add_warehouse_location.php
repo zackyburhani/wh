@@ -3,13 +3,12 @@
   // Checkin What level user has permission to view this page
   page_require_level(2);
   
-  $user = current_user();
-  $warehouse = find_warehouse_id($user['id_warehouse']);
+  $user        = current_user();
+  $warehouse   = find_warehouse_id($user['id_warehouse']);
   $get_product = get_item_condition($user['id_warehouse']);
-  $get_package = get_package_condition($user['id_warehouse']);
-
-  $page_title = "Warehouse ".$warehouse["nm_warehouse"];
-
+  $get_package = get_package_condition($user['id_warehouse']);  
+  $page_title  = "Warehouse ".$warehouse["nm_warehouse"];
+  
 ?>
 <?php include_once('layouts/header.php'); ?>
 
@@ -120,17 +119,17 @@
         center: new google.maps.LatLng(-0.789275, 113.92132700000002),  
         mapTypeId: google.maps.MapTypeId.ROADMAP  
       };  
- 
+      
       map = new google.maps.Map(document.getElementById('map'), options);
  
       // Get reference from HTML
       var form = document.getElementById('addressForm');
- 
+  
       // Catch The Event
       form.onsubmit = function() {
         // Mendapatkan alamat dari input teks
         var address = document.getElementById('address').value;
- 
+    
         // Get Geocoder 
         getCoordinates(address);
  
@@ -153,7 +152,7 @@
  
       // create request Geocode 
       geocoder.geocode(geocoderRequest, function(results, status) {
- 
+      
         // chect status
         if (status == google.maps.GeocoderStatus.OK) {
           // map center 
@@ -199,15 +198,13 @@
  
           infowindow.open(map, marker);
 
-
-        } 
-        //Save Location
+          //Save Location
           $('#save_wh').on('click',function(){
 
             var address_AJX     = address1;
             var latt_AJX        = latt;
             var long_AJX        = long;
-            var country2         = country;
+            var country2        = country;
             var warehousename   = $("#warehousename").val();
             var status          = $("#status").val();
             var heavymax        = $("#heavymax").val();
@@ -217,17 +214,23 @@
                 url: "insert_warehouse.php",
                 data: {warehousename:warehousename, status:status,heavymax:heavymax,convert_max:convert_max,address_AJX: address_AJX, latt_AJX: latt_AJX, long_AJX: long_AJX, country2:country2},
                 success: function(data) {
-                  location.reload();
                   $('[name="warehousename"]').val("");
                   $('[name="heavymax"]').val("");
                   $('[name="address"]').val("");
-                  alert('Success Added Warehouse');
+                  location.reload();
+                  alert("Successfully Added Warehouse");
                 }
               });
                 return false;
           });
-
+        } 
+          
       });
+
+
+      
+
+
     }
  
   })();   
