@@ -215,7 +215,7 @@
 
         } 
 
-        //Update Barang
+        //Update
         $('#btn_update').on('click',function(){
           var id_warehouse  = document.getElementById('id_warehouse').value;
           var warehousename = $('#warehousename').val();

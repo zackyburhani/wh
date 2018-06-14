@@ -99,7 +99,7 @@ function find_prod_warehouse($table) {
 
 function find_prod_warehouse_1($table) {
 
-    return find_by_sql("SELECT * FROM location where id_location = '$table'");
+  return find_by_sql("SELECT * FROM location where id_location = '$table'");
   
 }
 
@@ -110,6 +110,7 @@ function find_all1($table) {
      return find_by_sql("SELECT * FROM ".$db->escape($table));
    }
 }
+
 function update($id) {
     global $db;
     $date = make_date();
@@ -1041,6 +1042,25 @@ function get_id_product($nm_item,$id_warehouse)
   global $db;
      $sql = $db->query("SELECT id_item FROM item,location where nm_item = '$nm_item' and item.id_location = location.id_location and location.id_warehouse = '$id_warehouse'");
      return $db->fetch_assoc($sql);
+}
+
+//for message
+function find_all_warehouse($table,$id) {
+   global $db;
+   if(tableExists($table))
+   {
+      $result = array();
+     $result = find_by_sql("SELECT * FROM {$db->escape($table)} WHERE id_warehouse != '{$db->escape($id)}' ORDER BY nm_warehouse ASC");
+    return $result;
+   }
+}
+
+function find_all_message_from($id_warehouse) {
+   global $db;
+     $result = array();
+     $result = find_by_sql("SELECT id_message,subject,message,date,to_warehouse, from_warehouse,nm_warehouse
+      FROM message,warehouse where warehouse.id_warehouse = message.from_warehouse and to_warehouse = '$id_warehouse' order by 1 desc");
+    return $result;
 }
 
   /*--------------------------------------------------------------*/

@@ -124,7 +124,7 @@
      </strong>
      <?php
       if ($user['level_user']==0 || $user['level_user']==1) { ?>
-        <button title="Add New Position" type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addPosition"><span class="glyphicon glyphicon-plus"></span> Add New Positiion
+        <button title="Add New Position" type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addPosition"><span class="glyphicon glyphicon-plus"></span> Add New Position
         </button>
       <?php } ?>
     </div>

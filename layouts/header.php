@@ -44,7 +44,7 @@
 
   </head>
   <body>
-  <?php  if ($session->isUserLoggedIn(true)): ?>
+  <?php if ($session->isUserLoggedIn(true)): ?>
     <header id="header">
       <div class="logo pull-left" style="color: #ffda1a"> IKEA WAREHOUSE </div>
       <div class="header-content">
@@ -167,6 +167,7 @@
       </div>
      </div>
     </header>
+
     <div class="sidebar">
       <?php if($user['level_user'] === '0'): ?>
         <!-- admin menu -->
