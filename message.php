@@ -104,7 +104,7 @@
         <span class="fa fa-envelope"></span>
         <span>Message</span>
      </strong>
-     <button title="Message" type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#message"><span class="glyphicon glyphicon-plus"></span> Message
+     <button title="Message" type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#message1"><span class="glyphicon glyphicon-plus"></span> Message
         </button>
     </div>
      <div class="panel-body">
@@ -127,9 +127,20 @@
             <td class="text-center"><?php echo remove_junk(ucwords($wh['subject']))?></td>
             <td class="text-center"><?php echo remove_junk(ucwords($wh['date']))?></td>
             <td class="text-center">
-                <input type="hidden" id="id_message" value="<?php echo $wh['id_message'] ?>">
-                <button class="btn btn-md btn-primary" data-target="#detailMessage<?php echo $wh['id_message'] ?>" data-toggle="modal" title="Detail Message"><i class="fa fa-envelope"></i>
-                </button>
+              <!-- send value for ajax below -->
+              <input type="hidden" id="nm_warehouse" value="<?php echo $nm_wh = $wh['nm_warehouse'] ?>">
+              <input type="hidden" id="subject" value="<?php echo $subject_var = $wh['subject'] ?>">
+              <input type="hidden" id="date" value="<?php echo $date_var = $wh['date'] ?>">
+              <input type="hidden" id="id_warehouse" value="<?php echo $id_wh = $user['id_warehouse'] ?>">
+              <input type="hidden" id="id_message" value="<?php echo $id = $wh['id_message'] ?>">
+              <input type="hidden" id="message" value="<?php echo $msg = $wh['message'] ?>">
+              <?php if($wh['status'] == '0'){ ?>
+              <button onclick="update('<?php echo $id ?>','<?php echo $id_wh ?>','<?php echo $nm_wh ?>','<?php echo $msg ?>','<?php echo $date_var ?>')" id="btn_update" class="btn btn-md btn-warning" title="Detail Message"><i class="fa fa-envelope"></i>
+              </button>
+              <?php } else { ?>
+                <button onclick="update('<?php echo $id ?>','<?php echo $id_wh ?>','<?php echo $nm_wh ?>','<?php echo $msg ?>','<?php echo $date_var ?>')" id="btn_update" class="btn btn-md btn-primary" title="Detail Message"><i class="fa fa-envelope-open"></i>
+              </button>
+              <?php } ?>
             </td>
           </tr>
           <?php } ?>
@@ -142,7 +153,7 @@
 
 
 <!-- Entry Modal -->
-<div class="modal fade" id="message" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="message1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -182,8 +193,7 @@
 </div>
 
 <!-- Detail Modal -->
-<?php foreach($all_message as $ms){ ?>
-<div class="modal fade" id="detailMessage<?php echo $ms['id_message'] ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="detailMessage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -199,17 +209,17 @@
           <tr>
             <td width="60px">Sender</td>
             <td class="text-center">:</td>
-            <td><strong><?php echo $ms['nm_warehouse']; ?></strong></td>
+            <td><strong><span name="nm_warehouse"></span></strong></td>
           </tr>
           <tr>
             <td>Date</td>
             <td class="text-center" style="width: 5px">:</td>
-            <td><strong><?php echo $ms['date']; ?></strong></td>
+            <td><strong><span name="date"></span></strong></td>
           </tr>
           <tr>
             <td>Message</td>
             <td class="text-center">:</td>
-            <td><strong>  <?php echo $ms['message']; ?> </strong></td>
+            <td><span name="from_message"></span></td>
           </tr>
         </table>
 
@@ -234,36 +244,27 @@
     </form>
   </div>
 </div>
-<?php } ?>
 
-
-
-<?php include_once('layouts/footer.php'); ?>
 
 <script type="text/javascript">
-  //Update Barang
-
-  $('#my-modal').modal({
-    show: 'false'
-  }); 
-
-  $('#detail_message').on('click',function(){
-    var id_message2 = document.getElementById('id_message');
-    var id_message = id_message2
-    console.log(id_message2);
-      $.ajax({
-        type : "POST",
-        url  : "<?php echo base_url('index.php/barang/update_barang')?>",
-        dataType : "JSON",
-        data : {kobar:kobar , nabar:nabar, harga:harga},
-        success: function(data){
-          $('[name="kobar_edit"]').val("");
-          $('[name="nabar_edit"]').val("");
-          $('[name="harga_edit"]').val("");
-          $('#ModalaEdit').modal('hide');
-          tampil_data_barang();
-        }
-      });
-    return false;
-  });
+  function update(id,id_wh,nm_wh,msg,date_var){
+    var id_message   = id;
+    var id_warehouse = id_wh;
+    var nm_warehouse = nm_wh;
+    var date         = date_var;
+    var message      = msg;
+    $.ajax({
+      type : "POST",
+      url  : "update_message.php",
+      data : {id_message:id_message, id_warehouse:id_warehouse},
+      success: function(data) {
+        $('#detailMessage').modal('show');
+        $('[name="nm_warehouse"]').html(nm_warehouse);
+        $('[name="date"]').html(date);
+        $('[name="from_message"]').html(message);
+      }
+    });
+  }
 </script>
+
+<?php include_once('layouts/footer.php'); ?>

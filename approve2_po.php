@@ -5,127 +5,126 @@
   $user = current_user();
 
   $warehouse = find_by_id_warehouse('warehouse',$user['id_warehouse']);;
-    if($warehouse['status'] != 0){
-      page_require_level(2);
-    } else {
-      $session->msg('d','Sorry! you dont have permission to view the page. !');
-          redirect('home.php', false);
-    }
+  if($warehouse['status'] != 0){
+    page_require_level(2);
+  } else {
+    $session->msg('d','Sorry! you dont have permission to view the page. !');
+    redirect('home.php', false);
+  }
 
-   $list_po          = find_all_PO_destination($user['id_warehouse']); 
-   $all_warehouse_id = find_warehouse_id($user['id_warehouse']);
+  $list_po          = find_all_PO_destination($user['id_warehouse']); 
+  $all_warehouse_id = find_warehouse_id($user['id_warehouse']);
 
 ?>
 
 <!-- Approve PO -->
 <?php
-  if(isset($_POST['approve_po'])){
+if(isset($_POST['approve_po'])){
 
-    $req_fields = array('id_item');
-    validate_fields($req_fields);
+  $req_fields = array('id_item');
+  validate_fields($req_fields);
  
-      if(empty($errors)){
-        $id_item = remove_junk($db->escape($_POST['id_item']));
-        $id_po   = remove_junk($db->escape($_POST['id_po']));
-        $qty     = remove_junk($db->escape($_POST['qty']));
-        $status  = 'On Destination';
+  if(empty($errors)){
+    $id_item = remove_junk($db->escape($_POST['id_item']));
+    $id_po   = remove_junk($db->escape($_POST['id_po']));
+    $qty     = remove_junk($db->escape($_POST['qty']));
+    $status  = 'On Destination';
 
-        $query  = "UPDATE detil_po SET ";
-        $query .= "status = '{$status}' ";
-        $query .= "WHERE id_item = '{$id_item}' and id_po = '{$id_po}'";
+    $query  = "UPDATE detil_po SET ";
+    $query .= "status = '{$status}' ";
+    $query .= "WHERE id_item = '{$id_item}' and id_po = '{$id_po}'";
 
-        //INSERT INTO SHIPMENT
-        $id_shipment       = autonumber('id_shipment','shipment');
-        $date_shipment     = date('Y-m-d');
+    //INSERT INTO SHIPMENT
+    $id_shipment   = autonumber('id_shipment','shipment');
+    $date_shipment = date('Y-m-d');
 
-        foreach ($list_po as $shipment) {
-          $id_po         = $shipment['id_po'];
-          $id_warehouse  = $shipment['for_wh'];
-          $id_employer   = $shipment['id_emp'];
+    foreach ($list_po as $shipment) {
+      $id_po         = $shipment['id_po'];
+      $id_warehouse  = $shipment['for_wh'];
+      $id_employer   = $shipment['id_emp'];
           
-          $query2  = "INSERT INTO shipment (";
-          $query2 .=" id_shipment,date_shipment,id_po,id_warehouse,id_employer";
-          $query2 .=") VALUES (";
-          $query2 .=" '{$id_shipment}', '{$date_shipment}', '{$id_po}', '{$id_warehouse}', '{$id_employer}'";
-          $query2 .=")";
-        }
+      $query2  = "INSERT INTO shipment (";
+      $query2 .=" id_shipment,date_shipment,id_po,id_warehouse,id_employer";
+      $query2 .=") VALUES (";
+      $query2 .=" '{$id_shipment}', '{$date_shipment}', '{$id_po}', '{$id_warehouse}', '{$id_employer}'";
+      $query2 .=")";
+    }
 
-        $move_stock   = move_stock($id_item,$id_po);
-        $id_warehouse = $user['id_warehouse'];
-        $consumed     = $all_warehouse_id['heavy_consumed'];
-        $max          = $all_warehouse_id['heavy_max'];
-        $count        = $consumed-$move_stock['total_weight'];
+    $move_stock   = move_stock($id_item,$id_po);
+    $id_warehouse = $user['id_warehouse'];
+    $consumed     = $all_warehouse_id['heavy_consumed'];
+    $max          = $all_warehouse_id['heavy_max'];
+    $count        = $consumed-$move_stock['total_weight'];
 
-        $item_fetch   = find_product_fetch($id_item);
-        if($item_fetch['stock'] < $qty){
-          $session->msg('d','The Item Is Not Enough');
-          redirect('approve2_po.php', false);
-        }
+    $item_fetch   = find_product_fetch($id_item);
+    if($item_fetch['stock'] < $qty){
+      $session->msg('d','The Item Is Not Enough');
+      redirect('approve2_po.php', false);
+    }
 
-        $query3  = "UPDATE warehouse SET ";
-        $query3.= "heavy_consumed = '{$count}' ";
-        $query3 .= "WHERE id_warehouse = '{$id_warehouse}'";
+    $query3  = "UPDATE warehouse SET ";
+    $query3 .= "heavy_consumed = '{$count}' ";
+    $query3 .= "WHERE id_warehouse = '{$id_warehouse}'";
 
-        //update qty item
-        $item_fetch   = find_product_fetch($id_item);
-        $update  =  $item_fetch['stock']-$qty;
-        $query4  = "UPDATE item SET ";
-        $query4 .= "stock = '{$update}' ";
-        $query4 .= "WHERE id_item = '{$id_item}'";
+    //update qty item
+    $item_fetch   = find_product_fetch($id_item);
+    $update  =  $item_fetch['stock']-$qty;
+    $query4  = "UPDATE item SET ";
+    $query4 .= "stock = '{$update}' ";
+    $query4 .= "WHERE id_item = '{$id_item}'";
 
-        $result = $db->query($query);
-         if($result){
-          //sucess
-          $db->query($query2);
-          $db->query($query3);
-          $db->query($query4);
-          $session->msg('s',"Purchase Order Has Been Approved ! ");
-          redirect('approve2_po.php', false);
-        } else {
-          //failed
-          $session->msg('d',' Sorry Failed To Approve Purchase Order !');
-          redirect('approve2_po.php', false);
-        }
-   } else {
-     $session->msg("d", $errors);
-     redirect('approve2_po.php', false);
-   }
- }
+    $result = $db->query($query);
+    if($result){
+      //sucess
+      $db->query($query2);
+      $db->query($query3);
+      $db->query($query4);
+      $session->msg('s',"Purchase Order Has Been Approved ! ");
+      redirect('approve2_po.php', false);
+    } else {
+        //failed
+        $session->msg('d',' Sorry Failed To Approve Purchase Order !');
+        redirect('approve2_po.php', false);
+      }
+  } else {
+    $session->msg("d", $errors);
+    redirect('approve2_po.php', false);
+  }
+}
 ?>
 
 <!-- Disagree PO -->
 <?php
-  if(isset($_POST['canceled_po'])){
+if(isset($_POST['canceled_po'])){
 
-    $req_fields = array('id_po');
-    validate_fields($req_fields);
+  $req_fields = array('id_po');
+  validate_fields($req_fields);
 
-      if(empty($errors)){
-        $id_item = remove_junk($db->escape($_POST['id_item']));
-        $status  = 'Canceled';
+  if(empty($errors)){
+    $id_item = remove_junk($db->escape($_POST['id_item']));
+    $status  = 'Canceled';
 
-        $query  = "UPDATE detil_po SET ";
-        $query .= "status = '{$status}' ";
-        $query .= "WHERE id_item = '{$id_item}'";
+    $query  = "UPDATE detil_po SET ";
+    $query .= "status = '{$status}' ";
+    $query .= "WHERE id_item = '{$id_item}'";
 
-        $result = $db->query($query);
-         if($result){
-          //sucess
-          $db->query($query2);
-          $session->msg('s',"The Item Has Been Canceled ! ");
-          redirect('approve2_po.php', false);
-        } else {
-          //failed
-          $session->msg('d',' Sorry Failed To Cancel The Item !');
-          redirect('approve2_po.php', false);
-          }
-   } else {
-     $session->msg("d", $errors);
-     redirect('approve2_po.php', false);
-   }
- }
+    $result = $db->query($query);
+    if($result){
+      //sucess
+      $db->query($query2);
+      $session->msg('s',"The Item Has Been Canceled ! ");
+      redirect('approve2_po.php', false);
+    } else {
+        //failed
+        $session->msg('d',' Sorry Failed To Cancel The Item !');
+        redirect('approve2_po.php', false);
+      }
+  } else {
+    $session->msg("d", $errors);
+    redirect('approve2_po.php', false);
+  }
+}
 ?>
-
 
 <?php include_once('layouts/header.php'); ?>
 <div class="row">

@@ -1,78 +1,76 @@
 <?php
   $page_title = 'List Purchase Order';
   require_once('includes/load.php');
-
-   page_require_level(1);
-   $all_warehouse = find_all1('warehouse');
-   $user          = current_user();
-   $list_po       = find_all_PO_admin($user['id_warehouse']); 
-   $list_dest     = find_all_PO_destination($user['id_warehouse']);
+  page_require_level(1);
+  $all_warehouse = find_all1('warehouse');
+  $user          = current_user();
+  $list_po       = find_all_PO_admin($user['id_warehouse']); 
+  $list_dest     = find_all_PO_destination($user['id_warehouse']);
 ?>
 
 <!-- Approve PO -->
 <?php
-  if(isset($_POST['approve_po'])){
+if(isset($_POST['approve_po'])){
+  $req_fields = array('id_po');
+  validate_fields($req_fields);
 
-    $req_fields = array('id_po');
-    validate_fields($req_fields);
+  if(empty($errors)){
+    $id_po = remove_junk($db->escape($_POST['id_po']));
+    $status  = 'Approved';
 
-      if(empty($errors)){
-        $id_po = remove_junk($db->escape($_POST['id_po']));
-        $status  = 'Approved';
+    $query  = "UPDATE detil_po SET ";
+    $query .= "status = '{$status}' ";
+    $query .= "WHERE id_po = '{$id_po}'";
 
-        $query  = "UPDATE detil_po SET ";
-        $query .= "status = '{$status}' ";
-        $query .= "WHERE id_po = '{$id_po}'";
-
-        $result = $db->query($query);
-         if($result){
-          //sucess
-          $db->query($query2);
-          $session->msg('s',"Purchase Order Has Been Approved ! ");
-          redirect('approve1_po.php', false);
-        } else {
-          //failed
-          $session->msg('d',' Sorry Failed To Approve Purchase Order !');
-          redirect('approve1_po.php', false);
-          }
-   } else {
-     $session->msg("d", $errors);
-     redirect('approve1_po.php', false);
-   }
- }
+    $result = $db->query($query);
+    if($result){
+      //sucess
+      $db->query($query2);
+      $session->msg('s',"Purchase Order Has Been Approved ! ");
+      redirect('approve1_po.php', false);
+    } else {
+      //failed
+      $session->msg('d',' Sorry Failed To Approve Purchase Order !');
+      redirect('approve1_po.php', false);
+    }
+  } else {
+      $session->msg("d", $errors);
+      redirect('approve1_po.php', false);
+    }
+}
 ?>
 
 <!-- Disagree PO -->
 <?php
-  if(isset($_POST['cancel_po'])){
+if(isset($_POST['cancel_po'])){
 
-    $req_fields = array('id_po');
-    validate_fields($req_fields);
+  $req_fields = array('id_po');
+  validate_fields($req_fields);
 
-      if(empty($errors)){
-        $id_po = remove_junk($db->escape($_POST['id_po']));
-        $status  = 'Canceled';
+  if(empty($errors)){
+    $id_po = remove_junk($db->escape($_POST['id_po']));
+    $status  = 'Canceled';
 
-        $query  = "UPDATE detil_po SET ";
-        $query .= "status = '{$status}' ";
-        $query .= "WHERE id_po = '{$id_po}'";
+    $query  = "UPDATE detil_po SET ";
+    $query .= "status = '{$status}' ";
+    $query .= "WHERE id_po = '{$id_po}'";
 
-        $result = $db->query($query);
-         if($result){
-          //sucess
-          $db->query($query2);
-          $session->msg('s',"Purchase Order Has Been Canceled ! ");
-          redirect('approve1_po.php', false);
-        } else {
-          //failed
-          $session->msg('d',' Sorry Failed To Cancel Purchase Order !');
-          redirect('approve1_po.php', false);
-          }
-   } else {
-     $session->msg("d", $errors);
-     redirect('approve1_po.php', false);
-   }
- }
+    $result = $db->query($query);
+    if($result){
+      //sucess
+      $db->query($query2);
+      $session->msg('s',"Purchase Order Has Been Canceled ! ");
+      redirect('approve1_po.php', false);
+    } else {
+        //failed
+        $session->msg('d',' Sorry Failed To Cancel Purchase Order !');
+        redirect('approve1_po.php', false);
+      }
+  } else {
+      $session->msg("d", $errors);
+      redirect('approve1_po.php', false);
+  }
+}
 ?>
 
 

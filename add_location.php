@@ -3,40 +3,36 @@
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
   page_require_level(2);
-  
-  $user = current_user();
-
+  $user         = current_user();
   $all_location = find_all_location('location',$user['id_warehouse']);
-
 ?>
 
 <!-- INSERT LOCATION -->
 <?php
-  if(isset($_POST['add_location'])){
-    $req_field = array('unit','floor','room');
-    validate_fields($req_field);
-    $id_loc   = autonumber('id_location','location');
-    $cat_unit = remove_junk($db->escape($_POST['unit']));
-    $floor    = remove_junk($db->escape($_POST['floor']));
-    $room     = remove_junk($db->escape($_POST['room']));
-    $id_wh    =  $user['id_warehouse'];  
-    if(empty($errors)){
-      $sql  = "INSERT INTO location (id_location,unit,floor,room,id_warehouse)";
-      $sql .= " VALUES ('{$id_loc}','{$cat_unit}','{$floor}','{$room}','{$id_wh}')";
+if(isset($_POST['add_location'])){
+  $req_field = array('unit','floor','room');
+  validate_fields($req_field);
+  $id_loc    = autonumber('id_location','location');
+  $cat_unit  = remove_junk($db->escape($_POST['unit']));
+  $floor     = remove_junk($db->escape($_POST['floor']));
+  $room      = remove_junk($db->escape($_POST['room']));
+  $id_wh     =  $user['id_warehouse'];  
+  if(empty($errors)){
+    $sql  = "INSERT INTO location (id_location,unit,floor,room,id_warehouse)";
+    $sql .= " VALUES ('{$id_loc}','{$cat_unit}','{$floor}','{$room}','{$id_wh}')";
 
-       if($db->query($sql)){
-        $session->msg('s',"Successfully Added Location");
-        redirect('add_location.php', false);
-      } else {
-        $session->msg('d',' Sorry failed to added!');
-        redirect('add_location.php', false);
-      }
-
-    } else{
-       $session->msg("d", $errors);
-       redirect('add_location.php',false);
-     }
- }
+    if($db->query($sql)){
+      $session->msg('s',"Successfully Added Location");
+      redirect('add_location.php', false);
+    } else {
+      $session->msg('d',' Sorry failed to added!');
+      redirect('add_location.php', false);
+    }
+  } else{
+    $session->msg("d", $errors);
+    redirect('add_location.php',false);
+  }
+}
 ?>
 <!-- END INSERT LOCATION -->
 
@@ -45,10 +41,10 @@
 if(isset($_POST['update_location'])){
   $req_field = array('unit','floor','room','id_location');
   validate_fields($req_field);
-  $id_loc   = remove_junk($db->escape($_POST['id_location']));
-  $cat_unit = remove_junk($db->escape($_POST['unit']));
-  $floor    = remove_junk($db->escape($_POST['floor']));
-  $room     = remove_junk($db->escape($_POST['room']));
+  $id_loc    = remove_junk($db->escape($_POST['id_location']));
+  $cat_unit  = remove_junk($db->escape($_POST['unit']));
+  $floor     = remove_junk($db->escape($_POST['floor']));
+  $room      = remove_junk($db->escape($_POST['room']));
   $id_wh1    =  $user['id_warehouse'];  
   if(empty($errors)){
         $sql = "UPDATE location SET unit='{$cat_unit}',floor='{$floor}',room='{$room}',id_warehouse='{$id_wh1}'";
@@ -72,7 +68,7 @@ if(isset($_POST['update_location'])){
 <!-- DELETE LOCATION-->
 <?php
   if(isset($_POST['delete_location'])){
-  $req_field = array('idlocation');
+  $req_field   = array('idlocation');
   validate_fields($req_field);
   $id_location = remove_junk($db->escape($_POST['idlocation']));
 

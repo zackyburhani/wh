@@ -23,77 +23,77 @@
 
 <!-- INSERT PACKAGE -->
 <?php
-  if(isset($_POST['add_package'])){
-    $req_field    = array('packagename');
-    validate_fields($req_field);
-    $id_package   = autonumber('id_package','package');
-    $id           = $user['id_warehouse'];
-    $packagename  = remove_junk($db->escape($_POST['packagename']));
-    $height       = remove_junk($db->escape($_POST['height']));
-    $weight       = remove_junk($db->escape($_POST['weight']));
-    $lenght       = remove_junk($db->escape($_POST['lenght']));
-    $diameter     = remove_junk($db->escape($_POST['diameter']));
-    $width        = remove_junk($db->escape($_POST['width']));
-    $stock        = remove_junk($db->escape($_POST['stock']));
-    $safety_stock = remove_junk($db->escape($_POST['safety_stock']));
+if(isset($_POST['add_package'])){
+  $req_field    = array('packagename');
+  validate_fields($req_field);
+  $id_package   = autonumber('id_package','package');
+  $id           = $user['id_warehouse'];
+  $packagename  = remove_junk($db->escape($_POST['packagename']));
+  $height       = remove_junk($db->escape($_POST['height']));
+  $weight       = remove_junk($db->escape($_POST['weight']));
+  $lenght       = remove_junk($db->escape($_POST['lenght']));
+  $diameter     = remove_junk($db->escape($_POST['diameter']));
+  $width        = remove_junk($db->escape($_POST['width']));
+  $stock        = remove_junk($db->escape($_POST['stock']));
+  $safety_stock = remove_junk($db->escape($_POST['safety_stock']));
    
-    //convert
-    $convert_weight = remove_junk($db->escape($_POST['convert_weight']));
+  //convert
+  $convert_weight = remove_junk($db->escape($_POST['convert_weight']));
 
-    //convert weight
-    if($convert_weight == "weight_kilograms"){
-      $weight = $weight;
-    } else if($convert_weight == "weight_pounds") {
-      $weight = $weight/2.2046;
-    } else if($convert_weight == "weight_ons"){
-      $weight = $weight/35.274;
-    } else if($convert_weight == "weight_grams"){
-      $weight = $weight/1000;
-    }
+  //convert weight
+  if($convert_weight == "weight_kilograms"){
+    $weight = $weight;
+  } else if($convert_weight == "weight_pounds") {
+    $weight = $weight/2.2046;
+  } else if($convert_weight == "weight_ons"){
+    $weight = $weight/35.274;
+  } else if($convert_weight == "weight_grams"){
+    $weight = $weight/1000;
+  }
 
-   //reduce area consumed 
-   $consumed     = $all_warehouse_id['heavy_consumed'];
-   $heavy_max    = $all_warehouse_id['heavy_max'];
-   $id_warehouse = $all_warehouse_id['id_warehouse']; 
-   $reduced      = ($weight*$stock)+$consumed;
+  //reduce area consumed 
+  $consumed     = $all_warehouse_id['heavy_consumed'];
+  $heavy_max    = $all_warehouse_id['heavy_max'];
+  $id_warehouse = $all_warehouse_id['id_warehouse']; 
+  $reduced      = ($weight*$stock)+$consumed;
 
-    // if($reduced > $heavy_max){
-    //   $session->msg('d',"You Do Not Have Enough Storage Space !");
-    //   redirect('add_package.php', false);
-    // }
+  // if($reduced > $heavy_max){
+  //   $session->msg('d',"You Do Not Have Enough Storage Space !");
+  //   redirect('add_package.php', false);
+  // }
 
-      $query  = "UPDATE warehouse SET ";
-      $query .= "heavy_consumed='{$reduced}' ";
-      $query .= "WHERE id_warehouse = '{$id_warehouse}'";
+  $query  = "UPDATE warehouse SET ";
+  $query .= "heavy_consumed='{$reduced}' ";
+  $query .= "WHERE id_warehouse = '{$id_warehouse}'";
 
 
-   if(empty($errors)){
-      $sql  = "INSERT INTO package (id_package,nm_package,height,weight,lenght,diameter,width,jml_stock,id_warehouse,safety_stock)";
-      $sql .= " VALUES ('{$id_package}','{$packagename}','{$height}','{$weight}','{$lenght}','{$diameter}','{$width}','{$stock}','{$id}','{$safety_stock}')";
+  if(empty($errors)){
+    $sql  = "INSERT INTO package (id_package,nm_package,height,weight,lenght,diameter,width,jml_stock,id_warehouse,safety_stock)";
+    $sql .= " VALUES ('{$id_package}','{$packagename}','{$height}','{$weight}','{$lenght}','{$diameter}','{$width}','{$stock}','{$id}','{$safety_stock}')";
 
-      $id_wh = $user['id_warehouse'];
+    $id_wh = $user['id_warehouse'];
 
-      $getAllPackageName = "SELECT nm_package FROM package where nm_package = '$packagename' and package.id_warehouse = '$id_wh'";
-      $ada=$db->query($getAllPackageName) or die(mysql_error());
-      if(mysqli_num_rows($ada)>0)
-      { 
-        $session->msg("d", "Package Already Exist");
+    $getAllPackageName = "SELECT nm_package FROM package where nm_package = '$packagename' and package.id_warehouse = '$id_wh'";
+    $ada=$db->query($getAllPackageName) or die(mysql_error());
+    if(mysqli_num_rows($ada)>0)
+    { 
+      $session->msg("d", "Package Already Exist");
+      redirect('add_package.php',false);
+    } else {
+      if($db->query($sql)){
+        $db->query($query);
+        $session->msg("s", "Successfully Added Package");
         redirect('add_package.php',false);
       } else {
-          if($db->query($sql)){
-            $db->query($query);
-          $session->msg("s", "Successfully Added Package");
-          redirect('add_package.php',false);
-        } else {
-          $session->msg("d", "Sorry Failed to insert.");
-          redirect('add_package.php',false);
+        $session->msg("d", "Sorry Failed to insert.");
+        redirect('add_package.php',false);
         }
       }
-   } else {
-     $session->msg("d", $errors);
-     redirect('add_package.php',false);
-   }
- }
+  } else {
+    $session->msg("d", $errors);
+    redirect('add_package.php',false);
+  }
+}
 ?>
 <!-- END INSERT PACKAGE -->
 
@@ -142,22 +142,22 @@ if(isset($_POST['update_package'])){
   // }
 
   if(empty($errors)){
-        $sql = "UPDATE package SET nm_package='{$packagename}',height='{$height}',weight='{$weight}',lenght='{$lenght}',Diameter='{$diameter}',width='{$width}',jml_stock='{$stock}',safety_stock='{$safety_stock}'";
-       $sql .= " WHERE id_package='{$idpackage}'";
+    $sql = "UPDATE package SET nm_package='{$packagename}',height='{$height}',weight='{$weight}',lenght='{$lenght}',Diameter='{$diameter}',width='{$width}',jml_stock='{$stock}',safety_stock='{$safety_stock}'";
+    $sql .= " WHERE id_package='{$idpackage}'";
 
-       $query2  = "UPDATE warehouse SET ";
-       $query2 .= "heavy_consumed='{$reduced}' ";
-       $query2 .= "WHERE id_warehouse = '{$id_warehouse}'";
+    $query2  = "UPDATE warehouse SET ";
+    $query2 .= "heavy_consumed='{$reduced}' ";
+    $query2 .= "WHERE id_warehouse = '{$id_warehouse}'";
     
-     $result = $db->query($sql);
-     if($result) {
-       $db->query($query2);
-       $session->msg("s", "Successfully Updated Package");
-       redirect('add_package.php',false);
-     } else {
-       $session->msg("d", "Sorry! Failed to Update");
-       redirect('add_package.php',false);
-     }
+    $result = $db->query($sql);
+    if($result) {
+      $db->query($query2);
+      $session->msg("s", "Successfully Updated Package");
+      redirect('add_package.php',false);
+    } else {
+      $session->msg("d", "Sorry! Failed to Update");
+      redirect('add_package.php',false);
+    }
   } else {
     $session->msg("d", $errors);
     redirect('add_package.php',false);
@@ -176,41 +176,41 @@ if(isset($_POST['update_package'])){
   $weight    = remove_junk($db->escape($_POST['weight']));
 
   //validation connected foreign key
-    $package = find_all_id('item',$idpackage,'id_package');
-    foreach ($package as $data) {
-      $idpackage2 = $data['id_package'];
-    }
-    if($idpackage == $idpackage2){
-      $session->msg("d","The Field Connected To Other Data.");
-      redirect('add_package.php');
-    }
+  $package = find_all_id('item',$idpackage,'id_package');
+  foreach ($package as $data) {
+    $idpackage2 = $data['id_package'];
+  }
+  if($idpackage == $idpackage2){
+    $session->msg("d","The Field Connected To Other Data.");
+    redirect('add_package.php');
+  }
 
   //reduce area consumed
-    $consumed     = $all_warehouse_id['heavy_consumed']; 
-    $heavy_max    = $all_warehouse_id['heavy_max'];
-    $id_warehouse = $all_warehouse_id['id_warehouse']; 
-    $reduced      = $consumed-($weight*$stock);
+  $consumed     = $all_warehouse_id['heavy_consumed']; 
+  $heavy_max    = $all_warehouse_id['heavy_max'];
+  $id_warehouse = $all_warehouse_id['id_warehouse']; 
+  $reduced      = $consumed-($weight*$stock);
 
-    // if($reduced < 0){
-    //   $session->msg("d","Could not Delete The Product.");
-    //   redirect('add_package.php');
-    // }
+  // if($reduced < 0){
+  //   $session->msg("d","Could not Delete The Product.");
+  //   redirect('add_package.php');
+  // }
 
-    $query  = "UPDATE warehouse SET ";
-    $query .= "heavy_consumed='{$reduced}'";
-    $query .= " WHERE id_warehouse = '{$id_warehouse}'";
+  $query  = "UPDATE warehouse SET ";
+  $query .= "heavy_consumed='{$reduced}'";
+  $query .= " WHERE id_warehouse = '{$id_warehouse}'";
 
   if(empty($errors)){
-        $sql = "DELETE FROM package WHERE id_package = '{$idpackage}'";
-     $result = $db->query($sql);
-     if($result) {
-       $db->query($query);
-       $session->msg("s", "Successfully delete Package");
-       redirect('add_package.php',false);
-     } else {
-       $session->msg("d", "Sorry! Failed to Delete");
-       redirect('add_package.php',false);
-     }
+    $sql    = "DELETE FROM package WHERE id_package = '{$idpackage}'";
+    $result = $db->query($sql);
+    if($result) {
+      $db->query($query);
+      $session->msg("s", "Successfully delete Package");
+      redirect('add_package.php',false);
+    } else {
+      $session->msg("d", "Sorry! Failed to Delete");
+      redirect('add_package.php',false);
+    }
   } else {
     $session->msg("d", $errors);
     redirect('add_package.php',false);

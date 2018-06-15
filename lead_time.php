@@ -2,32 +2,32 @@
   $page_title = 'Lead Time';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
-   page_require_level(2);
-   $all_warehouse = find_all1('warehouse');
-   $user = current_user();
+  page_require_level(2);
+  $all_warehouse = find_all1('warehouse');
+  $user = current_user();
    
 ?>
 
 <?php
 
 function GetDrivingDistance($lat1, $lat2, $long1, $long2)
-    {
-    $distance="";
-    $duration="";
-    $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$lat1.",".$long1."&destinations=".$lat2.",".$long2."&mode=driving&language=en";
+{
+  $distance="";
+  $duration="";
+  $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$lat1.",".$long1."&destinations=".$lat2.",".$long2."&mode=driving&language=en";
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_PROXYPORT, 3128);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-    $response = curl_exec($ch);
-    curl_close($ch);
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch, CURLOPT_PROXYPORT, 3128);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+  $response = curl_exec($ch);
+  curl_close($ch);
 
-    $response_a = json_decode($response, true);
+  $response_a = json_decode($response, true);
     
-      $time = $response_a['rows'][0]['elements'][0]['duration']['text'];
-      return array('time' => $time);   
+  $time = $response_a['rows'][0]['elements'][0]['duration']['text'];
+  return array('time' => $time);   
 }
 
 $leadTime_po  = find_leadtime_po_from($user['id_warehouse']);

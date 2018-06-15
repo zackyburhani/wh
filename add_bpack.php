@@ -13,51 +13,51 @@
 
 <!-- INSERT PACKAGE -->
 <?php
- if(isset($_POST['add_bpack'])){
-   $req_field   = array('qty','id_package','id_item');
-   validate_fields($req_field);
-   $id_bpack    = autonumber('id_bpack','bpack');
-   $id          = $user['id_warehouse'];
-   $id_item     = remove_junk($db->escape($_POST['id_item']));
-   $id_package  = remove_junk($db->escape($_POST['id_package']));
-   $qty         = remove_junk($db->escape($_POST['qty']));
+if(isset($_POST['add_bpack'])){
+  $req_field   = array('qty','id_package','id_item');
+  validate_fields($req_field);
+  $id_bpack    = autonumber('id_bpack','bpack');
+  $id          = $user['id_warehouse'];
+  $id_item     = remove_junk($db->escape($_POST['id_item']));
+  $id_package  = remove_junk($db->escape($_POST['id_package']));
+  $qty         = remove_junk($db->escape($_POST['qty']));
    
-   $package = find_weight_package($id_package);
-   $item    = find_weight_item($id_item);
+  $package = find_weight_package($id_package);
+  $item    = find_weight_item($id_item);
 
-   //reduce area consumed 
-   $consumed     = $all_warehouse_id['heavy_consumed'];
-   $heavy_max    = $all_warehouse_id['heavy_max'];
-   $id_warehouse = $all_warehouse_id['id_warehouse'];
-   $count        = ($package['w_package']+$item['w_item'])*$qty; 
-   $reduced      = $count+$consumed;
+  //reduce area consumed 
+  $consumed     = $all_warehouse_id['heavy_consumed'];
+  $heavy_max    = $all_warehouse_id['heavy_max'];
+  $id_warehouse = $all_warehouse_id['id_warehouse'];
+  $count        = ($package['w_package']+$item['w_item'])*$qty; 
+  $reduced      = $count+$consumed;
 
-    if($reduced > $heavy_max){
-      $session->msg('d',"You Do Not Have Enough Storage Space !");
-      redirect('add_package.php', false);
+  if($reduced > $heavy_max){
+    $session->msg('d',"You Do Not Have Enough Storage Space !");
+    redirect('add_package.php', false);
+  }
+
+  $query  = "UPDATE warehouse SET ";
+  $query .= "heavy_consumed='{$reduced}' ";
+  $query .= "WHERE id_warehouse = '{$id_warehouse}'";
+
+  if(empty($errors)){
+    $sql  = "INSERT INTO bpack (id_bpack,id_package,id_item,qty,total)";
+    $sql .= " VALUES ('{$id_bpack}','{$id_package}','{$id_item}','{$qty}','{$count}')";
+
+    if($db->query($sql)){
+      $db->query($query);
+      $session->msg("s", "Successfully Added Package");
+      redirect('add_bpack.php',false);
+    } else {
+      $session->msg("d", "Sorry Failed to insert.");
+      redirect('add_bpack.php',false);
     }
-
-      $query  = "UPDATE warehouse SET ";
-      $query .= "heavy_consumed='{$reduced}' ";
-      $query .= "WHERE id_warehouse = '{$id_warehouse}'";
-
-   if(empty($errors)){
-      $sql  = "INSERT INTO bpack (id_bpack,id_package,id_item,qty,total)";
-      $sql .= " VALUES ('{$id_bpack}','{$id_package}','{$id_item}','{$qty}','{$count}')";
-
-      if($db->query($sql)){
-        $db->query($query);
-        $session->msg("s", "Successfully Added Package");
-        redirect('add_bpack.php',false);
-      } else {
-        $session->msg("d", "Sorry Failed to insert.");
-        redirect('add_bpack.php',false);
-      }
-   } else {
-     $session->msg("d", $errors);
-     redirect('add_bpack.php',false);
-   }
- }
+  } else {
+    $session->msg("d", $errors);
+    redirect('add_bpack.php',false);
+  }
+}
 ?>
 <!-- END INSERT PACKAGE -->
 
@@ -74,6 +74,7 @@ if(isset($_POST['update_bpack'])){
   $bpack_fetch = find_bpack_fetch($id_bpack);
   $package     = find_weight_package($id_package);
   $item        = find_weight_item($id_item);
+  
   //reduce area consumed
   $total_fetch      = $bpack_fetch['total'];
   $consumed         = $all_warehouse_id['heavy_consumed']; 
@@ -89,22 +90,22 @@ if(isset($_POST['update_bpack'])){
   }
 
   if(empty($errors)){
-        $sql = "UPDATE bpack SET id_package='{$id_package}',id_item='{$id_item}',qty='{$qty}',total='{$count}'";
-       $sql .= " WHERE id_bpack='{$id_bpack}'";
+    $sql  = "UPDATE bpack SET id_package='{$id_package}',id_item='{$id_item}',qty='{$qty}',total='{$count}'";
+    $sql .= " WHERE id_bpack='{$id_bpack}'";
 
-       $query2  = "UPDATE warehouse SET ";
-       $query2 .= "heavy_consumed = '{$reduced}' ";
-       $query2 .= "WHERE id_warehouse = '{$id_warehouse}'";
+    $query2  = "UPDATE warehouse SET ";
+    $query2 .= "heavy_consumed = '{$reduced}' ";
+    $query2 .= "WHERE id_warehouse = '{$id_warehouse}'";
     
-     $result = $db->query($sql);
-     if($result && $db->affected_rows() === 1) {
-       $db->query($query2);
-       $session->msg("s", "Successfully Updated Package");
-       redirect('add_bpack.php',false);
-     } else {
+    $result = $db->query($sql);
+    if($result && $db->affected_rows() === 1) {
+      $db->query($query2);
+      $session->msg("s", "Successfully Updated Package");
+      redirect('add_bpack.php',false);
+    } else {
        $session->msg("d", "Sorry! Failed to Update");
        redirect('add_bpack.php',false);
-     }
+      }
   } else {
     $session->msg("d", $errors);
     redirect('add_package.php',false);
@@ -115,7 +116,7 @@ if(isset($_POST['update_bpack'])){
 
 <!-- DELETE PACKAGE -->
 <?php
-  if(isset($_POST['delete_bpack'])){
+if(isset($_POST['delete_bpack'])){
   $req_field = array('id_bpack');
   validate_fields($req_field);
   $id_bpack  = remove_junk($db->escape($_POST['id_bpack']));
@@ -124,33 +125,33 @@ if(isset($_POST['update_bpack'])){
   $id_item   = remove_junk($db->escape($_POST['id_item']));
 
   //reduce area consumed
-    $consumed     = $all_warehouse_id['heavy_consumed']; 
-    $heavy_max    = $all_warehouse_id['heavy_max'];
-    $id_warehouse = $all_warehouse_id['id_warehouse']; 
-    $reduced      = $consumed-($total);
+  $consumed     = $all_warehouse_id['heavy_consumed']; 
+  $heavy_max    = $all_warehouse_id['heavy_max'];
+  $id_warehouse = $all_warehouse_id['id_warehouse']; 
+  $reduced      = $consumed-($total);
 
-    if($reduced < 0){
-      $session->msg("d","Could Not Delete The Product.");
-      redirect('add_bpack.php');
-    }
+  if($reduced < 0){
+    $session->msg("d","Could Not Delete The Product.");
+    redirect('add_bpack.php');
+  }
 
-    $query  = "UPDATE warehouse SET ";
-    $query .= "heavy_consumed='{$reduced}'";
-    $query .= " WHERE id_warehouse = '{$id_warehouse}'";
+  $query  = "UPDATE warehouse SET ";
+  $query .= "heavy_consumed='{$reduced}'";
+  $query .= " WHERE id_warehouse = '{$id_warehouse}'";
 
   if(empty($errors)){
-        $sql = "DELETE FROM bpack WHERE id_bpack = '{$id_bpack}'";
-     $result = $db->query($sql);
-     if($result && $db->affected_rows() === 1) {
-       //delete item
-       $delete_id2   = delete('id_item','item',$id_item);
-       $db->query($query);
-       $session->msg("s", "Successfully delete Package");
-       redirect('add_bpack.php',false);
-     } else {
+    $sql = "DELETE FROM bpack WHERE id_bpack = '{$id_bpack}'";
+    $result = $db->query($sql);
+    if($result && $db->affected_rows() === 1) {
+      //delete item
+      $delete_id2   = delete('id_item','item',$id_item);
+      $db->query($query);
+      $session->msg("s", "Successfully delete Package");
+      redirect('add_bpack.php',false);
+    } else {
        $session->msg("d", "Sorry! Failed to Delete");
        redirect('add_bpack.php',false);
-     }
+      }
   } else {
     $session->msg("d", $errors);
     redirect('add_bpack.php',false);
@@ -174,10 +175,10 @@ if(isset($_POST['update_bpack'])){
         <span>PACKAGE</span>
      </strong>
      <?php
-      if ($user['level_user']==0 || $user['level_user']==1) { ?>
+      // if ($user['level_user']==0 || $user['level_user']==1) { ?>
         <!-- <button type="button" title="Combine Package" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addPackage"><span class="glyphicon glyphicon-plus"></span> Combine Package
         </button> -->
-      <?php } ?>
+      <!-- <?php } ?> -->
     </div>
      <div class="panel-body">
       <table class="table table-bordered" id="tablePackage">

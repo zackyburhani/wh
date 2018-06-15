@@ -14,7 +14,6 @@
   
 ?>
 <?php
- //
   if(isset($_POST['process'])){
   $req_field = array('send_date');
   validate_fields($req_field);
@@ -32,7 +31,8 @@
     $from_warehouse = remove_junk($db->escape($_POST['warehouseDP']));
     $total_sum      = remove_junk($db->escape($_POST['total_sum']));
     
-    if($from_warehouse == '0001'){
+    //check if order item from super warehouse
+    if($from_warehouse == '0001' || $user['level_user'] == 0){
       $status         = "Approved";
     } else {
       $status         = "On Process";

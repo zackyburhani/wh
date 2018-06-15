@@ -8,13 +8,6 @@
  
 ?>
 
-<!-- INSERT WAREHOUSE -->
-<?php
-
-
-?>
-<!-- END INSERT WAREHOUSE -->
-
 <!-- UPDATE WAREHOUSE -->
 <?php
 if(isset($_POST['update_warehouse'])){
@@ -27,16 +20,16 @@ if(isset($_POST['update_warehouse'])){
   $heavymax    = remove_junk($db->escape($_POST['heavymax']));
   $idwarehouse = remove_junk($db->escape($_POST['idwarehouse']));
   if(empty($errors)){
-        $sql = "UPDATE warehouse SET nm_warehouse='{$cat_name}',country='{$country}',address='{$address}',status='{$status}',heavy_max='{$heavymax}'";
+    $sql = "UPDATE warehouse SET nm_warehouse='{$cat_name}',country='{$country}',address='{$address}',status='{$status}',heavy_max='{$heavymax}'";
        $sql .= " WHERE id_warehouse='{$idwarehouse}'";
-     $result = $db->query($sql);
-     if($result && $db->affected_rows() === 1) {
-       $session->msg("s", "Successfully updated Warehouse");
-       redirect('add_warehouse.php',false);
-     } else {
-       $session->msg("d", "Sorry! Failed to Update");
-       redirect('add_warehouse.php',false);
-     }
+    $result = $db->query($sql);
+    if($result && $db->affected_rows() === 1) {
+      $session->msg("s", "Successfully updated Warehouse");
+      redirect('add_warehouse.php',false);
+    } else {
+      $session->msg("d", "Sorry! Failed to Update");
+      redirect('add_warehouse.php',false);
+    }
   } else {
     $session->msg("d", $errors);
     redirect('add_warehouse.php',false);
@@ -108,8 +101,8 @@ if(isset($_POST['update_warehouse'])){
             <th class="text-center" style="width: 50px;">Country</th>
             <th class="text-center" style="width: 10px;">Address</th>
             <th class="text-center" style="width: 50px;">Status</th>
-            <th class="text-center" style="width: 50px;">Heavy Max</th>
-            <th class="text-center" style="width: 50px;">Area Consumed</th>
+            <th class="text-center" style="width: 50px;">Heavy Max / Kg</th>
+            <th class="text-center" style="width: 50px;">Area Consumed / Kg</th>
             <th class="text-center" style="width: 100px;">Actions</th>
           </tr>
         </thead>
@@ -132,11 +125,7 @@ if(isset($_POST['update_warehouse'])){
            <td class="text-center"><?php echo remove_junk(ucwords(number_format($a_warehouse['heavy_max'])))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords(number_format($a_warehouse['heavy_consumed'])))?></td>
            <td class="text-center">
-                <!-- <button data-target="#updateWarehouse<?php echo $a_warehouse['id_warehouse'];?>" class="btn btn-md btn-warning" data-toggle="modal" title="Edit">
-                  <i class="glyphicon glyphicon-pencil"></i>
-                </button> -->
-                <a href="edit_warehouse_location.php?id=<?php echo $a_warehouse['id_warehouse'] ?>" class="btn btn-md btn-warning" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
-
+              <a href="edit_warehouse_location.php?id=<?php echo $a_warehouse['id_warehouse'] ?>" class="btn btn-md btn-warning" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
               <?php
                 if ($user['level_user']==0 || $user['level_user']==1 || $user['level_user']== 2) { ?>
                 <button type="button" class="btn btn-danger btn-md" data-toggle="modal" data-target="#deleteWarehouse<?php echo $a_warehouse['id_warehouse'];?>" title="Delete"><i class="glyphicon glyphicon-trash"></i>
@@ -313,7 +302,7 @@ if(isset($_POST['update_warehouse'])){
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="exampleModalLabel">Delete Warehouse</h4>
+        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-trash"></i> Delete Warehouse</h4>
       </div>
       <div class="modal-body">
       <form method="post" action="add_warehouse.php" class="clearfix">
@@ -321,8 +310,8 @@ if(isset($_POST['update_warehouse'])){
         <p>Are You Sure to Delete Warehouse <b><?php echo remove_junk(ucwords($a_warehouse['nm_warehouse'])); ?></b> From <b><?php echo remove_junk(ucwords($a_warehouse['country'])); ?></b>?</p>  
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" name="delete_warehouse" class="btn btn-danger">Delete</button>
+        <button type="button" class="btn btn-secondary" title="Close" data-dismiss="modal"><i class="fa fa-remove"></i> Close</button>
+        <button type="submit" title="Delete" name="delete_warehouse" class="btn btn-danger"><i class="fa fa-trash"></i> Delete</button>
       </div>
     </form>
     </div>

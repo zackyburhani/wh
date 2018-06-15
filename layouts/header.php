@@ -62,6 +62,7 @@
           <?php $under_stock   = find_all_item_under_stock($user['id_warehouse']); ?>
           <?php $package       = find_all_package_under_stock($user['id_warehouse'])?>
           <?php $canceled      = find_all_canceled_notif($user['id_warehouse']) ?>
+          <?php $message       = find_all_message_from_notif($user['id_warehouse']); ?>
 
           <li class="profile">
             <span class="label label-danger"><?php if($under_stock != null) { echo $total = $under_stock+$package;}?></span>
@@ -79,13 +80,29 @@
            </ul>
           </li>
 
+          <li class="profile">
+            <span class="label label-danger"><?php if($message != null) { echo $total = $message;}?></span>
+            <a href="#" data-toggle="dropdown" aria-expanded="false">
+              <span class="fa fa-envelope-o"><i class="caret"></i></span> 
+            </a>
+          
+            <ul class="dropdown-menu">
+              <li>
+                <a href="message.php">
+                  <i class="fa fa-envelope-o"></i>Message
+                  <span class="label label-danger"><?php if($message != null) { echo $message; }  ?></span>
+                </a>
+              </li>
+           </ul>
+          </li>
+
 
           <?php if($warehouse['status'] != 0) { ?>
 
           <li class="profile">
             <span class="label label-danger"><?php  if ($user['level_user'] =='0') {$total = $offer_admin+$approve_admin; if($total != null) {echo $total;} } else { if($approve2 != null) { echo $total = $approve2;}}?></span>
             <a href="#" data-toggle="dropdown" aria-expanded="false">
-              <span class="fa fa-envelope-o"><i class="caret"></i></span> 
+              <span class="fa fa-handshake-o"><i class="caret"></i></span> 
             </a>
           
             <ul class="dropdown-menu">
@@ -93,17 +110,17 @@
                   <?php if ($user['level_user'] =='0'){ ?>
                     
                     <a href="offer_po.php">
-                      <i class="fa fa-envelope-o"></i> Offer PO
+                      <i class="  fa fa-handshake-o"></i> Offer PO
                       <span class="label label-danger"><?php if($offer_admin != null) { echo $offer_admin; }  ?></span>
                     </a>
 
                     <a href="approve1_po.php">
-                      <i class="fa fa-envelope-o"></i> Approve PO
+                      <i class="  fa fa-handshake-o"></i> Approve PO
                       <span class="label label-danger"><?php if($approve_admin != null) {echo $approve_admin;} ?></span>
                     </a>
                   <?php } else { ?>   
                     <a href="approve2_po.php">
-                      <i class="fa fa-envelope-o"></i> Offer PO
+                      <i class="  fa fa-handshake-o"></i> Offer PO
                           <span class="label label-danger"><?php if($approve2 != null)  {echo $approve2;} ?></span>
                       <?php } ?>
               </li>
