@@ -11,7 +11,7 @@ $pdf->SetMargins(2,1,1);
 $pdf->AliasNbPages();
 $pdf->AddPage();
 $pdf->SetFont('Times','B',16);
-$pdf->Image('img/report_logo.png',2,1,2,1);
+$pdf->Image('img/ikea_ori.png',2,1,2,1);
 $pdf->SetX(5);            
 $pdf->MultiCell(25,0.5,'IKEA International Group',0,'L');
 $pdf->SetX(5);
