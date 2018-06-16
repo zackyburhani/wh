@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>jquery chained combox</title>
+    </head>
+    <body>
+ 
+        <select id="donasi" name="donasi1">
+          <option value="">- Pilih jenis donasi -</option>
+          <option value="zakat">Zakat</option>
+          <option value="infak">Infak</option>
+        </select>
+ 
+        <select id="donasi2" name="donasi2">
+          <option value="">- Pilih pengkhususan donasi-</option>
+ 
+          <!-- data zakat -->
+          <option value="Zakat Maal" class="zakat">Zakat Maal</option>
+          <option value="Zakat fitrah" class="zakat">Zakat Fitrah</option>
+ 
+          <!-- data infak -->
+          <option value="Sehat Milik Semua" class="infak">Sehat Milik Semua</option>
+          <option value="Amazing Muslimah" class="infak">Amazing Muslimah</option>
+          <option value="Love Rohingnya" class="infak">Love Rohingnya</option>
+        </select>
+
+        <script src="jquery-1.10.2.js"></script>
+        <script src="jquery.chained.min.js"></script>
+        <script>
+          $("#donasi2").chained("#donasi1");
+        </script>     
+    </body>
+</html>

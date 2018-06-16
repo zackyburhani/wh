@@ -1046,12 +1046,20 @@ function find_all_message_from($id_warehouse) {
     return $result;
 }
 
+function find_all_message_history($id_warehouse) {
+   global $db;
+     $result = array();
+     $result = find_by_sql("SELECT id_message,subject,message,date,to_warehouse,message.status, from_warehouse,nm_warehouse
+      FROM message,warehouse where warehouse.id_warehouse = message.from_warehouse and from_warehouse = '$id_warehouse' order by 1 desc");
+    return $result;
+}
+
 //notif
 function find_all_message_from_notif($id_warehouse) {
   global $db;
   $results = array();
   $sql = $db->query("SELECT id_message,subject,message,date,to_warehouse, from_warehouse,nm_warehouse
-      FROM message,warehouse where warehouse.id_warehouse = message.from_warehouse and to_warehouse = '$id_warehouse' order by 1 desc");
+      FROM message,warehouse where warehouse.id_warehouse = message.from_warehouse and to_warehouse = '$id_warehouse' and message.status = '0' order by 1 desc");
   $result = $db->num_rows($sql);
   return $result;
 }

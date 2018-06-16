@@ -39,8 +39,12 @@
     <link rel="stylesheet" href="libs/datatables/jquery.dataTables.min.css">
     <!-- END DATATABLES -->
 
-     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjdeO9J1CF_PRTS9aOjZ9-Scg8dIlhxGg&libraries=places&callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjdeO9J1CF_PRTS9aOjZ9-Scg8dIlhxGg&libraries=places&callback=initMap"
          async defer></script>
+
+    <!-- CHAIN COMBOBOX -->
+    <script src="jquery-1.10.2.min.js"></script>
+    <script src="jquery.chained.min.js"></script>
 
   </head>
   <body>
@@ -88,13 +92,34 @@
           
             <ul class="dropdown-menu">
               <li>
-                <a href="message.php">
+                <a onclick="update()" href="message.php">
                   <i class="fa fa-envelope-o"></i>Message
                   <span class="label label-danger"><?php if($message != null) { echo $message; }  ?></span>
                 </a>
               </li>
            </ul>
           </li>
+
+          <script type="text/javascript">
+            function update(id,id_wh,nm_wh,msg,date_var){
+              var id_message   = id;
+              var id_warehouse = id_wh;
+              var nm_warehouse = nm_wh;
+              var date         = date_var;
+              var message      = msg;
+              $.ajax({
+                type : "POST",
+                url  : "update_message.php",
+                data : {id_message:id_message, id_warehouse:id_warehouse},
+                success: function(data) {
+                  $('#detailMessage').modal('show');
+                  $('[name="nm_warehouse"]').html(nm_warehouse);
+                  $('[name="date"]').html(date);
+                  $('[name="from_message"]').html(message);
+                }
+              });
+            }
+          </script>
 
 
           <?php if($warehouse['status'] != 0) { ?>

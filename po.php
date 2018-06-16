@@ -355,8 +355,8 @@ if(isset($_POST['update'])) {
                   <?php foreach ($getAllWarehouse  as $wh):?>
                     <option value="<?php echo $wh['id_warehouse'];?>"><?php echo ucwords($wh['nm_warehouse']);?></option>
                   <?php endforeach;?>
-                </select>
-            </div>
+              </select>
+          </div>
           
             <div class="form-group">
               <label for="level">Name Item</label>

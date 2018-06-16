@@ -29,6 +29,8 @@
       $('#SubcategoriesTable').DataTable();
       $('#tablePackage').DataTable();
       $('#tablelocation').DataTable();
+      $('#tableInbox').DataTable();
+      $('#tableMessage').DataTable();
 
   	});
 </script>
