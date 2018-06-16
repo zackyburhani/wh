@@ -1049,7 +1049,7 @@ function find_all_message_from($id_warehouse) {
 function find_all_message_history($id_warehouse) {
    global $db;
      $result = array();
-     $result = find_by_sql("SELECT id_message,subject,message,date,to_warehouse,message.status, from_warehouse,nm_warehouse
+     $result = find_by_sql("SELECT id_message,subject,message,date,to_warehouse as to_wh,message.status, from_warehouse,(SELECT nm_warehouse from warehouse where id_warehouse = to_wh GROUP by nm_warehouse) as nm_warehouse
       FROM message,warehouse where warehouse.id_warehouse = message.from_warehouse and from_warehouse = '$id_warehouse' order by 1 desc");
     return $result;
 }

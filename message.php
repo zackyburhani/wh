@@ -45,7 +45,6 @@
    }
  }
 
- $all_position = find_all_position_admin2($user['id_warehouse']);
 ?>
 <!-- END NEW MESSAGE -->
 
@@ -87,7 +86,6 @@
    }
  }
 
- $all_position = find_all_position_admin2($user['id_warehouse']);
 ?>
 <!-- REPLY MESSAGE -->
 
@@ -124,7 +122,7 @@
               </a></li>
               <div class="form-group">
                 <div class="col-md-2">
-                  <button class="btn btn-block btn-primary" data-toggle="modal" data-target="#message1"><i class="fa fa-plus"></i> New Message</button>
+                  <button class="btn btn-block btn-primary" data-toggle="modal" data-target="#message1"><i class="fa fa-plus"></i> Message</button>
                 </div>
               </div>
             </ul>
@@ -190,7 +188,7 @@
                           <th class="text-center">To</th>
                           <th class="text-center">Subject</th>
                           <th class="text-center">Date</th>
-                          <th class="text-center" style="width: 150px;">Detail</th>
+                          <th class="text-center" style="width: 100px;">Detail</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -216,7 +214,7 @@
           </div>
         </div>
       </div>
-    </div>
+
 
 
 
@@ -257,9 +255,9 @@
     </form>
   </div>
 </div>
+</div>  
 
-  </div>
-</div>
+  
 
 <!-- Detail Modal -->
 <?php foreach($all_message as $ms){ ?>
@@ -314,6 +312,7 @@
     </form>
   </div>
 </div>
+</div>
 <?php } ?>
 
 
@@ -335,7 +334,7 @@
           <tr>
             <td width="60px">To</td>
             <td class="text-center">:</td>
-            <td><strong><?php echo $hs['to_warehouse'] ?></strong></td>
+            <td><strong><?php echo $hs['nm_warehouse'] ?></strong></td>
           </tr>
           <tr>
             <td>Date</td>
@@ -369,6 +368,7 @@
       </div>
     </form>
   </div>
+</div>
 </div>
 <?php } ?>
 
