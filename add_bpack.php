@@ -174,11 +174,6 @@ if(isset($_POST['delete_bpack'])){
         <i class="fa fa-archive"></i>
         <span>PACKAGE</span>
      </strong>
-     <?php
-      // if ($user['level_user']==0 || $user['level_user']==1) { ?>
-        <!-- <button type="button" title="Combine Package" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addPackage"><span class="glyphicon glyphicon-plus"></span> Combine Package
-        </button> -->
-      <!-- <?php } ?> -->
     </div>
      <div class="panel-body">
       <table class="table table-bordered" id="tablePackage">
@@ -189,7 +184,6 @@ if(isset($_POST['delete_bpack'])){
             <th class="text-center" style="width: 50px;">ID Item</th>
             <th class="text-center" style="width: 50px;">QTY</th>
             <th class="text-center" style="width: 50px;">Total Weight</th>
-            <!-- <th class="text-center" style="width: 100px;">Actions</th> -->
           </tr>
         </thead>
         <tbody>
@@ -201,16 +195,6 @@ if(isset($_POST['delete_bpack'])){
            <td class="text-center"><?php echo remove_junk(ucwords($a_package['id_item']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords(number_format($a_package['qty'])))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords(number_format($a_package['total'])))?></td>
-           
-    <!--        <?php
-                if ($user['level_user']==0 || $user['level_user']==1 || $user['level_user']== 2) 
-                  { ?>
-           <td class="text-center">
-              <button data-target="#deletebpack<?php echo $a_package['id_bpack'];?>" class="btn btn-md btn-danger" data-toggle="modal" title="Delete">
-                <i class="glyphicon glyphicon-trash"></i>
-              </button>
-           </td>
-           <?php } ?> -->
           </tr>
         <?php endforeach;?>
        </tbody>

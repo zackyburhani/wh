@@ -200,7 +200,7 @@
                           <td class="text-center"><?php echo remove_junk(ucwords($hs['subject']))?></td>
                           <td class="text-center"><?php echo remove_junk(ucwords($hs['date']))?></td>
                           <td class="text-center">
-                            <button id="btn_update" data-target="#history<?php echo $hs['id_message'] ?>" data-toggle="modal" class="btn btn-md btn-primary" title="Detail Message"><i class="fa fa-envelope-open"></i>
+                            <button data-target="#history<?php echo $hs['id_message'] ?>" data-toggle="modal" class="btn btn-md btn-primary" title="Detail Message"><i class="fa fa-envelope-open"></i>
                             </button>
                           </td>
                         </tr>
@@ -371,6 +371,13 @@
 </div>
 </div>  
 <?php } ?>
+
+<script type="text/javascript">
+  $('#btn_update').click(function(){
+    // $(this).find('i').toggleClass('fa fa-envelope').toggleClass('fa fa-envelope-open');
+    $(this).find('i').toggleClass('fa fa-envelope fa fa-envelope-open')
+});
+</script>
 
 
 <script type="text/javascript">

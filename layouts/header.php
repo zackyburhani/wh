@@ -56,7 +56,7 @@
       <div class="header-date pull-left">
         <strong><?php echo date("F j, Y, g:i a");?></strong>
       </div>
-      <div id="mydiv" class="pull-right clearfix">
+      <div class="pull-right clearfix">
         <ul class="info-menu list-inline list-unstyled">
 
           <?php $offer_admin   = find_all_PO_destination_admin_notif($user['id_warehouse']); ?>
