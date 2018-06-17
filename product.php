@@ -242,14 +242,12 @@
     foreach ($item as $data) {
       $id_item2 = $data['id_item'];  
     }
-    $itemP = find_all_idItemPackage($id_item);
-    foreach ($itemP as $data) {
-      $id_itemPackage = $data['id_item'];  
+    
+    if($id_item == $id_item2){
+      $session->msg("d","The Field Connected To Other Key.");
+      redirect('product.php');
     }
-    // if($id_item == $id_item2 || $id_item == $id_itemPackage){
-    //   $session->msg("d","The Field Connected To Other Key.");
-    //   redirect('product.php');
-    // }
+    
     //reduce area consumed
     $consumed     = $all_warehouse_id['heavy_consumed']; 
     $heavy_max    = $all_warehouse_id['heavy_max'];
