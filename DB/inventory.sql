@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 10, 2018 at 06:49 PM
+-- Generation Time: Jun 17, 2018 at 06:59 AM
 -- Server version: 10.1.31-MariaDB
 -- PHP Version: 7.2.4
 
@@ -48,6 +48,15 @@ CREATE TABLE `categories` (
   `id_warehouse` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`id_categories`, `nm_categories`, `id_warehouse`) VALUES
+('0001', 'living room', '0001'),
+('0002', 'office', '0001'),
+('0003', 'outdoor', '0001');
+
 -- --------------------------------------------------------
 
 --
@@ -87,7 +96,14 @@ CREATE TABLE `employer` (
 --
 
 INSERT INTO `employer` (`id_employer`, `username`, `nm_employer`, `id_position`, `password`, `last_login`, `status`, `image`, `id_warehouse`) VALUES
-('0001', 'Admin', 'Administrator', '0001', 'd033e22ae348aeb5660fc2140aec35850c4da997', '2018-06-10 18:10:59', '1', 'admin_v01D_support.png', '0001');
+('0001', 'Admin', 'Administrator', '0001', 'd033e22ae348aeb5660fc2140aec35850c4da997', '2018-06-17 06:33:44', '1', 'admin_v01D_support.png', '0001'),
+('0002', 'adminindo', 'Administrator Indonesia', '0002', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '2018-06-17 02:39:45', '1', 'indo.png', '0002'),
+('0003', 'adminjapan', 'Administrator Japan', '0002', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '2018-06-17 01:46:03', '1', NULL, '0003'),
+('0004', 'adminusa', 'Administrator USA', '0002', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '2018-06-14 10:26:22', '1', NULL, '0004'),
+('0005', 'zackyburhani', 'Zacky Burhani Hotib', '0003', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', NULL, '1', NULL, '0001'),
+('0006', 'faz', 'muhammad faiz ', '0004', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', NULL, '1', NULL, '0001'),
+('0007', 'adminmalaysia', 'Administrator Malaysia', '0002', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '2018-06-13 18:38:42', '1', NULL, '0005'),
+('0008', 'adminholland', 'Administrator Holland', '0002', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '2018-06-14 10:21:07', '1', NULL, '0010');
 
 -- --------------------------------------------------------
 
@@ -102,13 +118,13 @@ CREATE TABLE `item` (
   `width` decimal(5,2) DEFAULT NULL,
   `height` decimal(5,2) DEFAULT NULL,
   `length` decimal(5,2) DEFAULT NULL,
+  `diameter` decimal(5,2) DEFAULT NULL,
   `weight` decimal(10,2) NOT NULL,
   `stock` int(20) NOT NULL,
   `safety_stock` int(20) DEFAULT NULL,
   `id_package` varchar(10) DEFAULT NULL,
   `id_subcategories` varchar(20) DEFAULT NULL,
-  `id_location` varchar(10) DEFAULT NULL,
-  `id_bpack` varchar(10) DEFAULT NULL
+  `id_location` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -125,6 +141,29 @@ CREATE TABLE `location` (
   `id_warehouse` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `location`
+--
+
+INSERT INTO `location` (`id_location`, `unit`, `floor`, `room`, `id_warehouse`) VALUES
+('0001', 'A', 'B', '12', '0001');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `message`
+--
+
+CREATE TABLE `message` (
+  `id_message` int(10) UNSIGNED NOT NULL,
+  `subject` varchar(50) DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `message` text,
+  `from_warehouse` varchar(10) DEFAULT NULL,
+  `to_warehouse` varchar(10) DEFAULT NULL,
+  `status` enum('0','1') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 -- --------------------------------------------------------
 
 --
@@ -136,9 +175,11 @@ CREATE TABLE `package` (
   `nm_package` varchar(20) DEFAULT NULL,
   `height` decimal(5,2) DEFAULT NULL,
   `lenght` decimal(5,2) DEFAULT NULL,
+  `diameter` decimal(5,2) DEFAULT NULL,
   `weight` decimal(10,2) NOT NULL,
   `width` decimal(5,2) DEFAULT NULL,
   `jml_stock` int(20) DEFAULT NULL,
+  `safety_stock` int(20) DEFAULT NULL,
   `id_warehouse` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -172,7 +213,10 @@ CREATE TABLE `position` (
 --
 
 INSERT INTO `position` (`id_position`, `nm_position`, `level_user`, `id_warehouse`) VALUES
-('0001', 'administrator', '0', '0001');
+('0001', 'administrator', '0', '0001'),
+('0002', 'admin', '1', '0001'),
+('0003', 'manager', '2', '0001'),
+('0004', 'Employee', '3', '0001');
 
 -- --------------------------------------------------------
 
@@ -200,6 +244,15 @@ CREATE TABLE `sub_categories` (
   `id_categories` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `sub_categories`
+--
+
+INSERT INTO `sub_categories` (`id_subcategories`, `nm_subcategories`, `id_categories`) VALUES
+('0001', 'chair', '0001'),
+('0002', 'office desk', '0002'),
+('0003', 'garden', '0003');
+
 -- --------------------------------------------------------
 
 --
@@ -223,7 +276,12 @@ CREATE TABLE `warehouse` (
 --
 
 INSERT INTO `warehouse` (`id_warehouse`, `nm_warehouse`, `country`, `address`, `status`, `heavy_max`, `heavy_consumed`, `latitude`, `longitude`) VALUES
-('0001', 'IKEA Sweden', 'Sweden', 'Sweden', '1', 100000, '93600.00', NULL, NULL);
+('0001', 'IKEA Sweden', 'Sweden', 'Sweden', '1', 100000, '0.00', '60.4816622', '15.421299900000008'),
+('0002', 'IKEA Indonesia', 'Indonesia', 'Jalan Jalur Sutera Boulevard Kav.45, Kunciran, Pinang, Kunciran, Pinang, Kota Tangerang, Banten 15320, Indonesia', '1', 100000000000, '0.00', '-6.2200456', '106.66323549999993'),
+('0003', 'IKEA JAPAN', 'Japan', 'Japan, ã€’273-0012 Chiba Prefecture, Funabashi, Hamacho, 2 Chomeâˆ’3âˆ’30', '1', 100000000000, '0.00', '35.6820093', '139.99227559999997'),
+('0004', 'IKEA USA', 'United States', '6000 Ikea Way, Merriam, KS 66202, USA', '1', 100000000000, '0.00', '39.019538', '-94.69082889999999'),
+('0005', 'IKEA Malaysia', 'Malaysia', '2, Lorong PJU 7/8d, Mutiara Damansara, 47800 Petaling Jaya, Selangor, Malaysia', '1', 100000000000, '0.00', '3.156021', '101.60651000000007'),
+('0010', 'IKEA Holland', 'Netherlands', 'Amsterdam, Netherlands', '1', 100000000, '0.00', '52.3702157', '4.895167899999933');
 
 --
 -- Indexes for dumped tables
@@ -267,8 +325,7 @@ ALTER TABLE `item`
   ADD PRIMARY KEY (`id_item`),
   ADD KEY `id_location` (`id_location`),
   ADD KEY `id_package` (`id_package`),
-  ADD KEY `id_subcategories` (`id_subcategories`),
-  ADD KEY `id_bpack` (`id_bpack`);
+  ADD KEY `id_subcategories` (`id_subcategories`);
 
 --
 -- Indexes for table `location`
@@ -276,6 +333,14 @@ ALTER TABLE `item`
 ALTER TABLE `location`
   ADD PRIMARY KEY (`id_location`),
   ADD KEY `id_warehouse` (`id_warehouse`);
+
+--
+-- Indexes for table `message`
+--
+ALTER TABLE `message`
+  ADD PRIMARY KEY (`id_message`),
+  ADD KEY `from_warehouse` (`from_warehouse`),
+  ADD KEY `to_warehouse` (`to_warehouse`);
 
 --
 -- Indexes for table `package`
@@ -321,6 +386,16 @@ ALTER TABLE `warehouse`
   ADD PRIMARY KEY (`id_warehouse`);
 
 --
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `message`
+--
+ALTER TABLE `message`
+  MODIFY `id_message` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+
+--
 -- Constraints for dumped tables
 --
 
@@ -358,14 +433,20 @@ ALTER TABLE `employer`
 ALTER TABLE `item`
   ADD CONSTRAINT `item_ibfk_1` FOREIGN KEY (`id_location`) REFERENCES `location` (`id_location`),
   ADD CONSTRAINT `item_ibfk_2` FOREIGN KEY (`id_package`) REFERENCES `package` (`id_package`),
-  ADD CONSTRAINT `item_ibfk_3` FOREIGN KEY (`id_subcategories`) REFERENCES `sub_categories` (`id_subcategories`),
-  ADD CONSTRAINT `item_ibfk_4` FOREIGN KEY (`id_bpack`) REFERENCES `bpack` (`id_bpack`);
+  ADD CONSTRAINT `item_ibfk_3` FOREIGN KEY (`id_subcategories`) REFERENCES `sub_categories` (`id_subcategories`);
 
 --
 -- Constraints for table `location`
 --
 ALTER TABLE `location`
   ADD CONSTRAINT `location_ibfk_1` FOREIGN KEY (`id_warehouse`) REFERENCES `warehouse` (`id_warehouse`);
+
+--
+-- Constraints for table `message`
+--
+ALTER TABLE `message`
+  ADD CONSTRAINT `message_ibfk_1` FOREIGN KEY (`from_warehouse`) REFERENCES `warehouse` (`id_warehouse`),
+  ADD CONSTRAINT `message_ibfk_2` FOREIGN KEY (`to_warehouse`) REFERENCES `warehouse` (`id_warehouse`);
 
 --
 -- Constraints for table `package`
