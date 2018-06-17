@@ -98,6 +98,17 @@
 <?php
   if(isset($_POST['delete_user'])){
     $id_employer = remove_junk($db->escape($_POST['id_employer']));
+
+    //validation connected foreign key
+    $employer = find_all_idEmployee($id_employer);
+    foreach ($employer as $data) {
+      $id_employer2 = $data['id_employer'];
+    }
+    if($id_employer == $id_employer2){
+      $session->msg("d","The Field Connected To Other Key.");
+      redirect('superusers.php');
+    }
+
     $delete_id   = delete('id_employer','employer',$id_employer);
     if($delete_id){
       $session->msg("s","User has been deleted.");

@@ -13,7 +13,7 @@
 ?>
 
 
-<!-- UPDATE PACKAGE -->
+<!-- UPDATE -->
 <?php
 if(isset($_POST['update_package'])){
   $req_field = array('stock');

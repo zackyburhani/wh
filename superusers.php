@@ -98,6 +98,21 @@
 <?php
   if(isset($_POST['delete_user'])){
     $id_employer = remove_junk($db->escape($_POST['id_employer']));
+    $image       = remove_junk($db->escape($_POST['image']));
+    
+    $directory = "uploads/users/$image";
+    unlink($directory);
+
+    //validation connected foreign key
+    $employer = find_all_idEmployee($id_employer);
+    foreach ($employer as $data) {
+      $id_employer2 = $data['id_employer'];
+    }
+    if($id_employer == $id_employer2){
+      $session->msg("d","The Field Connected To Other Key.");
+      redirect('superusers.php');
+    }
+    
     $delete_id   = delete('id_employer','employer',$id_employer);
     if($delete_id){
       $session->msg("s","User has been deleted.");
@@ -148,7 +163,7 @@
         <?php $no=1; ?>
         <?php foreach($all_users as $a_user): ?>
           <tr>
-           <td class="text-center"><?php echo $no++.".";?>.</td>
+           <td class="text-center"><?php echo $no++.".";?></td>
            <td><?php echo remove_junk(ucwords($a_user['nm_employer']))?></td>
            <td><?php echo remove_junk($a_user['username'])?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_user['nm_position']))?></td>
@@ -321,6 +336,7 @@
         <form method="post" action="superusers.php" class="clearfix">
           <div class="form-group">
             <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($a_user['id_employer'])); ?>" name="id_employer">
+            <input type="hidden" class="form-control" value="<?php echo $a_user['image']; ?>" name="image">
           </div>
         </div>
         <div class="modal-footer">

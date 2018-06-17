@@ -366,7 +366,7 @@ function find_all_employee($id_warehouse){
 function find_all_admin(){
       global $db;
       $results = array();
-      $sql = "SELECT employer.id_employer,nm_employer,username,position.nm_position,employer.status,employer.last_login,warehouse.nm_warehouse,position.id_position,warehouse.id_warehouse FROM employer JOIN position ON employer.id_position=position.id_position JOIN warehouse ON employer.id_warehouse = warehouse.id_warehouse WHERE position.level_user = '1' ORDER BY employer.nm_employer ASC";
+      $sql = "SELECT employer.id_employer,nm_employer,username,position.nm_position,employer.status,employer.last_login,warehouse.nm_warehouse,position.id_position,warehouse.id_warehouse,image FROM employer JOIN position ON employer.id_position=position.id_position JOIN warehouse ON employer.id_warehouse = warehouse.id_warehouse WHERE position.level_user = '1' ORDER BY employer.nm_employer ASC";
       $result = find_by_sql($sql);
       return $result;
   }
@@ -566,6 +566,15 @@ function find_all_shippment($id_warehouse){
       global $db;
       $results = array();
       $sql = "SELECT id_position FROM employer WHERE id_position = '{$db->escape($field)}'";
+      $result = find_by_sql($sql);
+      return $result;
+  }
+
+  //validation connected foreign key 
+  function find_all_idEmployee($field){
+      global $db;
+      $results = array();
+      $sql = "SELECT id_employer FROM shipment WHERE id_employer = '{$db->escape($field)}'";
       $result = find_by_sql($sql);
       return $result;
   }

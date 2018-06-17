@@ -94,6 +94,8 @@ error_reporting(0);
 ?>
 <?php
 if(isset($_POST['update_po'])){
+  $req_field = array('id_subcategories','id_package','id_location');
+  validate_fields($req_field);
 
   $status           = "Success";
   $idpo             = remove_junk($db->escape($_POST['id_po']));
@@ -280,7 +282,7 @@ if(isset($_POST['update_po'])){
 
         <div class="form-group">
           <label for="name" class="control-label">Select Subcategory</label>
-            <select class="form-control" id="sub_category" name="id_subcategories">
+            <select class="form-control" id="sub_category" name="id_subcategories" required>
               <?php if($join_subcategories== null) { ?>
                 <option value=" ">-</option>
                   <?php } else { ?>
@@ -306,7 +308,7 @@ if(isset($_POST['update_po'])){
         </div>
         <div class="form-group">
           <label for="name" class="control-label">Select Location Warehouse</label>
-            <select class="form-control" name="id_location">
+            <select class="form-control" name="id_location" required>
             <?php if($all_location == null) { ?>
               <option value="">-</option>
             <?php } else { ?>
