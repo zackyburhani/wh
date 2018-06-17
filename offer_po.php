@@ -71,6 +71,39 @@
  }
 ?>
 
+<!-- Disagree PO -->
+<?php
+  if(isset($_POST['canceled_po'])){
+
+    $req_fields = array('id_po');
+    validate_fields($req_fields);
+
+      if(empty($errors)){
+        $id_item = remove_junk($db->escape($_POST['id_item']));
+        $status  = 'Canceled';
+
+        $query  = "UPDATE detil_po SET ";
+        $query .= "status = '{$status}' ";
+        $query .= "WHERE id_item = '{$id_item}'";
+
+        $result = $db->query($query);
+         if($result){
+          //sucess
+          $db->query($query2);
+          $session->msg('s',"The Item Has Been Canceled ! ");
+          redirect('approve2_po.php', false);
+        } else {
+          //failed
+          $session->msg('d',' Sorry Failed To Cancel The Item !');
+          redirect('approve2_po.php', false);
+          }
+   } else {
+     $session->msg("d", $errors);
+     redirect('approve2_po.php', false);
+   }
+ }
+?>
+
 
 <?php include_once('layouts/header.php'); ?>
 <div class="row">
@@ -206,7 +239,7 @@
           <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-th"></span> Approve Purchase Order</h4>
         </div>
         <div class="modal-body">
-          Are You Sure Want To Approve Item <b><u><?php echo remove_junk(ucwords($item['id_item'])); ?></u></b> ?
+          Are You Sure Want To Send Item <b><u><?php echo remove_junk(ucwords($item['id_item'])); ?></u></b> ?
         <form method="post" action="offer_po.php" class="clearfix">
           <div class="form-group">
             <input type="hidden" class="form-control" value="<?php echo remove_junk(ucwords($item['id_po'])); ?>" name="id_po">
@@ -215,6 +248,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" title="Close" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
+          <button type="submit" name="canceled_po" class="btn btn-danger"><span class="fa fa-warning"></span> Disagree</button>
           <button type="submit" title="Approve" name="approve_po" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Approve</button>
         </div>
       </form>

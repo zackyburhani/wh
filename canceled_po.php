@@ -2,10 +2,10 @@
   $page_title = 'Canceled PO';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
-   page_require_level(2);
-   $all_warehouse  = find_all1('warehouse');
-   $user           = current_user();
-   $all_po_cancel  = find_all_canceledPO($user['id_warehouse']);
+  page_require_level(2);
+  $all_warehouse  = find_all1('warehouse');
+  $user           = current_user();
+  $all_po_cancel  = find_all_canceledPO($user['id_warehouse']);
 
 ?>
 
@@ -17,15 +17,15 @@
   $id_item = remove_junk($db->escape($_POST['id_item']));
 
   if(empty($errors)){
-        $sql = "DELETE FROM detil_po WHERE id_po='{$id_po}' and id_item ='{$id_item}' ";
-     $result = $db->query($sql);
-     if($result) {
-       $session->msg("s", "Successfully Delete PO");
-       redirect('canceled_po.php',false);
-     } else {
-       $session->msg("d", "Sorry! Failed to Delete");
-       redirect('canceled_po.php',false);
-     }
+    $sql    = "DELETE FROM detil_po WHERE id_po='{$id_po}' and id_item ='{$id_item}' ";
+    $result = $db->query($sql);
+    if($result) {
+      $session->msg("s", "Successfully Delete PO");
+      redirect('canceled_po.php',false);
+    } else {
+      $session->msg("d", "Sorry! Failed to Delete");
+      redirect('canceled_po.php',false);
+    }
   } else {
     $session->msg("d", $errors);
     redirect('canceled_po.php',false);

@@ -14,7 +14,6 @@ function autonumber($id, $table){
   return $new_code;
 }
 
- 
 /*--------------------------------------------------------------*/
 /* Function for find all database table rows by table name
 /*--------------------------------------------------------------*/
@@ -86,9 +85,7 @@ function find_prod_warehouse($table) {
 }
 
 function find_prod_warehouse_1($table) {
-
-    return find_by_sql("SELECT * FROM location where id_location = '$table'");
-  
+  return find_by_sql("SELECT * FROM location where id_location = '$table'");
 }
 
 function find_all1($table) {
@@ -98,13 +95,14 @@ function find_all1($table) {
      return find_by_sql("SELECT * FROM ".$db->escape($table));
    }
 }
+
 function update($id) {
     global $db;
     $date = make_date();
     $sql = "UPDATE detil_po SET status='success' WHERE id_po ='{$id}' LIMIT 1";
     $result = $db->query($sql);
     return ($result && $db->affected_rows() === 1 ? true : false);
-  }
+}
 
 function find_warehouse_location($id_warehouse) {
   return find_by_sql("SELECT * FROM location WHERE id_warehouse = '$id_warehouse'");
@@ -148,20 +146,37 @@ function find_lat2_long2($id_po) {
 }
 
 
-function find_leadtime($id_po,$id_warehouse) {
+function find_leadtime($id_po,$id_warehouse_for,$id_warehouse_from) {
   return find_by_sql("
-
-    SELECT detil_po.id_warehouse as from_wh, po.id_warehouse as for_wh,po.id_po as id_po, 
+    SELECT po.id_po as id_po, po.id_warehouse as for_wh, detil_po.id_warehouse as from_wh, 
+      (SELECT nm_warehouse FROM warehouse where warehouse.id_warehouse = po.id_warehouse) as for_wh_nm,
+      (SELECT nm_warehouse FROM warehouse where warehouse.id_warehouse = detil_po.id_warehouse) as from_wh_nm,
       (SELECT latitude FROM po,warehouse WHERE warehouse.id_warehouse = for_wh and po.id_po = '$id_po' GROUP by for_wh) as latitude1,
       (SELECT longitude FROM po,warehouse WHERE warehouse.id_warehouse = for_wh and po.id_po = '$id_po' GROUP by for_wh) as longitude1,
+      (SELECT address FROM po,warehouse WHERE warehouse.id_warehouse = for_wh and po.id_po = '$id_po' GROUP by for_wh) as address1,
       (SELECT latitude FROM detil_po,warehouse WHERE warehouse.id_warehouse = from_wh and detil_po.id_po = '$id_po' GROUP by latitude) as latitude2,
-      (SELECT longitude FROM detil_po,warehouse WHERE warehouse.id_warehouse = from_wh and detil_po.id_po = '$id_po' GROUP by longitude) as longitude2
-
-FROM detil_po,po,warehouse WHERE po.id_po = '$id_po' and po.id_warehouse = '$id_warehouse' and warehouse.id_warehouse = '$id_warehouse' and detil_po.status = 'On Destination' GROUP by from_wh;
-
-
-    ");
+      (SELECT longitude FROM detil_po,warehouse WHERE warehouse.id_warehouse = from_wh and detil_po.id_po = '$id_po' GROUP by longitude) as longitude2,
+      (SELECT address FROM detil_po,warehouse WHERE warehouse.id_warehouse = from_wh and detil_po.id_po = '$id_po' GROUP by longitude) as address2
+    FROM detil_po,po,warehouse WHERE warehouse.id_warehouse = po.id_warehouse and po.id_po = detil_po.id_po and detil_po.status = 'On Destination' 
+    and (po.id_warehouse = '$id_warehouse_for' or po.id_warehouse = '$id_warehouse_from') and po.id_po = '$id_po' group by po.id_po order by 1 desc  
+  ");
 }
+
+function find_leadtime_from($id_po,$id_warehouse) {
+  return find_by_sql("
+    SELECT po.id_po as id_po, po.id_warehouse as for_wh, detil_po.id_warehouse as from_wh, 
+    (SELECT nm_warehouse FROM warehouse where warehouse.id_warehouse = po.id_warehouse) as for_wh_nm,
+    (SELECT nm_warehouse FROM warehouse where warehouse.id_warehouse = detil_po.id_warehouse) as from_wh_nm,
+    (SELECT latitude FROM po,warehouse WHERE warehouse.id_warehouse = for_wh and po.id_po = '$id_po' GROUP by for_wh) as latitude1,
+    (SELECT longitude FROM po,warehouse WHERE warehouse.id_warehouse = for_wh and po.id_po = '$id_po' GROUP by for_wh) as longitude1,
+    (SELECT address FROM po,warehouse WHERE warehouse.id_warehouse = for_wh and po.id_po = '$id_po' GROUP by for_wh) as address1,
+    (SELECT latitude FROM detil_po,warehouse WHERE warehouse.id_warehouse = from_wh and detil_po.id_po = '$id_po' GROUP by latitude) as latitude2,
+    (SELECT longitude FROM detil_po,warehouse WHERE warehouse.id_warehouse = from_wh and detil_po.id_po = '$id_po' GROUP by longitude) as longitude2,
+    (SELECT address FROM detil_po,warehouse WHERE warehouse.id_warehouse = from_wh and detil_po.id_po = '$id_po' GROUP by longitude) as address2
+    FROM detil_po,po,warehouse WHERE warehouse.id_warehouse = po.id_warehouse and po.id_po = detil_po.id_po and detil_po.status = 'On Destination' and detil_po.id_warehouse = '$id_warehouse' group by po.id_po order by 1 desc
+  ");
+}
+
 
 function find_leadtime_wh($id_warehouse) {
   global $db;
@@ -175,6 +190,11 @@ function find_leadtime_po($id_warehouse_for,$id_warehouse_from) {
      return $db->fetch_assoc($sql);
 }
 
+function find_leadtime_po_from($id_warehouse) {
+  global $db;
+  $sql = $db->query("SELECT detil_po.id_po,po.date_po as date_po,detil_po.date_po as date_send, detil_po.status,po.id_warehouse as for_wh, detil_po.id_warehouse as from_wh, detil_po.id_item,qty FROM po,detil_po where detil_po.id_po = po.id_po and detil_po.status = 'On Destination' and detil_po.id_warehouse = '$id_warehouse'");
+     return $db->fetch_assoc($sql);
+}
 
 function find_all1_ware($table) {
    global $db;
@@ -257,7 +277,6 @@ function get_package_condition($id_warehouse){
   global $db;
     return find_by_sql("SELECT * FROM package where jml_stock < package.safety_stock and package.id_warehouse = '$id_warehouse'");
 }
-
 
 //find field with order
 function find_all_order($table,$order,$id) {
@@ -352,28 +371,28 @@ function find_all_admin(){
       return $result;
   }
 
-  function notification($id_warehouse){
-    global $db;
-    $sql = $db->query("SELECT po.id_po,po.date_po,po.id_warehouse as For_wh,detil_po.date_po,qty,status,detil_po.id_warehouse as From_wh,total_weight,id_item FROM po JOIN detil_po WHERE po.id_po = detil_po.id_po AND po.id_warehouse = '$id_warehouse' and status = 'On Process' GROUP by po.id_po");
+function notification($id_warehouse){
+  global $db;
+  $sql = $db->query("SELECT po.id_po,po.date_po,po.id_warehouse as For_wh,detil_po.date_po,qty,status,detil_po.id_warehouse as From_wh,total_weight,id_item FROM po JOIN detil_po WHERE po.id_po = detil_po.id_po AND po.id_warehouse = '$id_warehouse' and status = 'On Process' GROUP by po.id_po");
     $result = $db->num_rows($sql);
-    return $result;
-  }
+  return $result;
+}
 
-  function find_all_detailPO($id_warehouse,$id_po){
-      global $db;
-      $results = array();
-      $sql = "SELECT po.id_po,po.date_po,po.id_warehouse,status,detil_po.id_item,total_weight,qty,detil_po.id_warehouse as from_wh FROM po JOIN detil_po ON po.id_po = detil_po.id_po WHERE po.id_warehouse = '$id_warehouse' and po.id_po = '$id_po'";
-      $result = find_by_sql($sql);
-      return $result;
-  }
+function find_all_detailPO($id_warehouse,$id_po){
+  global $db;
+  $results = array();
+  $sql = "SELECT po.id_po,po.date_po,po.id_warehouse,status,detil_po.id_item,total_weight,qty,detil_po.id_warehouse as from_wh FROM po JOIN detil_po ON po.id_po = detil_po.id_po WHERE po.id_warehouse = '$id_warehouse' and po.id_po = '$id_po'";
+  $result = find_by_sql($sql);
+  return $result;
+}
 
-  function find_all_detailPO_admin($id_po){
-      global $db;
-      $results = array();
-      $sql = "SELECT po.id_po,po.date_po,po.id_warehouse,status,detil_po.id_item,total_weight,qty,detil_po.id_warehouse as From_wh FROM po JOIN detil_po ON po.id_po = detil_po.id_po WHERE po.id_po = '$id_po' order by po.id_po desc";
-      $result = find_by_sql($sql);
-      return $result;
-  }
+function find_all_detailPO_admin($id_po){
+  global $db;
+  $results = array();
+  $sql = "SELECT po.id_po,po.date_po,po.id_warehouse,status,detil_po.id_item,total_weight,qty,detil_po.id_warehouse as From_wh FROM po JOIN detil_po ON po.id_po = detil_po.id_po WHERE po.id_po = '$id_po' order by po.id_po desc";
+  $result = find_by_sql($sql);
+  return $result;
+}
 
   function find_all_listPO($id_warehouse){
       global $db;
@@ -1008,6 +1027,43 @@ function get_id_product($nm_item,$id_warehouse)
      return $db->fetch_assoc($sql);
 }
 
+//for message
+function find_all_warehouse($table,$id) {
+   global $db;
+   if(tableExists($table))
+   {
+      $result = array();
+     $result = find_by_sql("SELECT * FROM {$db->escape($table)} WHERE id_warehouse != '{$db->escape($id)}' ORDER BY nm_warehouse ASC");
+    return $result;
+   }
+}
+
+function find_all_message_from($id_warehouse) {
+   global $db;
+     $result = array();
+     $result = find_by_sql("SELECT id_message,subject,message,date,to_warehouse,message.status, from_warehouse,nm_warehouse
+      FROM message,warehouse where warehouse.id_warehouse = message.from_warehouse and to_warehouse = '$id_warehouse' order by 1 desc");
+    return $result;
+}
+
+function find_all_message_history($id_warehouse) {
+   global $db;
+     $result = array();
+     $result = find_by_sql("SELECT id_message,subject,message,date,to_warehouse as to_wh,message.status, from_warehouse,(SELECT nm_warehouse from warehouse where id_warehouse = to_wh GROUP by nm_warehouse) as nm_warehouse
+      FROM message,warehouse where warehouse.id_warehouse = message.from_warehouse and from_warehouse = '$id_warehouse' order by 1 desc");
+    return $result;
+}
+
+//notif
+function find_all_message_from_notif($id_warehouse) {
+  global $db;
+  $results = array();
+  $sql = $db->query("SELECT id_message,subject,message,date,to_warehouse, from_warehouse,nm_warehouse
+      FROM message,warehouse where warehouse.id_warehouse = message.from_warehouse and to_warehouse = '$id_warehouse' and message.status = '0' order by 1 desc");
+  $result = $db->num_rows($sql);
+  return $result;
+}
+
   /*--------------------------------------------------------------*/
   /* Find all position name 
   /*--------------------------------------------------------------*/
@@ -1035,6 +1091,12 @@ function get_id_product($nm_item,$id_warehouse)
     $sql = "SELECT nm_item FROM item,location,warehouse WHERE item.id_location = location.id_location and location.id_warehouse = warehouse.id_warehouse and nm_item = '{$db->escape($val)}' and warehouse.id_warehouse = '$id_warehouse' LIMIT 1 ";
     $result = $db->query($sql);
     return($db->num_rows($result) === 0 ? true : false);
+  }
+
+  function max_warehouse(){
+    global $db;
+     $sql = $db->query("SELECT max(id_warehouse) as max from warehouse");
+     return $db->fetch_assoc($sql);
   }
 
 

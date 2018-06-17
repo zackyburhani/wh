@@ -88,7 +88,7 @@
                 </div><!-- /input-group -->
               </div>
               <div class="col-md-6">
-                <button title="Save" id="save_wh" class="btn btn-primary btn-md btn-block" ><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+                <button title="Update" id="btn_update" class="btn btn-primary btn-md btn-block" ><span class="glyphicon glyphicon-floppy-disk"></span> Update</button>
               </div>
             </div>
           </div>
@@ -101,9 +101,10 @@
               </div>
             </div>
 
-            <input type="hidden" id="get_address"  value="<?php echo $warehouse1['address'] ?>">
+            <input type="hidden" id="get_address" value="<?php echo $warehouse1['address'] ?>">
             <input type="hidden" id="latitude" value="<?php echo $warehouse1['latitude'] ?>">
             <input type="hidden" id="longitude" value="<?php echo $warehouse1['longitude'] ?>">
+            <input type="hidden" id="id_warehouse" value="<?php echo $id ?>">
 
           </form>
         </div>
@@ -121,9 +122,9 @@
  
     window.onload = function() {
  
-      var latitude    = document.getElementById('latitude').value;
-      var longitude   = document.getElementById('longitude').value;
-      var get_address = document.getElementById('get_address').value;
+      var latitude     = document.getElementById('latitude').value;
+      var longitude    = document.getElementById('longitude').value;
+      var get_address  = document.getElementById('get_address').value;
 
       // Create New Map
       var options = {  
@@ -214,31 +215,31 @@
 
         } 
 
-        //Save Location
-          $('#save_wh').on('click',function(){
+        //Update
+        $('#btn_update').on('click',function(){
+          var id_warehouse  = document.getElementById('id_warehouse').value;
+          var warehousename = $('#warehousename').val();
+          var status        = $('#status').val();
+          var heavymax      = $('#heavymax').val();
+          var convert_max   = $("#convert_max").val();
+          var address_AJX   = address1;
+          var latt_AJX      = latt;
+          var long_AJX      = long;
+          var country2      = country;
 
-            var address_AJX     = address1;
-            var latt_AJX        = latt;
-            var long_AJX        = long;
-            var country2         = country;
-            var warehousename   = $("#warehousename").val();
-            var status          = $("#status").val();
-            var heavymax        = $("#heavymax").val();
-            var convert_max     = $("#convert_max").val();
-              $.ajax({
-                type: "POST",
-                url: "insert_warehouse.php",
-                data: {warehousename:warehousename, status:status,heavymax:heavymax,convert_max:convert_max,address_AJX: address_AJX, latt_AJX: latt_AJX, long_AJX: long_AJX, country2:country2},
-                success: function(data) {
-                  location.reload();
-                  $('[name="warehousename"]').val("");
-                  $('[name="heavymax"]').val("");
-                  $('[name="address"]').val("");
-                  alert('Success Added Warehouse');
-                }
-              });
-                return false;
-          });
+          console.log(country2);
+
+          $.ajax({
+            type : "POST",
+            url  : "update_warehouse.php",
+            data : {id_warehouse:id_warehouse , warehousename:warehousename, status:status, heavymax:heavymax,convert_max:convert_max,address_AJX: address_AJX, latt_AJX: latt_AJX, long_AJX: long_AJX, country2:country2},
+            success: function(data){
+              window.location.reload(true);
+              alert("Successfully Updated Warehouse");
+              }
+            });
+          return false;
+        });
 
       });
     }

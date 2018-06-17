@@ -29,6 +29,8 @@
       $('#SubcategoriesTable').DataTable();
       $('#tablePackage').DataTable();
       $('#tablelocation').DataTable();
+      $('#tableInbox').DataTable();
+      $('#tableMessage').DataTable();
 
   	});
 </script>
@@ -39,7 +41,12 @@
  		$(".alert-danger").fadeTo(900, 0).slideUp(900, function(){ $(this).remove(); }); 
  	}, 3000); 
 </script>
-    
+
+<script type="text/javascript">
+$(document).ready(function () {
+    $('#mydiv').delay(1000);
+  });
+</script>
 
 
  </body>

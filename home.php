@@ -142,7 +142,7 @@
         </div>
         <div class="panel-value pull-right">
           <h2 class="margin-top"> <?php  echo $c_package['total']; ?> </h2>
-          <p class="text-muted"><a href="add_package.php">Package</a></p>
+          <p class="text-muted"><a href="add_package.php">Packages</a></p>
         </div>
        </div>
     </div>

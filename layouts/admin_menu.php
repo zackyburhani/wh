@@ -13,10 +13,16 @@
        <span>Warehouse</span>
       </a>
       <ul class="nav submenu">
+<<<<<<< HEAD
         <li><a href="add_warehouse.php" class="modul" id="warehouse">Add Warehouse</a></li>
         <li><a href="add_location.php" class="modul" id="location">Add Location</a></li>
         <li><a href="lead_time.php" class="modul" id="leadtime">Lead Time</a></li>
         <li><a href="warehouse.php" class="modul" id="condition">Warehouse Condition</a></li>
+=======
+        <li><a href="add_warehouse.php">Add Warehouse</a></li>
+        <li><a href="add_location.php">Add Location</a></li>
+        <li><a href="warehouse.php">Warehouse Condition</a></li>
+>>>>>>> 731a6000cdc32aaffaa15e665316aa23f9d7b04b
       </ul>
   </li>
 
@@ -63,8 +69,14 @@
        <span>Receive Product</span>
       </a>
       <ul class="nav submenu">
+<<<<<<< HEAD
         <li><a href="move_product.php" class="modul" id="receive">Receive Product</a></li>
         <li><a href="history_shipment.php" class="modul" id="history">Approved History</a></li>
+=======
+        <li><a href="move_product.php">Receive Product</a></li>
+        <li><a href="lead_time.php">Lead Time</a></li>
+        <li><a href="history_shipment.php">Approved History</a></li>
+>>>>>>> 731a6000cdc32aaffaa15e665316aa23f9d7b04b
       </ul>
   </li>
 
@@ -74,12 +86,21 @@
        <span>Purchase Order</span>
       </a>
       <ul class="nav submenu">
+<<<<<<< HEAD
         <li><a href="po.php" class="modul" id="po">Add Purchase Order</a></li>
         <li><a href="history_po.php" class="modul" id="pohistory">Purchase History</a></li>
         <li><a href="offer_po.php" class="modul" id="offer">Purchase Offer <span class="label label-danger" id="jumlah"><?php $offer_po = find_all_PO_destination_admin_notif($user['id_warehouse']); if($offer_po != null) {echo $offer_po;}  ?></span></a></li>
         <?php if ($user['id_warehouse'] =='0001') { ?>
         <?php $approve1 = find_all_PO_admin_notif($user['id_warehouse']); ?>
         <li><a href="approve1_po.php" class="modul" id="approvepo">Approved Purchase Order <span class="label label-danger label-sm"><?php if($approve1 != null) {echo $approve1;} ?></span></a></li>
+=======
+        <li><a href="po.php">Add Purchase Order</a></li>
+        <li><a href="history_po.php">Purchase History</a></li>
+        <li><a href="offer_po.php">Purchase Offer </a></li>
+        <?php if ($user['level_user'] =='0') { ?>
+        <?php $approve1 = find_all_PO_admin_notif($user['id_warehouse']); ?>
+        <li><a href="approve1_po.php">Approved Purchase Order </a></li>
+>>>>>>> 731a6000cdc32aaffaa15e665316aa23f9d7b04b
         <?php } ?>
         <li><a href="history_approved1.php" class="modul" id="approvehist">Approved History</a></li>
         <li><a href="canceled_po.php" class="modul" id="cancel">Canceled Order</a></li>
