@@ -48,6 +48,7 @@
 
   </head>
   <body>
+
   <?php if ($session->isUserLoggedIn(true)): ?>
     <header id="header">
       <div class="logo pull-left" style="color: #ffda1a"> IKEA WAREHOUSE </div>
@@ -55,7 +56,7 @@
       <div class="header-date pull-left">
         <strong><?php echo date("F j, Y, g:i a");?></strong>
       </div>
-      <div class="pull-right clearfix">
+      <div id="mydiv" class="pull-right clearfix">
         <ul class="info-menu list-inline list-unstyled">
 
           <?php $offer_admin   = find_all_PO_destination_admin_notif($user['id_warehouse']); ?>
@@ -99,28 +100,6 @@
               </li>
            </ul>
           </li>
-
-          <script type="text/javascript">
-            function update(id,id_wh,nm_wh,msg,date_var){
-              var id_message   = id;
-              var id_warehouse = id_wh;
-              var nm_warehouse = nm_wh;
-              var date         = date_var;
-              var message      = msg;
-              $.ajax({
-                type : "POST",
-                url  : "update_message.php",
-                data : {id_message:id_message, id_warehouse:id_warehouse},
-                success: function(data) {
-                  $('#detailMessage').modal('show');
-                  $('[name="nm_warehouse"]').html(nm_warehouse);
-                  $('[name="date"]').html(date);
-                  $('[name="from_message"]').html(message);
-                }
-              });
-            }
-          </script>
-
 
           <?php if($warehouse['status'] != 0) { ?>
 

@@ -42,6 +42,12 @@
  	}, 3000); 
 </script>
 
+<script type="text/javascript">
+$(document).ready(function () {
+    $('#mydiv').delay(1000);
+  });
+</script>
+
 
  </body>
 </html>
