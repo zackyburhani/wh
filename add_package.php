@@ -31,7 +31,7 @@ if(isset($_POST['add_package'])){
   $packagename  = remove_junk($db->escape($_POST['packagename']));
   $height       = remove_junk($db->escape($_POST['height']));
   $weight       = remove_junk($db->escape($_POST['weight']));
-  $lenght       = remove_junk($db->escape($_POST['lenght']));
+  $length       = remove_junk($db->escape($_POST['length']));
   $diameter     = remove_junk($db->escape($_POST['diameter']));
   $width        = remove_junk($db->escape($_POST['width']));
   $stock        = remove_junk($db->escape($_POST['stock']));
@@ -68,8 +68,8 @@ if(isset($_POST['add_package'])){
 
 
   if(empty($errors)){
-    $sql  = "INSERT INTO package (id_package,nm_package,height,weight,lenght,diameter,width,jml_stock,id_warehouse,safety_stock)";
-    $sql .= " VALUES ('{$id_package}','{$packagename}','{$height}','{$weight}','{$lenght}','{$diameter}','{$width}','{$stock}','{$id}','{$safety_stock}')";
+    $sql  = "INSERT INTO package (id_package,nm_package,height,weight,length,diameter,width,jml_stock,id_warehouse,safety_stock)";
+    $sql .= " VALUES ('{$id_package}','{$packagename}','{$height}','{$weight}','{$length}','{$diameter}','{$width}','{$stock}','{$id}','{$safety_stock}')";
 
     $id_wh = $user['id_warehouse'];
 
@@ -105,7 +105,7 @@ if(isset($_POST['update_package'])){
   $packagename  = remove_junk($db->escape($_POST['packagename']));
   $height       = remove_junk($db->escape($_POST['height']));
   $weight       = remove_junk($db->escape($_POST['weight']));
-  $lenght       = remove_junk($db->escape($_POST['lenght']));
+  $length       = remove_junk($db->escape($_POST['length']));
   $diameter     = remove_junk($db->escape($_POST['diameter']));
   $width        = remove_junk($db->escape($_POST['width']));
   $stock        = remove_junk($db->escape($_POST['stock']));
@@ -142,7 +142,7 @@ if(isset($_POST['update_package'])){
   // }
 
   if(empty($errors)){
-    $sql = "UPDATE package SET nm_package='{$packagename}',height='{$height}',weight='{$weight}',lenght='{$lenght}',Diameter='{$diameter}',width='{$width}',jml_stock='{$stock}',safety_stock='{$safety_stock}'";
+    $sql = "UPDATE package SET nm_package='{$packagename}',height='{$height}',weight='{$weight}',length='{$length}',Diameter='{$diameter}',width='{$width}',jml_stock='{$stock}',safety_stock='{$safety_stock}'";
     $sql .= " WHERE id_package='{$idpackage}'";
 
     $query2  = "UPDATE warehouse SET ";
@@ -247,7 +247,7 @@ if(isset($_POST['update_package'])){
             <th class="text-center" style="width: 50px;">Package Name</th>
             <th class="text-center" style="width: 50px;">Height / Cm</th>
             <th class="text-center" style="width: 50px;">Width / Cm</th>
-            <th class="text-center" style="width: 50px;">Lenght / Cm</th>
+            <th class="text-center" style="width: 50px;">Length / Cm</th>
             <th class="text-center" style="width: 50px;">Diameter / Cm</th>
             <th class="text-center" style="width: 50px;">Weight / Kg</th>
             <th class="text-center" style="width: 50px;">Stock / Unit</th>
@@ -262,7 +262,7 @@ if(isset($_POST['update_package'])){
            <td class="text-center"><?php echo remove_junk(ucwords($a_package['nm_package']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_package['height']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_package['width']))?></td>
-           <td class="text-center"><?php echo remove_junk(ucwords($a_package['lenght']))?></td>
+           <td class="text-center"><?php echo remove_junk(ucwords($a_package['length']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_package['diameter']))?></td>
            <td class="text-center"><?php echo remove_junk(round($a_package['weight'],4))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_package['jml_stock']))?></td>
@@ -326,8 +326,8 @@ if(isset($_POST['update_package'])){
 
         <div class="col-md-3">
           <div class="form-group">
-            <label class="control-label">Lenght / cm</label>
-            <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="lenght">
+            <label class="control-label">Length / cm</label>
+            <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="length">
           </div>
         </div>
 
@@ -432,8 +432,8 @@ if(isset($_POST['update_package'])){
 
         <div class="col-md-3">
           <div class="form-group">
-            <label class="control-label">Lenght / cm</label>
-            <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="lenght" value="<?php echo remove_junk(ucwords($a_package['lenght'])); ?>">
+            <label class="control-label">Length / cm</label>
+            <input type="number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" min="0" class="form-control" name="length" value="<?php echo remove_junk(ucwords($a_package['length'])); ?>">
           </div>
         </div>
 
