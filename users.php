@@ -18,6 +18,8 @@
    $req_fields = array('nm_employer','username','password','password2','id_position' );
    validate_fields($req_fields);
 
+
+
    if(empty($errors)){
        $id_employer   = autonumber('id_employer','employer');
        $nm_employer   = remove_junk($db->escape($_POST['nm_employer']));
@@ -27,6 +29,12 @@
        $id_warehouse  = $user['id_warehouse'];
        $status        = 1;
        $password = sha1($password);
+
+       if(find_by_Username($_POST['username'],$user['id_warehouse']) === false ){
+         $session->msg('d','<b>Sorry!</b> Username Already In Database!');
+         redirect('users.php', false);
+       }
+
         $query = "INSERT INTO employer (";
         $query .="id_employer,nm_employer,username,password,id_position,status,id_warehouse";
         $query .=") VALUES (";
@@ -66,6 +74,11 @@
       $id_position  = remove_junk($db->escape($_POST['id_position']));
       $status       = remove_junk($db->escape($_POST['status']));
       $id_warehouse = $user['id_warehouse']; 
+
+       if(find_by_Username($_POST['username'],$user['id_warehouse']) === false ){
+         $session->msg('d','<b>Sorry!</b> Username Already In Database!');
+         redirect('users.php', false);
+       }
 
       if($password == null){      
         $query  = "UPDATE employer SET id_employer='{$id_employer}',nm_employer='{$nm_employer}',username='{$username}',id_position='{$id_position}',status='{$status}',id_warehouse='{$id_warehouse}' WHERE id_employer='{$id_employer}'";

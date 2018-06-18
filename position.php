@@ -19,6 +19,7 @@
      $session->msg('d','<b>Sorry!</b> Entered Position Name Already In Database!');
      redirect('position.php', false);
    }
+   
    if(empty($errors)){
         $level_user   = remove_junk($db->escape($_POST['level_user']));
         $nm_position  = remove_junk($db->escape($_POST['nm_position']));

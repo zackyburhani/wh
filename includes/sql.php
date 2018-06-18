@@ -1084,6 +1084,22 @@ function find_all_message_from_notif($id_warehouse) {
     return($db->num_rows($result) === 0 ? true : false);
   }
 
+  function find_by_Username($val,$id_warehouse)
+  {
+    global $db;
+    $sql = "SELECT username FROM employer WHERE username = '{$db->escape($val)}' AND id_warehouse = '$id_warehouse' LIMIT 1 ";
+    $result = $db->query($sql);
+    return($db->num_rows($result) === 0 ? true : false);
+  }
+
+  function find_by_UsernameInter($val,$id_warehouse)
+  {
+    global $db;
+    $sql = "SELECT username FROM employer WHERE username = '{$db->escape($val)}' LIMIT 1 ";
+    $result = $db->query($sql);
+    return($db->num_rows($result) === 0 ? true : false);
+  }
+
   //find categoryName
   function find_by_categoryName($val)
   {

@@ -25,6 +25,12 @@
        $id_position   = remove_junk($db->escape($_POST['id_position']));
        $id_warehouse  = remove_junk($db->escape($_POST['id_warehouse']));
        $status        = 1;
+
+       if(find_by_UsernameInter($_POST['username'],$user['id_warehouse']) === false ){
+         $session->msg('d','<b>Sorry!</b> Username Already In Database!');
+         redirect('superusers.php', false);
+       }
+
        $password = sha1($password);
         $query = "INSERT INTO employer (";
         $query .="id_employer,nm_employer,username,password,id_position,status,id_warehouse";
@@ -66,6 +72,11 @@
       $id_position  = remove_junk($db->escape($_POST['id_position']));
       $status       = remove_junk($db->escape($_POST['status']));
       $id_warehouse = remove_junk($db->escape($_POST['id_warehouse']));
+
+      if(find_by_UsernameInter($_POST['username'],$user['id_warehouse']) === false ){
+         $session->msg('d','<b>Sorry!</b> Username Already In Database!');
+         redirect('superusers.php', false);
+       }
 
       if($password == null){
         $query  = "UPDATE employer SET id_employer='{$id_employer}',nm_employer='{$nm_employer}',username='{$username}',id_position='{$id_position}',status='{$status}',id_warehouse='{$id_warehouse}' WHERE id_employer='{$id_employer}'";
