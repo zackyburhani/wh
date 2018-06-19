@@ -105,7 +105,6 @@ if(isset($_POST['update_po'])){
   $id_subcategories = remove_junk($db->escape($_POST['id_subcategories']));
   $safety_stock     = remove_junk($db->escape($_POST['safety_stock']));
 
-
   //insert table shipment 
   $idshipment   = autonumber('id_shipment','shipment');
   $dateshipment = date("Y-m-d");
@@ -132,6 +131,13 @@ if(isset($_POST['update_po'])){
   $diameter_new = $all_item['diameter'];
   $weight_new   = $all_item['weight'];
   $stock_new    = $qty_new['qty'];
+
+  $fetch_package = find_package_id($id_package);
+  if($stock_new >= $fetch_package['jml_stock']){
+    $session->msg('d',"QTY Package Is Not Enough");
+    redirect('move_product.php', false);
+  }
+
 
   if(find_by_itemName($nm_item_new,$user['id_warehouse']) === false ){
 
@@ -166,10 +172,17 @@ if(isset($_POST['update_po'])){
   $query4 .= "WHERE id_warehouse = '{$id_warehouse}'";
 
   //insert table bpack
+  $get_id = find_new_idItem($nm_item_new,$colour_new,$id_package,$id_subcategories,$id_location);
+  $id_item2 = $get_id['id_item'];
   $id_bpack = autonumber('id_bpack','bpack');
   $count    = $weight_new*$stock_new;
   $sql2  = "INSERT INTO bpack (id_bpack,id_package,id_item,qty,total)";
-  $sql2 .= " VALUES ('{$id_bpack}','{$id_package}','{$iditem}','{$stock_new}','{$count}')";
+  $sql2 .= " VALUES ('{$id_bpack}','{$id_package}','{$id_item2}','{$stock_new}','{$count}')";
+
+  $pack = find_package_id($id_package);
+  $up_pack = $pack['jml_stock']-$stock_new;      
+  $sql3  = "UPDATE package SET jml_stock = '$up_pack'";
+  $sql3 .= " WHERE id_package='{$id_package}'";
 
   if(empty($errors)){
         $sql = "UPDATE detil_po SET status='{$status}'";
@@ -179,6 +192,7 @@ if(isset($_POST['update_po'])){
       $db->query($query2);
       $db->query($query4);
       $db->query($sql2);
+      $db->query($sql3);
        $session->msg("s", "Successfully Approved");
        redirect('move_product.php',false);
      } else {

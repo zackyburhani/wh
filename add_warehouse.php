@@ -50,7 +50,38 @@ if(isset($_POST['update_warehouse'])){
   foreach ($employer as $data) {
     $id_wh2 = $data['id_warehouse'];
   }
-  if($idwarehouse == $id_wh2){
+
+  $categories = find_all_id('categories',$idwarehouse,'id_warehouse');
+  foreach ($categories as $data) {
+    $id_cat2 = $data['id_warehouse'];
+  }
+
+  $location = find_all_id('location',$idwarehouse,'id_warehouse');
+  foreach ($location as $data) {
+    $location2 = $data['id_warehouse'];
+  }
+
+  $package = find_all_id('package',$idwarehouse,'id_warehouse');
+  foreach ($package as $data) {
+    $package2 = $data['id_warehouse'];
+  }
+
+  $position = find_all_id('position',$idwarehouse,'id_warehouse');
+  foreach ($position as $data) {
+    $position2 = $data['id_warehouse'];
+  }
+
+  $shipment = find_all_id('shipment',$idwarehouse,'id_warehouse');
+  foreach ($shipment as $data) {
+    $shipment2 = $data['id_warehouse'];
+  }
+
+  $po = find_all_id('po',$idwarehouse,'id_warehouse');
+  foreach ($po as $data) {
+    $po2 = $data['id_warehouse'];
+  }
+
+  if($idwarehouse == $id_wh2 || $idwarehouse == $id_cat2 || $idwarehouse == $location2 || $idwarehouse == $package2 || $idwarehouse == $position2 || $idwarehouse == $shipment2 || $idwarehouse == $po2){
     $session->msg("d","The Field Connected To Other Key.");
     redirect('add_warehouse.php');
   }

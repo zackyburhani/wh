@@ -127,6 +127,12 @@ function find_warehouse_id($id_warehouse) {
   return $db->fetch_assoc($sql);
 }
 
+function find_new_idItem($nm_item,$colour,$id_package,$id_subcategories,$id_location) {
+  global $db;
+  $sql = $db->query("SELECT id_item FROM item WHERE nm_item = '$nm_item' and colour = '$colour' and id_package = '$id_package' and id_subcategories = '$id_subcategories' and id_location = '$id_location'");
+  return $db->fetch_assoc($sql);
+}
+
 function find_package_id($id_package) {
   global $db;
   $sql = $db->query("SELECT * FROM package WHERE id_package = '$id_package'");

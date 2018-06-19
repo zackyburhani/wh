@@ -180,9 +180,10 @@ if(isset($_POST['update_package'])){
   foreach ($package as $data) {
     $idpackage2 = $data['id_package'];
   }
-  if($idpackage == $idpackage2){
-    $session->msg("d","The Field Connected To Other Data.");
-    redirect('add_package.php');
+
+  $bpackage = find_all_id('bpack',$idpackage,'id_package');
+  foreach ($bpackage as $data) {
+    $idbpackage2 = $data['id_package'];
   }
 
   //reduce area consumed

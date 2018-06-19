@@ -118,6 +118,7 @@ if(isset($_GET['add_item']) && !isset($_POST['update']))  {
   $result  = $db->query($sql); 
   $product = $db->fetch_object($result);
 
+
   $po    = new POrder();
   $po->id_item          = $product->id_item;
   $po->nm_item          = $product->nm_item;

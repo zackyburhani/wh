@@ -24,7 +24,7 @@
 
         $query  = "UPDATE detil_po SET ";
         $query .= "status = '{$status}' ";
-        $query .= "WHERE id_item = '{$id_item}'";
+        $query .= "WHERE id_item = '{$id_item}' and id_po = '{$id_po}'";
 
         //INSERT INTO SHIPMENT
         $id_shipment       = autonumber('id_shipment','shipment');

@@ -400,32 +400,6 @@
       }
     });
   }
-
-  $(document).ready(function() {
-  if (Notification.permission !== "granted")
-  Notification.requestPermission();
-  });
-             
-  function notifikasi() {
-    if (!Notification) {
-      alert('Your Browser Not Support to This Notification!.'); 
-      return;
-    }
-    if (Notification.permission !== "granted")
-    Notification.requestPermission();
-    else {
-      var notifikasi = new Notification('New Notification!', {
-        icon: 'img/report_logo.png',
-        body: "Refresh Your Browser to See New Notification!",
-      });
-    notifikasi.onclick = function () {
-      window.open("http://localhost/wh/message.php");      
-    };
-    setTimeout(function(){
-      notifikasi.close();
-    }, 30000);
-  }
-};
 </script>
 
 <?php include_once('layouts/footer.php'); ?>
