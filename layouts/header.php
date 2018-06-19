@@ -86,18 +86,18 @@
           </li>
 
           <li class="profile">
-            <span class="label label-danger"><?php if($message != null) { echo $total = $message;}?></span>
-            <a href="#" data-toggle="dropdown" aria-expanded="false">
+            <span class="label label-danger count"><?php if($message != null) { echo $total = $message;}?></span>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" id="jumlah">
               <span class="fa fa-envelope-o"><i class="caret"></i></span> 
             </a>
           
             <ul class="dropdown-menu">
               <li>
-                <a onclick="update()" href="message.php">
-                  <i class="fa fa-envelope-o"></i>Message
-                  <span class="label label-danger"><?php if($message != null) { echo $message; }  ?></span>
-                </a>
-              </li>
+              <a onclick="update()" href="message.php">
+                <i class="fa fa-envelope-o"></i>Message
+                <span class="label label-danger" id="jumlah"><?php if($message != null) { echo $message; }  ?></span>
+              </a>
+             </li>
            </ul>
           </li>
 

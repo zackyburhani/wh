@@ -29,7 +29,7 @@
   </li>
   
   <li>
-    <a href="categories.php" >
+    <a href="categories.php" class="submenu-toggle">
       <i class="glyphicon glyphicon-indent-left"></i>
       <span>Categories</span>
     </a>
