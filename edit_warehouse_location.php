@@ -234,7 +234,6 @@
             url  : "update_warehouse.php",
             data : {id_warehouse:id_warehouse , warehousename:warehousename, status:status, heavymax:heavymax,convert_max:convert_max,address_AJX: address_AJX, latt_AJX: latt_AJX, long_AJX: long_AJX, country2:country2},
             success: function(data){
-              window.location.reload(true);
               alert("Successfully Updated Warehouse");
               }
             });

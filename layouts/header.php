@@ -7,7 +7,7 @@
            echo remove_junk($page_title);
             elseif(!empty($user))
            echo ucfirst($user['name']);
-            else echo "Simple inventory System";?>
+            else echo "IKEA WAREHOUSE";?>
     </title>
     <style type="text/css">
       .btn-circle.btn-lg {

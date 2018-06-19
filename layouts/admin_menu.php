@@ -87,30 +87,3 @@
   </li>
 
 </ul>
-
-
-<script type="text/javascript">
-  $(document).ready(function(){
-    $('.modul').click(function(){
-      var menu = $(this).attr('id');
-      if(menu == "dashboard"){
-        $('.body').load('home.php');           
-      }else if(menu == "warehouse"){
-        $('.body').load('add_warehouse.php');            
-      }else if(menu == "location"){
-        $('.body').load('add_location.php');           
-      }else if(menu == "leadtime"){
-        $('.body').load('lead_time.php');           
-      }else if(menu == "condition"){
-        $('.body').load('warehouse.php');           
-      }else if(menu == "categories"){
-        $('.body').load('categories.php');           
-      }
-    });
- 
- 
-    // halaman yang di load default pertama kali
-    //$('.body').load('home.php');           
- 
-  });
-</script>
