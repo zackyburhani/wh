@@ -15,11 +15,12 @@ class Session {
     return $this->user_is_logged_in;
   }
   public function login($user_id){
-    $_SESSION['user_id'] = $user_id;
+    $tes = $_SESSION['id_employer'] = $user_id;
+    return $tes;
   }
   private function userLoginSetup()
   {
-    if(isset($_SESSION['user_id']))
+    if(isset($_SESSION['id_employer']))
     {
       $this->user_is_logged_in = true;
     } else {
@@ -28,7 +29,8 @@ class Session {
 
   }
   public function logout(){
-    unset($_SESSION['user_id']);
+    unset($_SESSION['cart']);
+    unset($_SESSION['id_employer']);
   }
 
   public function msg($type ='', $msg =''){

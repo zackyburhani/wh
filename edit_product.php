@@ -17,7 +17,6 @@ if(!$product){
  if(isset($_POST['product'])){
     $req_fields = array('product-title','product-categorie','product-warehouse','product-quantity','buying-price', 'saleing-price' );
     validate_fields($req_fields);
-
    if(empty($errors)){
        $p_name  = remove_junk($db->escape($_POST['product-title']));
        $p_cat   = (int)$_POST['product-categorie'];
@@ -38,14 +37,11 @@ if(!$product){
                  $session->msg('d',' Sorry failed to updated!');
                  redirect('edit_product.php?id='.$product['id'], false);
                }
-
    } else{
        $session->msg("d", $errors);
        redirect('edit_product.php?id='.$product['id'], false);
    }
-
  }
-
 ?>
 <?php include_once('layouts/header.php'); ?>
 <div class="row">
