@@ -200,7 +200,7 @@
 
 
 <?php include_once('layouts/header.php'); ?>
-
+<div class="body">
 <div class="row">
   <div class="col-md-12">
     <?php echo display_msg($msg); ?>
@@ -374,6 +374,7 @@
         </div>
       </div>
     </div>
+  </div>
 
 <!-- Update Entry Data Categories -->
 <?php foreach($all_categories as $a_category): ?>

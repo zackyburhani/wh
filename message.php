@@ -240,17 +240,17 @@
         </div>
         <div class="form-group">
           <label for="subject" class="control-label">Subject</label>
-          <input type="text" class="form-control" placeholder="Subject" name="subject" required>
+          <input type="text" class="form-control" placeholder="Subject" name="subject" id="subject" required>
         </div>
         <div class="form-group">
           <label for="message" class="control-label">Text</label>
-          <textarea class="form-control" name="message" required style="height: 200px"></textarea>
+          <textarea class="form-control" name="message" id="message" required style="height: 200px"></textarea>
         </div>
       </div>
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" title="Close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
-        <button type="submit" name="send_message" title="Send" class="btn btn-primary"><span class="glyphicon glyphicon-send"></span> Send</button>
+        <button type="submit" name="send_message" title="Send" class="btn btn-primary" onclick="notifikasi()"><span class="glyphicon glyphicon-send"></span> Send</button>
       </div>
     </form>
   </div>
@@ -307,7 +307,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" title="Close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
-        <button type="submit" name="reply_message" title="Send" class="btn btn-primary"><span class="glyphicon glyphicon-send"></span> Send</button>
+        <button type="submit" name="reply_message" title="Send" class="btn btn-primary" onclick="notifikasi()"><span class="glyphicon glyphicon-send"></span> Send</button>
       </div>
     </form>
   </div>
@@ -381,6 +381,7 @@
 
 
 <script type="text/javascript">
+
   function update(id,id_wh,nm_wh,msg,date_var){
     var id_message   = id;
     var id_warehouse = id_wh;
@@ -399,6 +400,32 @@
       }
     });
   }
+
+  $(document).ready(function() {
+  if (Notification.permission !== "granted")
+  Notification.requestPermission();
+  });
+             
+  function notifikasi() {
+    if (!Notification) {
+      alert('Your Browser Not Support to This Notification!.'); 
+      return;
+    }
+    if (Notification.permission !== "granted")
+    Notification.requestPermission();
+    else {
+      var notifikasi = new Notification('New Notification!', {
+        icon: 'img/report_logo.png',
+        body: "Refresh Your Browser to See New Notification!",
+      });
+    notifikasi.onclick = function () {
+      window.open("http://localhost/wh/message.php");      
+    };
+    setTimeout(function(){
+      notifikasi.close();
+    }, 30000);
+  }
+};
 </script>
 
 <?php include_once('layouts/footer.php'); ?>

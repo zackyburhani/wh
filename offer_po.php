@@ -249,12 +249,40 @@
         <div class="modal-footer">
           <button type="button" title="Close" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close</button>
           <button type="submit" name="canceled_po" class="btn btn-danger"><span class="fa fa-warning"></span> Disagree</button>
-          <button type="submit" title="Approve" name="approve_po" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Approve</button>
+          <button type="submit" title="Approve" name="approve_po" class="btn btn-success" onclick="notifikasi()"><span class="glyphicon glyphicon-ok"></span> Approve</button>
         </div>
       </form>
     </div>
   </div>
 </div>
 <?php endforeach;?>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  if (Notification.permission !== "granted")
+  Notification.requestPermission();
+  });
+             
+  function notifikasi() {
+    if (!Notification) {
+      alert('Your Browser Not Support to This Notification!.'); 
+      return;
+    }
+    if (Notification.permission !== "granted")
+    Notification.requestPermission();
+    else {
+      var notifikasi = new Notification('New Notification!', {
+        icon: 'img/report_logo.png',
+        body: "Refresh Your Browser to See New Notification!",
+      });
+    notifikasi.onclick = function () {
+      window.open("http://localhost/wh/message.php");      
+    };
+    setTimeout(function(){
+      notifikasi.close();
+    }, 30000);
+  }
+};
+</script>
  
 <?php include_once('layouts/footer.php'); ?>

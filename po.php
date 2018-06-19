@@ -243,7 +243,7 @@ if(isset($_POST['update'])) {
         <hr>
         <div class="form-group pull-right">
           <?php if($_SESSION['cart'] != null){ ?>
-            <button type="submit" class="btn btn-warning  " name="process"><i class="fa fa-money"></i> Process Purchase Order</button>
+            <button type="submit" class="btn btn-warning  " name="process" onclick="notifikasi()"><i class="fa fa-money"></i> Process Purchase Order</button>
           <?php } ?>
           <button type="button" data-target="#add_product" class="btn btn-md btn-primary" data-toggle="modal" title="Add Item"><i class="glyphicon glyphicon-plus"></i> Choose Item
             </button>
@@ -393,6 +393,34 @@ if(isset($_POST['update'])) {
 <script src="jquery.chained.min.js"></script>
 <script>
   $("#item_chained").chained("#warehouse_chained");
+</script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  if (Notification.permission !== "granted")
+  Notification.requestPermission();
+  });
+             
+  function notifikasi() {
+    if (!Notification) {
+      alert('Your Browser Not Support to This Notification!.'); 
+      return;
+    }
+    if (Notification.permission !== "granted")
+    Notification.requestPermission();
+    else {
+      var notifikasi = new Notification('New Notification!', {
+        icon: 'img/report_logo.png',
+        body: "Refresh Your Browser to See New Notification!",
+      });
+    notifikasi.onclick = function () {
+      window.open("http://localhost/wh/message.php");      
+    };
+    setTimeout(function(){
+      notifikasi.close();
+    }, 30000);
+  }
+};
 </script>
 
 <?php include_once('layouts/footer.php'); ?>

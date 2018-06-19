@@ -1,12 +1,13 @@
+<script type="text/javascript" src="jquery-1.10.2.min.js"></script>
 <ul>
   <li>
-    <a href="home.php">
+    <a href="home.php" class="modul" id="dashboard">
       <i class="glyphicon glyphicon-home"></i>
       <span>Dashboard</span>
     </a> 
   </li>
 
-   <li>
+  <li>
     <a href="#" class="submenu-toggle">
       <i class="fa fa-university"></i>
        <span>Warehouse</span>
@@ -24,14 +25,14 @@
       <span>User Management</span>
     </a>
     <ul class="nav submenu">
-      <li><a href="position.php">Manage Position</a> </li>
-      <li><a href="users.php">Manage Employee</a> </li>
-      <li><a href="superusers.php">Administrator Inter IKEA</a> </li>
+      <li><a href="position.php" class="modul" id="position">Manage Position</a> </li>
+      <li><a href="users.php" class="modul" id="employee">Manage Employee</a> </li>
+      <li><a href="superusers.php" class="modul" id="admin">Administrator Inter IKEA</a> </li>
    </ul>
   </li>
   
   <li>
-    <a href="categories.php" >
+    <a href="categories.php" class="modul" id="categories">
       <i class="fa fa-tag"></i>
       <span>Categories</span>
     </a>
@@ -43,13 +44,13 @@
        <span>Package</span>
       </a>
       <ul class="nav submenu">
-        <li><a href="add_package.php">Add Package</a></li>
-          <li><a href="add_bpack.php">Combine Package</a></li>
+        <li><a href="add_package.php" class="modul" id="package">Add Package</a></li>
+          <li><a href="add_bpack.php" class="modul" id="combine">Combine Package</a></li>
       </ul>
   </li>
   
   <li>
-    <a href="product.php" class="submenu-toggle">
+    <a href="product.php" class="modul" id="product">
       <i class="fa fa-cubes"></i>
       <span>Products</span>
     </a>
@@ -86,3 +87,30 @@
   </li>
 
 </ul>
+
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.modul').click(function(){
+      var menu = $(this).attr('id');
+      if(menu == "dashboard"){
+        $('.body').load('home.php');           
+      }else if(menu == "warehouse"){
+        $('.body').load('add_warehouse.php');            
+      }else if(menu == "location"){
+        $('.body').load('add_location.php');           
+      }else if(menu == "leadtime"){
+        $('.body').load('lead_time.php');           
+      }else if(menu == "condition"){
+        $('.body').load('warehouse.php');           
+      }else if(menu == "categories"){
+        $('.body').load('categories.php');           
+      }
+    });
+ 
+ 
+    // halaman yang di load default pertama kali
+    //$('.body').load('home.php');           
+ 
+  });
+</script>
