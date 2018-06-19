@@ -34,7 +34,7 @@
                 <label class="control-label">Warehouse</label>
               </div>
               <div class="col-md-4">
-                <input type="name" placeholder="Warehouse Name" class="form-control" name="warehousename" id="warehousename">
+                <input type="name" placeholder="Warehouse Name" required class="form-control" name="warehousename" id="warehousename">
               </div>
 
               <div class="col-md-2">
@@ -56,7 +56,7 @@
                 <label class="control-label">Heavy Max</label>
               </div>
               <div class="col-md-4">
-                <input type="number" placeholder="heavy Max" class="form-control" name="heavymax" id="heavymax">
+                <input type="number" required placeholder="heavy Max" class="form-control" name="heavymax" id="heavymax">
               </div>
               
               <div class="col-md-2">
@@ -162,7 +162,7 @@
             marker = new google.maps.Marker({
               map: map,
               animation: google.maps.Animation.DROP,
-              icon: 'img/maps/333.png'
+              icon: 'img/maps/logo_map.png'
             });
           }
           // set position

@@ -181,7 +181,7 @@ if(isset($_POST['update_warehouse'])){
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabel"><span class="fa fa-university"></span> Detail Location On Warehouse <?php echo $location['id_warehouse'] ?></h4>
+          <h4 class="modal-title" id="myModalLabel"><span class="fa fa-university"></span> Detail Location On Warehouse <?php echo $location['nm_warehouse'] ?></h4>
         </div>
         <div class="modal-body">
           <table class="table table-bordered">

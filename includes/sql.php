@@ -34,6 +34,10 @@ function find_all_Position($table) {
    }
 }
 
+function find_all_warehouse_asc() {
+  return find_by_sql("SELECT * FROM warehouse order by nm_warehouse");
+}
+
 //find all position
 function find_all_Position_admin() { 
   return find_by_sql("SELECT * FROM position WHERE level_user != '0'  ");

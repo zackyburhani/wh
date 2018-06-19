@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 17, 2018 at 06:59 AM
+-- Generation Time: Jun 19, 2018 at 12:42 PM
 -- Server version: 10.1.31-MariaDB
 -- PHP Version: 7.2.4
 
@@ -48,15 +48,6 @@ CREATE TABLE `categories` (
   `id_warehouse` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `categories`
---
-
-INSERT INTO `categories` (`id_categories`, `nm_categories`, `id_warehouse`) VALUES
-('0001', 'living room', '0001'),
-('0002', 'office', '0001'),
-('0003', 'outdoor', '0001');
-
 -- --------------------------------------------------------
 
 --
@@ -96,14 +87,29 @@ CREATE TABLE `employer` (
 --
 
 INSERT INTO `employer` (`id_employer`, `username`, `nm_employer`, `id_position`, `password`, `last_login`, `status`, `image`, `id_warehouse`) VALUES
-('0001', 'Admin', 'Administrator', '0001', 'd033e22ae348aeb5660fc2140aec35850c4da997', '2018-06-17 06:33:44', '1', 'admin_v01D_support.png', '0001'),
-('0002', 'adminindo', 'Administrator Indonesia', '0002', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '2018-06-17 02:39:45', '1', 'indo.png', '0002'),
-('0003', 'adminjapan', 'Administrator Japan', '0002', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '2018-06-17 01:46:03', '1', NULL, '0003'),
-('0004', 'adminusa', 'Administrator USA', '0002', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '2018-06-14 10:26:22', '1', NULL, '0004'),
-('0005', 'zackyburhani', 'Zacky Burhani Hotib', '0003', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', NULL, '1', NULL, '0001'),
-('0006', 'faz', 'muhammad faiz ', '0004', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', NULL, '1', NULL, '0001'),
-('0007', 'adminmalaysia', 'Administrator Malaysia', '0002', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '2018-06-13 18:38:42', '1', NULL, '0005'),
-('0008', 'adminholland', 'Administrator Holland', '0002', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '2018-06-14 10:21:07', '1', NULL, '0010');
+('0001', 'Admin', 'Administrator Sweden', '0001', 'd033e22ae348aeb5660fc2140aec35850c4da997', '2018-06-19 10:28:52', '1', 'sweden_flag.png', '0001'),
+('0002', 'adminzevantem', 'Administrator Zaventem', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:15:40', '1', 'belgium_flag.png', '0002'),
+('0003', 'adminarlon', 'Administrator Arlon', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:19:56', '1', 'belgium_flag.png', '0003'),
+('0004', 'admincroatia', 'Administrator Croatia', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:20:59', '1', 'croatia_flag.png', '0004'),
+('0005', 'adminczechrepublic', 'Administrator Czech Republic', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:22:36', '1', 'czechia_flag.png', '0005'),
+('0006', 'adminodense', 'Administrator Odense', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:23:42', '1', 'denmark_flag.png', '0006'),
+('0007', 'adminparisnord', 'Administrator Paris Nord', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:24:32', '1', 'france_flag.png', '0007'),
+('0008', 'adminalamsutera', 'Administrator Alam Sutera', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:25:28', '1', 'indonesia_flag.png', '0008'),
+('0009', 'admindubin', 'Administrator Dubin', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:26:39', '1', 'ireland_flag.png', '0009'),
+('0010', 'adminitaly', 'Administrator Italy', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:27:18', '1', 'italy_flag.png', '0010'),
+('0011', 'admintsuruhama', 'Administrator Tsuruhama', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:28:33', '1', 'japan_flag.png', '0011'),
+('0012', 'admindamansara', 'Administrator Damansara', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:29:11', '1', 'malaysian_flag.png', '0012'),
+('0013', 'adminmorocco', 'Administrator Morocco', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:30:20', '1', 'morocco_flag.png', '0013'),
+('0014', 'adminpoland', 'Administrator Poland', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:32:36', '1', 'polland_flag.png', '0014'),
+('0015', 'adminnetherlands', 'Administrator Netherlands', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:33:24', '1', 'netherland_flag.png', '0015'),
+('0016', 'adminportugal', 'Administrator Portugal', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:34:08', '1', 'portugal_flag.png', '0016'),
+('0017', 'adminbalayadacha', 'Administrator Belaya Dacha', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:35:04', '1', 'russia_flag.png', '0017'),
+('0018', 'adminsaudiarabia', 'Administrator Saudi Arabia', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:36:17', '1', 'saudi_flag.png', '0019'),
+('0019', 'adminserbia', 'Administrator Serbia', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:37:05', '1', 'serbia_flag.png', '0020'),
+('0020', 'admintampines', 'Administrator Tampines', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:37:52', '1', 'singapore_flag.png', '0021'),
+('0021', 'adminsouthkorea', 'Administrator South Korea', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:38:39', '1', 's_korea_flag.png', '0022'),
+('0022', 'adminspain', 'Administrator Spain', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:39:20', '1', 'spain_flag.png', '0023'),
+('0023', 'adminkaohsiung', 'Administrator Kaohsiung', '0002', '8cb2237d0679ca88db6464eac60da96345513964', '2018-06-19 12:40:04', '1', 'taiwan_flag.png', '0024');
 
 -- --------------------------------------------------------
 
@@ -146,7 +152,7 @@ CREATE TABLE `location` (
 --
 
 INSERT INTO `location` (`id_location`, `unit`, `floor`, `room`, `id_warehouse`) VALUES
-('0001', 'A', 'B', '12', '0001');
+('0001', 'hj', 'hj', 'hj', '0001');
 
 -- --------------------------------------------------------
 
@@ -174,7 +180,7 @@ CREATE TABLE `package` (
   `id_package` varchar(10) NOT NULL,
   `nm_package` varchar(20) DEFAULT NULL,
   `height` decimal(5,2) DEFAULT NULL,
-  `lenght` decimal(5,2) DEFAULT NULL,
+  `length` decimal(5,2) DEFAULT NULL,
   `diameter` decimal(5,2) DEFAULT NULL,
   `weight` decimal(10,2) NOT NULL,
   `width` decimal(5,2) DEFAULT NULL,
@@ -244,15 +250,6 @@ CREATE TABLE `sub_categories` (
   `id_categories` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `sub_categories`
---
-
-INSERT INTO `sub_categories` (`id_subcategories`, `nm_subcategories`, `id_categories`) VALUES
-('0001', 'chair', '0001'),
-('0002', 'office desk', '0002'),
-('0003', 'garden', '0003');
-
 -- --------------------------------------------------------
 
 --
@@ -276,12 +273,29 @@ CREATE TABLE `warehouse` (
 --
 
 INSERT INTO `warehouse` (`id_warehouse`, `nm_warehouse`, `country`, `address`, `status`, `heavy_max`, `heavy_consumed`, `latitude`, `longitude`) VALUES
-('0001', 'IKEA Sweden', 'Sweden', 'Sweden', '1', 100000, '0.00', '60.4816622', '15.421299900000008'),
-('0002', 'IKEA Indonesia', 'Indonesia', 'Jalan Jalur Sutera Boulevard Kav.45, Kunciran, Pinang, Kunciran, Pinang, Kota Tangerang, Banten 15320, Indonesia', '1', 100000000000, '0.00', '-6.2200456', '106.66323549999993'),
-('0003', 'IKEA JAPAN', 'Japan', 'Japan, ã€’273-0012 Chiba Prefecture, Funabashi, Hamacho, 2 Chomeâˆ’3âˆ’30', '1', 100000000000, '0.00', '35.6820093', '139.99227559999997'),
-('0004', 'IKEA USA', 'United States', '6000 Ikea Way, Merriam, KS 66202, USA', '1', 100000000000, '0.00', '39.019538', '-94.69082889999999'),
-('0005', 'IKEA Malaysia', 'Malaysia', '2, Lorong PJU 7/8d, Mutiara Damansara, 47800 Petaling Jaya, Selangor, Malaysia', '1', 100000000000, '0.00', '3.156021', '101.60651000000007'),
-('0010', 'IKEA Holland', 'Netherlands', 'Amsterdam, Netherlands', '1', 100000000, '0.00', '52.3702157', '4.895167899999933');
+('0001', 'IKEA Sweden', 'Sweden', 'Sweden', '1', 100000000, '0.00', '60.12816100000001', '18.643501000000015'),
+('0002', 'IKEA Zaventem', 'Belgium', 'Weiveldlaan 19, 1930 Zaventem, Belgium', '1', 100000000, '0.00', '50.8716695', '4.492763599999989'),
+('0003', 'IKEA Arlon', 'Belgium', 'Rue de Grass 100, 6700 Arlon, Belgium', '1', 100000000, '0.00', '49.6371676', '5.890511800000013'),
+('0004', 'IKEA Croatia', 'Croatia', 'Alfreda Nobela, 10361, Otok Svibovski, Croatia', '1', 100000000, '0.00', '45.7916019', '16.157924099999946'),
+('0005', 'IKEA Czech Republic', 'Czechia', 'RudnÃ¡ 3114/114, 700 30 Ostrava-jih, Czechia', '1', 1000000000, '0.00', '49.7989283', '18.227742499999977'),
+('0006', 'IKEA Odense', 'Denmark', 'Ã˜rbÃ¦kvej 91, 5220 Odense, Denmark', '1', 100000000, '0.00', '55.3809151', '10.430416899999955'),
+('0007', 'IKEA Paris Nord', 'France', '164 Avenue de la Plaine de France, 95500 Gonesse, France', '1', 100000000, '0.00', '48.97498849999999', '2.4945433999999977'),
+('0008', 'IKEA Alam Sutera', 'Indonesia', 'Jalan Jalur Sutera Boulevard Kav.45, Kunciran, Pinang, Kunciran, Pinang, Kota Tangerang, Banten 15320, Indonesia', '1', 100000000, '0.00', '-6.2200456', '106.66323549999993'),
+('0009', 'IKEA DUBIN', 'Ireland', 'St Margaret\'s Rd, Dublin, Ireland', '1', 100000000, '0.00', '53.4059294', '-6.283512999999971'),
+('0010', 'IKEA Italy', 'Italy', 'Via dell\'Artigianato, 7, 20061 Carugate MI, Italy', '1', 100000000, '0.00', '45.5504511', '9.331781399999954'),
+('0011', 'IKEA Tsuruhama', 'Japan', '2 Chome-24-55 Tsurumachi, TaishÅ-ku, ÅŒsaka-shi, ÅŒsaka-fu 551-0023, Japan', '0', 100000000, '0.00', '34.6369348', '135.44965479999996'),
+('0012', 'IKEA Damansara', 'Malaysia', '2, Jalan PJU 7/2, Mutiara Damansara, 47800 Petaling Jaya, Selangor, Malaysia', '1', 100000000, '0.00', '3.1570193', '101.61293269999999'),
+('0013', 'IKEA Morocco', 'Morocco', 'AÃ¯n Harrouda, Morocco', '1', 100000000, '0.00', '33.6353103', '-7.450382900000022'),
+('0014', 'IKEA Poland', 'Poland', 'Malborska 51, 03-286 Warszawa, Poland', '1', 100000000, '0.00', '52.3022994', '21.079825400000004'),
+('0015', 'IKEA Netherlands', 'Netherlands', 'Olof Palmestraat 1, 2616 LN Delft, Netherlands', '1', 100000000, '0.00', '52.01291399999999', '4.381651899999952'),
+('0016', 'IKEA Portugal', 'Portugal', 'Av. Dr. Ã“scar Lopes, LeÃ§a da Palmeira, Portugal', '1', 100000000, '0.00', '41.2082057', '-8.685803699999951'),
+('0017', 'IKEA Belaya Dacha', 'Russia', '1-Y Pokrovskiy Proyezd, 4, Kotelniki, Moskovskaya oblast\', Russia, 140055', '1', 100000000, '0.00', '55.6536415', '37.84765760000005'),
+('0019', 'IKEA Saudi Arabia', 'Saudi Arabia', 'Prince Mohammed Bin Abdulaziz St, Jeddah Saudi Arabia', '1', 100000000, '0.00', '21.5577623', '39.180507600000055'),
+('0020', 'IKEA Serbia', 'Serbia', 'Belgrade, Serbia', '1', 100000000, '0.00', '44.786568', '20.44892159999995'),
+('0021', 'IKEA Tampines', 'Singapore', '60 Tampines North Drive 2, Singapore 528764', '1', 100000000, '0.00', '1.3741837', '103.93221970000002'),
+('0022', 'IKEA South Korea', 'South Korea', 'Iljing-ro, Seoksu 2(i)-dong, Manan-gu, Anyang, Gyeonggi-do, South Korea', '1', 100000000, '0.00', '37.4191564', '126.89473989999999'),
+('0023', 'IKEA Spain', 'Spain', 'Avinguda de la Granvia, 115, 08908 L\'Hospitalet de Llobregat, Barcelona, Spain', '1', 100000000, '0.00', '41.3555427', '2.124105399999962'),
+('0024', 'IKEA Kaohsiung', 'Taiwan', 'No. 1201è™Ÿ, Zhonghua 5th Road, Qianzhen District, Kaohsiung City, Taiwan 806', '1', 100000000, '0.00', '22.605706', '120.30393000000004');
 
 --
 -- Indexes for dumped tables
@@ -393,7 +407,7 @@ ALTER TABLE `warehouse`
 -- AUTO_INCREMENT for table `message`
 --
 ALTER TABLE `message`
-  MODIFY `id_message` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id_message` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables

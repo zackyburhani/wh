@@ -51,8 +51,9 @@
       redirect('superusers.php',false);
    }
  }
- $all_warehouse = find_all_position('warehouse');
- $all_position  =  find_all_Position_admin();
+ // $all_warehouse = find_all_position('warehouse');
+ $all_warehouse  = find_all_warehouse_asc();
+ $all_position   =  find_all_Position_admin();
  $find_adminName = find_adminName($user['id_warehouse']);
 ?>
 <!-- END NEW ADMINISTRATOR -->
